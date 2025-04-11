@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Favicon from Flaticon CDN -->
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png">
+
+  <title>Moonlight 1.0</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Courier New', monospace;
+    }
+
+    body {
+      background: black;
+      color: #0ff;
+      overflow-y: auto;
+      text-align: center;
+    }
+
+    .terminal {
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid #0ff;
+      padding: 15px;
+      width: 80%;
+      height: 250px;
+      margin: 20px auto;
+      text-align: left;
+      font-size: 14px;
+      overflow-y: auto;
+      border-radius: 8px;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .glitch {
+      font-size: 3rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      animation: glitch 1.5s infinite;
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 3px 3px red, -3px -3px blue; }
+      50% { text-shadow: -3px -3px red, 3px 3px blue; }
+      100% { text-shadow: 3px 3px red, -3px -3px blue; }
+    }
+
+    .section-box {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid #0ff;
+      padding: 20px;
+      width: 85%;
+      margin: 20px auto;
+      border-radius: 10px;
+      text-align: left;
+    }
+
+    .copyright {
+      margin-top: 50px;
+      font-size: 14px;
+      color: #0ff;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+
+  <div class="container">
+
+    <!-- Intro Section -->
+    <div class="section-box">
+      <h1 class="glitch">Moonlight 1.0 - Hub</h1>
+      <p>The ultimate aimlock for Da Hood games.</p>
+      <h2 class="glitch" style="margin-top: 20px;">Coming Soon - Stay Tuned</h2>
+      <p>Beta testing in progress... Get ready.</p>
+    </div>
+
+    <!-- Terminal Console -->
+    <div class="terminal" id="console">
+      <p>> Moonlight 1.0initializing...</p>
+      <p>> Checking for updates...</p>
+      <p>> Connecting to servers...</p>
+      <p>> Status: Online</p>
+      <p>> Awaiting user input...</p>
+    </div>
+
+    <!-- Features Section -->
+    <div class="section-box">
+      <h2 class="glitch">Features</h2>
+      <ul>
+        <li>✔ Undefeated Aimlock System</li>
+        <li>✔ Smooth & Undetectable Performance</li>
+        <li>✔ Customizable Aim Keybinds</li>
+        <li>✔ Auto-Prediction for Higher Accuracy</li>
+        <li>✔ Instant Execution & No FPS Drops</li>
+      </ul>
+    </div>
+
+    <!-- Update Logs Section -->
+    <div class="section-box">
+      <h2 class="glitch">Update Logs</h2>
+      <p><strong>[v1.0 Beta]</strong> Initial beta release - aimlock system added.</p>
+      <p><strong>[v1.1]</strong> Improved smooth aim & added UI customizations.</p>
+      <p><strong>[v1.2]</strong> Optimized prediction for better headshots.</p>
+    </div>
+
+    <!-- Future Updates Section -->
+    <div class="section-box">
+      <h2 class="glitch">Future Updates (Coming Soon)</h2>
+      <p>🌟 Advanced anti-detection measures</p>
+      <p>🌟 More customization for sensitivity & FOV</p>
+      <p>🌟 Additional keybind support</p>
+    </div>
+
+    <!-- Developed By Section -->
+    <div class="section-box">
+      <h2 class="glitch">Developed By</h2>
+      <p>Moonlight 1.0 Team</p>
+      <p>Milky - Solo Developer</p>
+    </div>
+
+    <!-- Copyright -->
+    <div class="copyright">
+      <p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
+    </div>
+  </div>
+
+  <script>
+    // Terminal Console Effect
+    function simulateConsole() {
+      const consoleBox = document.getElementById("console");
+      const messages = [
+        "> Moonlight 1.0 initializing...",
+        "> Checking for updates...",
+        "> Connecting to servers...",
+        "> Status: Online",
+        "> Awaiting user input..."
+      ];
+      consoleBox.innerHTML = "";
+
+      let index = 0;
+      function addMessage() {
+        if (index < messages.length) {
+          const p = document.createElement("p");
+          p.textContent = messages[index];
+          consoleBox.appendChild(p);
+          consoleBox.scrollTop = consoleBox.scrollHeight;
+          index++;
+          setTimeout(addMessage, 1000);
+        }
+      }
+      addMessage();
+    }
+    simulateConsole();
+
+    // Matrix Background Animation
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const letters = "01010101010101010101";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(0);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#0ff";
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+        ctx.fillText(text, x, y);
+
+        if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+
+    setInterval(drawMatrix, 50);
+  </script>
+</body>
+</html>
