@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Moonlight 1.0</title>
   <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
+
   <style>
     * {
       margin: 0;
@@ -75,30 +76,30 @@
 </head>
 <body>
 
-  <!-- Hidden autoplay looped music -->
-  <audio autoplay loop hidden id="bg-audio">
-    <source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
+  <!-- Background Music (hidden + autoplay + loop) -->
+  <audio id="bg-audio" autoplay loop>
+    <source src="https://moonlightsoftworks.github.io/mp4/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
   </audio>
 
   <script>
-    // Unmute audio on first user interaction (bypasses browser restrictions)
-    window.addEventListener("click", () => {
+    // Unmute and force play on first user interaction
+    document.addEventListener("click", () => {
       const audio = document.getElementById("bg-audio");
       audio.muted = false;
-      audio.play();
+      audio.volume = 1;
+      audio.play().catch(err => console.log("Audio play error:", err));
     }, { once: true });
   </script>
 
   <canvas id="matrix"></canvas>
 
   <div class="container">
-    <!-- Intro Section -->
     <div class="section-box">
       <h1 class="glitch">Moonlight 1.0</h1>
       <p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
     </div>
 
-    <!-- Terminal Console -->
     <div class="terminal" id="console">
       <p>> Moonlight 1.0 initializing...</p>
       <p>> Checking for updates...</p>
@@ -107,7 +108,6 @@
       <p>> Awaiting user input...</p>
     </div>
 
-    <!-- Features Section -->
     <div class="section-box">
       <h2 class="glitch">Features</h2>
       <ul>
@@ -118,27 +118,23 @@
       </ul>
     </div>
 
-    <!-- Update Logs Section -->
     <div class="section-box">
       <h2 class="glitch">Update Log</h2>
       <p><strong>[v1.0]</strong> First release with Roblox username status detection and clean UI design.</p>
     </div>
 
-    <!-- Developed By Section -->
     <div class="section-box">
       <h2 class="glitch">Developed By</h2>
       <p>Moonlight 1.0 Team</p>
       <p>Milky - Solo Developer</p>
     </div>
 
-    <!-- Copyright -->
     <div class="copyright">
       <p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
     </div>
   </div>
 
   <script>
-    // Terminal Console Effect
     function simulateConsole() {
       const consoleBox = document.getElementById("console");
       const messages = [
@@ -165,7 +161,6 @@
     }
     simulateConsole();
 
-    // Matrix Background Animation
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
