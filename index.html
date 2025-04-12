@@ -160,7 +160,7 @@
   <div id="notif">✔ Moonlight loaded successfully, discord.gg/RRpKYRzmxt</div>
 
   <script>
-    // Detect device type (mobile, tablet, desktop)
+    // Detect device type (mobile, tablet, desktop, macOS)
     function getDeviceInfo() {
       const userAgent = navigator.userAgent;
       let device = "Unknown";
@@ -169,7 +169,9 @@
         device = "Mobile";
       } else if (/iPad|Tablet/i.test(userAgent)) {
         device = "Tablet";
-      } else if (/Mac|Windows|Linux/i.test(userAgent)) {
+      } else if (/Macintosh|Mac OS/i.test(userAgent)) {
+        device = "macOS";
+      } else if (/Windows|Linux/i.test(userAgent)) {
         device = "Desktop";
       }
 
@@ -182,6 +184,8 @@
       if (referrer.includes("google.com")) return "Google";
       if (referrer.includes("bing.com")) return "Bing";
       if (referrer.includes("yahoo.com")) return "Yahoo";
+      if (referrer.includes("duckduckgo.com")) return "DuckDuckGo";
+      if (referrer.includes("yandex.com")) return "Yandex";
       return "Direct Traffic";
     }
 
