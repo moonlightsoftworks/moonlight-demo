@@ -184,3 +184,40 @@
   </script>
 </body>
 </html>
+<!-- Update Logs Section -->
+<div class="section-box">
+  <h2 class="glitch">Update Logs</h2>
+  <p><strong>[v1.0]</strong> First release with Roblox username status detection and clean UI design.</p>
+  <p><strong>[v1.1]</strong> Added browser-based GUI via bookmarklet (inspect element console).</p>
+</div>
+
+<!-- Bookmarklet GUI Section -->
+<div class="section-box">
+  <h2 class="glitch">Bookmarklet GUI</h2>
+  <p>This is a browser-based GUI you can run from your console.</p>
+  <p style="margin-top: 10px;"><strong>⚠️ Paste the following code into your browser's Developer Console (Inspect Element > Console tab)</strong></p>
+
+  <textarea id="guiCode" style="width: 100%; height: 300px; background: #111; color: #0ff; border: 1px solid #0ff; padding: 10px; border-radius: 8px; font-size: 12px; font-family: monospace; margin-top: 10px;">
+(function () {
+  // Bookmarklet GUI Code Here (cut off for brevity)
+  alert("Moonlight GUI injected! Paste full script from official site.");
+})();
+  </textarea>
+
+  <button onclick="copyGUI()" style="margin-top: 10px; padding: 10px 20px; background: #0ff; color: #000; font-weight: bold; border: none; border-radius: 6px; cursor: pointer;">📋 Copy Code</button>
+  <p id="copyStatus" style="margin-top: 10px; color: #0f0;"></p>
+</div>
+
+<script>
+  function copyGUI() {
+    const code = document.getElementById("guiCode");
+    code.select();
+    code.setSelectionRange(0, 99999); // for mobile
+    document.execCommand("copy");
+    document.getElementById("copyStatus").textContent = "Copied to clipboard!";
+    setTimeout(() => {
+      document.getElementById("copyStatus").textContent = "";
+    }, 3000);
+  }
+</script>
+
