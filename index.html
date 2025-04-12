@@ -76,10 +76,21 @@
   </style>
 </head>
 <body>
-  <!-- Background music (autoplay + hidden) -->
-  <audio autoplay loop hidden>
+
+  <!-- Hidden autoplay looped music -->
+  <audio autoplay loop muted id="bg-audio">
     <source src="Armin van Buuren feat. Sharon den Adel - In And Out Of Love (Official Music Video).mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
   </audio>
+
+  <script>
+    // Unmute the background audio after first user click
+    window.addEventListener("click", () => {
+      const audio = document.getElementById("bg-audio");
+      audio.muted = false;
+      audio.play();
+    }, { once: true });
+  </script>
 
   <canvas id="matrix"></canvas>
 
