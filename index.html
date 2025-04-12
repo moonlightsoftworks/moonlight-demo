@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moonlight Login</title>
+  <title>Moonlight 1.0</title>
   <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
   <style>
     * {
@@ -13,12 +13,8 @@
     body {
       background: black;
       color: #0ff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
       margin: 0;
+      text-align: center;
     }
     .form-box {
       background: rgba(0, 0, 0, 0.9);
@@ -26,7 +22,7 @@
       padding: 20px;
       width: 300px;
       border-radius: 10px;
-      text-align: center;
+      margin: 100px auto;
     }
     input, button {
       margin: 10px 0;
@@ -45,6 +41,20 @@
       color: #ccc;
       cursor: pointer;
       font-size: 14px;
+    }
+    .terminal, .section-box, .glitch, .copyright, canvas, #notif {
+      display: none;
+    }
+    .glitch {
+      font-size: 3rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      animation: glitch 1.5s infinite;
+    }
+    @keyframes glitch {
+      0% { text-shadow: 3px 3px red, -3px -3px blue; }
+      50% { text-shadow: -3px -3px red, 3px 3px blue; }
+      100% { text-shadow: 3px 3px red, -3px -3px blue; }
     }
   </style>
 </head>
@@ -66,6 +76,43 @@
   <div class="toggle" onclick="toggleForms()">Already have an account? Login</div>
 </div>
 
+<!-- Moonlight UI -->
+<canvas id="matrix"></canvas>
+<div class="container">
+  <div class="section-box">
+    <h1 class="glitch">Moonlight 1.0</h1>
+    <p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
+  </div>
+  <div class="terminal" id="console"></div>
+  <div class="section-box">
+    <h2 class="glitch">Features</h2>
+    <ul>
+      <li>✔ Shows if a Roblox user is online</li>
+      <li>✔ Detects if user is in-game or using Studio</li>
+      <li>✔ Clean and draggable GUI</li>
+      <li>✔ Toggle visibility with the "V" key</li>
+    </ul>
+  </div>
+  <div class="section-box">
+    <h2 class="glitch">Update Log</h2>
+    <p><strong>[v1.0]</strong> First release with Roblox username status detection and clean UI design.</p>
+  </div>
+  <div class="section-box">
+    <h2 class="glitch">Developed By</h2>
+    <p>Moonlight 1.0 Team</p>
+    <p>Milky - Solo Developer</p>
+  </div>
+  <div class="section-box" style="text-align: center;">
+    <a href="https://discord.gg/RRpKYRzmxt" target="_blank">
+      <button>Join our Discord</button>
+    </a>
+  </div>
+  <div class="copyright">
+    <p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
+  </div>
+</div>
+<div id="notif">✔ Moonlight loaded successfully, discord.gg/RRpKYRzmxt</div>
+
 <script>
   function toggleForms() {
     document.getElementById("login-box").style.display =
@@ -77,33 +124,84 @@
   function signup() {
     const username = document.getElementById("signup-username").value;
     const password = document.getElementById("signup-password").value;
-
-    if (!username || !password) {
-      alert("Fill out all fields.");
-      return;
-    }
-
-    if (localStorage.getItem(username)) {
-      alert("Username already exists!");
-    } else {
-      localStorage.setItem(username, password);
-      alert("Signed up successfully! Please log in.");
-      toggleForms();
-    }
+    if (!username || !password) return alert("Fill out all fields.");
+    if (localStorage.getItem(username)) return alert("Username already exists!");
+    localStorage.setItem(username, password);
+    alert("Signed up successfully! Please log in.");
+    toggleForms();
   }
 
   function login() {
     const username = document.getElementById("login-username").value;
     const password = document.getElementById("login-password").value;
-
     if (localStorage.getItem(username) === password) {
       localStorage.setItem("loggedInUser", username);
-      window.location.href = "home.html";
+      document.querySelectorAll('.form-box').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.section-box, .terminal, .glitch, .copyright, canvas, #notif').forEach(el => el.style.display = 'block');
+      simulateConsole();
     } else {
       alert("Invalid username or password.");
     }
   }
-</script>
 
+  function simulateConsole() {
+    const consoleBox = document.getElementById("console");
+    const messages = [
+      "> Moonlight 1.0 initializing...",
+      "> Checking for updates...",
+      "> Connecting to servers...",
+      "> Status: Online",
+      "> Awaiting user input...",
+      "> http://discord.gg/RRpKYRzmxt..."
+    ];
+    consoleBox.innerHTML = "";
+    let index = 0;
+    function addMessage() {
+      if (index < messages.length) {
+        const p = document.createElement("p");
+        p.textContent = messages[index];
+        consoleBox.appendChild(p);
+        consoleBox.scrollTop = consoleBox.scrollHeight;
+        index++;
+        setTimeout(addMessage, 1000);
+      }
+    }
+    addMessage();
+  }
+
+  // Matrix BG
+  const canvas = document.getElementById('matrix');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const letters = "010101010101";
+  const fontSize = 16;
+  const columns = canvas.width / fontSize;
+  const drops = Array(Math.floor(columns)).fill(0);
+  function drawMatrix() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#0ff";
+    ctx.font = fontSize + "px monospace";
+    for (let i = 0; i < drops.length; i++) {
+      const text = letters[Math.floor(Math.random() * letters.length)];
+      const x = i * fontSize;
+      const y = drops[i] * fontSize;
+      ctx.fillText(text, x, y);
+      if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }
+  setInterval(drawMatrix, 50);
+
+  // Notification
+  setTimeout(() => {
+    const notif = document.getElementById("notif");
+    notif.style.display = "block";
+    setTimeout(() => {
+      notif.style.display = "none";
+    }, 7000);
+  }, 1000);
+</script>
 </body>
 </html>
