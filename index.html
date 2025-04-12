@@ -77,18 +77,19 @@
 </head>
 <body>
 
-  <!-- Hidden autoplay looped music -->
-  <audio autoplay loop hidden>
-  <source src="moonlight_theme.mp3" type="audio/mpeg">
-</audio>
-
+  <!-- Hidden autoplay looped music (with ID for JS to unmute later) -->
+  <audio id="bg-audio" autoplay loop muted hidden>
+    <source src="moonlight_theme.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
-    // Unmute the background audio after first user click
+    // Unmute and play audio after first user interaction
     window.addEventListener("click", () => {
       const audio = document.getElementById("bg-audio");
       audio.muted = false;
-      audio.play();
+      audio.play().catch((e) => {
+        console.warn("Audio play failed:", e);
+      });
     }, { once: true });
   </script>
 
