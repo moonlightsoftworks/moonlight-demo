@@ -1,190 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moonlight 1.0</title>
-  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Courier New', monospace;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Moonlight 1.0</title>
+<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
 
-    body {
-      background: black;
-      color: #0ff;
-      text-align: center;
-      overflow: hidden;
-    }
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Courier New', monospace;
+}
 
-    canvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-    }
+body {
+background: black;
+color: #0ff;
+overflow-y: auto;
+text-align: center;
+}
 
-    .glitch {
-      font-size: 3rem;
-      font-weight: bold;
-      text-transform: uppercase;
-      animation: glitch 1.5s infinite;
-    }
+.terminal {
+background: rgba(0, 0, 0, 0.9);
+border: 2px solid #0ff;
+padding: 15px;
+width: 80%;
+height: 250px;
+margin: 20px auto;
+text-align: left;
+font-size: 14px;
+overflow-y: auto;
+border-radius: 8px;
+}
 
-    @keyframes glitch {
-      0% { text-shadow: 3px 3px red, -3px -3px blue; }
-      50% { text-shadow: -3px -3px red, 3px 3px blue; }
-      100% { text-shadow: 3px 3px red, -3px -3px blue; }
-    }
+canvas {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: -1;
+}
 
-    .section-box {
-      background: rgba(0, 0, 0, 0.8);
-      border: 2px solid #0ff;
-      padding: 20px;
-      width: 85%;
-      margin: 20px auto;
-      border-radius: 10px;
-      text-align: left;
-    }
+.glitch {
+font-size: 3rem;
+font-weight: bold;
+text-transform: uppercase;
+animation: glitch 1.5s infinite;
+}
 
-    .terminal {
-      background: rgba(0, 0, 0, 0.9);
-      border: 2px solid #0ff;
-      padding: 15px;
-      width: 80%;
-      height: 250px;
-      margin: 20px auto;
-      font-size: 14px;
-      overflow-y: auto;
-      border-radius: 8px;
-      text-align: left;
-    }
+@keyframes glitch {
+0% { text-shadow: 3px 3px red, -3px -3px blue; }
+50% { text-shadow: -3px -3px red, 3px 3px blue; }
+100% { text-shadow: 3px 3px red, -3px -3px blue; }
+}
 
-    .copyright {
-      margin-top: 50px;
-      font-size: 14px;
-      color: #0ff;
-      opacity: 0.7;
-    }
-  </style>
+.section-box {
+background: rgba(0, 0, 0, 0.8);
+border: 2px solid #0ff;
+padding: 20px;
+width: 85%;
+margin: 20px auto;
+border-radius: 10px;
+text-align: left;
+}
+
+.copyright {
+margin-top: 50px;
+font-size: 14px;
+color: #0ff;
+opacity: 0.7;
+}
+</style>
 </head>
 <body>
 
-  <!-- Background Music (autoplay, loop, muted initially) -->
-  <audio id="bg-audio" autoplay loop muted>
-    <source src="moonlight_theme.mp3" type="audio/mpeg">
-  </audio>
+<!-- Background Music (hidden + autoplay + loop) -->
+<audio id="bg-audio" autoplay loop>
+<source src="https://moonlightsoftworks.github.io/mp4/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
 
-  <canvas id="matrix"></canvas>
+<script>
+// Unmute and force play on first user interaction
+document.addEventListener("click", () => {
+const audio = document.getElementById("bg-audio");
+audio.muted = false;
+audio.volume = 1;
+audio.play().catch(err => console.log("Audio play error:", err));
+}, { once: true });
+</script>
 
-  <div class="container">
-    <div class="section-box">
-      <h1 class="glitch">Moonlight 1.0</h1>
-      <p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
-    </div>
+<canvas id="matrix"></canvas>
 
-    <div class="terminal" id="console"></div>
+<div class="container">
+<div class="section-box">
+<h1 class="glitch">Moonlight 1.0</h1>
+<p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
+</div>
 
-    <div class="section-box">
-      <h2 class="glitch">Features</h2>
-      <ul>
-        <li>✔ Shows if a Roblox user is online</li>
-        <li>✔ Detects if user is in-game or using Studio</li>
-        <li>✔ Clean and draggable GUI</li>
-        <li>✔ Toggle visibility with the "V" key</li>
-      </ul>
-    </div>
+<div class="terminal" id="console">
+<p>> Moonlight 1.0 initializing...</p>
+<p>> Checking for updates...</p>
+<p>> Connecting to servers...</p>
+<p>> Status: Online</p>
+<p>> Awaiting user input...</p>
+</div>
 
-    <div class="section-box">
-      <h2 class="glitch">Update Log</h2>
-      <p><strong>[v1.0]</strong> First release with Roblox username status detection and clean UI design.</p>
-    </div>
+<div class="section-box">
+<h2 class="glitch">Features</h2>
+<ul>
+<li>✔ Shows if a Roblox user is online</li>
+<li>✔ Detects if user is in-game or using Studio</li>
+<li>✔ Clean and draggable GUI</li>
+<li>✔ Toggle visibility with the "V" key</li>
+</ul>
+</div>
 
-    <div class="section-box">
-      <h2 class="glitch">Developed By</h2>
-      <p>Moonlight 1.0 Team</p>
-      <p>Milky - Solo Developer</p>
-    </div>
+<div class="section-box">
+<h2 class="glitch">Update Log</h2>
+<p><strong>[v1.0]</strong> First release with Roblox username status detection and clean UI design.</p>
+</div>
 
-    <div class="copyright">
-      <p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
-    </div>
-  </div>
+<div class="section-box">
+<h2 class="glitch">Developed By</h2>
+<p>Moonlight 1.0 Team</p>
+<p>Milky - Solo Developer</p>
+</div>
 
-  <script>
-    // Try unmuting and playing after short delay (autoplay workaround)
-    window.addEventListener("DOMContentLoaded", () => {
-      const audio = document.getElementById("bg-audio");
-      setTimeout(() => {
-        audio.muted = false;
-        audio.volume = 1.0;
-        const playAttempt = audio.play();
-        if (playAttempt !== undefined) {
-          playAttempt.catch((err) => {
-            console.warn("Autoplay failed:", err);
-          });
-        }
-      }, 1000);
-    });
+<div class="copyright">
+<p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
+</div>
+</div>
 
-    // Terminal Simulation
-    function simulateConsole() {
-      const box = document.getElementById("console");
-      const messages = [
-        "> Moonlight 1.0 initializing...",
-        "> Checking for updates...",
-        "> Connecting to servers...",
-        "> Status: Online",
-        "> Awaiting user input..."
-      ];
-      box.innerHTML = "";
-      let i = 0;
-      function addLine() {
-        if (i < messages.length) {
-          const p = document.createElement("p");
-          p.textContent = messages[i];
-          box.appendChild(p);
-          box.scrollTop = box.scrollHeight;
-          i++;
-          setTimeout(addLine, 800);
-        }
-      }
-      addLine();
-    }
-    simulateConsole();
+<script>
+function simulateConsole() {
+const consoleBox = document.getElementById("console");
+const messages = [
+"> Moonlight 1.0 initializing...",
+"> Checking for updates...",
+"> Connecting to servers...",
+"> Status: Online",
+"> Awaiting user input..."
+];
+consoleBox.innerHTML = "";
 
-    // Matrix Animation
-    const canvas = document.getElementById("matrix");
-    const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+let index = 0;
+function addMessage() {
+if (index < messages.length) {
+const p = document.createElement("p");
+p.textContent = messages[index];
+consoleBox.appendChild(p);
+consoleBox.scrollTop = consoleBox.scrollHeight;
+index++;
+setTimeout(addMessage, 1000);
+}
+}
+addMessage();
+}
+simulateConsole();
 
-    const letters = "01";
-    const fontSize = 16;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-    function drawMatrix() {
-      ctx.fillStyle = "rgba(0,0,0,0.05)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#0ff";
-      ctx.font = fontSize + "px monospace";
+const letters = "01010101010101010101";
+const fontSize = 16;
+const columns = canvas.width / fontSize;
+const drops = Array(Math.floor(columns)).fill(0);
 
-      drops.forEach((y, i) => {
-        const text = letters[Math.floor(Math.random() * letters.length)];
-        const x = i * fontSize;
-        ctx.fillText(text, x, y * fontSize);
-        if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
-      });
-    }
+function drawMatrix() {
+ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.fillStyle = "#0ff";
+ctx.font = fontSize + "px monospace";
 
-    setInterval(drawMatrix, 50);
-  </script>
+for (let i = 0; i < drops.length; i++) {
+const text = letters[Math.floor(Math.random() * letters.length)];
+const x = i * fontSize;
+const y = drops[i] * fontSize;
+ctx.fillText(text, x, y);
 
+if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+drops[i]++;
+}
+}
+
+setInterval(drawMatrix, 50);
+</script>
 </body>
 </html>
