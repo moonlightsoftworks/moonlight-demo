@@ -20,19 +20,6 @@
       color: #0ff;
       overflow-y: auto;
       text-align: center;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Embed the YouTube video as the background */
-    .youtube-background {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      pointer-events: none; /* Prevent interactions with the video */
     }
 
     .terminal {
@@ -89,8 +76,7 @@
   </style>
 </head>
 <body>
-  <!-- Embed YouTube video as background -->
-  <iframe class="youtube-background" src="https://www.youtube.com/embed/TxvpctgU_s8?autoplay=1&loop=1&playlist=TxvpctgU_s8&mute=1&controls=0&rel=0&showinfo=0&modestbranding=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  <canvas id="matrix"></canvas>
 
   <div class="container">
     <!-- Intro Section -->
