@@ -199,9 +199,272 @@
 
   <textarea id="guiCode" style="width: 100%; height: 300px; background: #111; color: #0ff; border: 1px solid #0ff; padding: 10px; border-radius: 8px; font-size: 12px; font-family: monospace; margin-top: 10px;">
 (function () {
-  // Bookmarklet GUI Code Here (cut off for brevity)
-  alert("Moonlight GUI injected! Paste full script from official site.");
+  if (window._moonlightActive) return; // Prevent double injection
+  window._moonlightActive = true;
+
+  // Add external CSS styles
+  const style = document.createElement("style");
+  style.textContent = `
+    #moonlightUI {
+      position: fixed;
+      top: 50px;
+      right: 50px;
+      background: #111;
+      color: #0ff;
+      border: 2px solid #0ff;
+      padding: 20px;
+      font-family: 'Arial', sans-serif;
+      font-size: 14px;
+      z-index: 999999;
+      border-radius: 12px;
+      width: 300px;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+      display: none;
+    }
+    #moonlightHeader {
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 18px;
+      color: #0ff;
+      cursor: pointer;
+    }
+    #tabButtons {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 15px;
+    }
+    #tabButtons button {
+      padding: 8px 16px;
+      background: #222;
+      border: 1px solid #0ff;
+      color: #0ff;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      width: 100px;
+    }
+    #tabButtons button.active {
+      background: #0ff;
+      color: #000;
+    }
+    #moonlightUI input, #moonlightUI button {
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 10px;
+      background: #222;
+      border: 1px solid #0ff;
+      color: #0ff;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+    #moonlightUI button.action {
+      background: #0ff;
+      color: #000;
+      font-weight: bold;
+    }
+    #statusText a {
+      color: #0ff;
+      text-decoration: underline;
+    }
+    #extraBtns {
+      text-align: center;
+    }
+    #settingsContent, #creditsContent {
+      display: none;
+    }
+    #notification {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(45deg, #1e1e1e, #333);
+      color: #fff;
+      padding: 20px;
+      font-size: 16px;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+      display: none;
+      z-index: 99999;
+      font-family: 'Arial', sans-serif;
+      font-weight: bold;
+      text-align: center;
+      animation: notification-slide 0.5s ease-in-out;
+    }
+    @keyframes notification-slide {
+      0% {
+        transform: translateX(-50%) translateY(50px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Create the tracker UI container
+  const box = document.createElement("div");
+  box.id = "moonlightUI";
+  box.innerHTML = `
+    <div id="moonlightHeader">
+       Moonlight 1.0 - Beta
+    </div>
+    <div id="tabButtons">
+      <button id="mainTabBtn" class="active">Main</button>
+      <button id="settingsTabBtn">Settings</button>
+      <button id="creditsTabBtn">Credits</button>
+    </div>
+    <div id="mainContent">
+      <input type="text" id="rbxUser" placeholder="Enter username..." />
+      <button id="trackBtn" class="action">Check</button>
+      <div id="statusText">Press V to toggle UI</div>
+      <div id="extraBtns"></div>
+    </div>
+    <div id="settingsContent">
+      <p>Settings coming soon...</p>
+    </div>
+    <div id="creditsContent">
+      <h3>Credits</h3>
+      <p>Developed by <strong>Milky</strong></p>
+      <p>Official Website: <a href="https://moonlightsoftworks.github.io/moonlight-demo/" target="_blank">moonlightsoftworks.github.io/moonlight-demo/</a></p>
+    </div>
+  `;
+  document.body.appendChild(box);
+
+  // Create the notification element
+  const notification = document.createElement("div");
+  notification.id = "notification";
+  notification.textContent = "Injection successful! Official website: moonlightsoftworks.github.io/moonlight-demo/";
+  document.body.appendChild(notification);
+
+  // Show notification for 5 seconds after script is injected
+  setTimeout(() => {
+    notification.style.display = "none";
+  }, 5000);
+  notification.style.display = "block";
+
+  // Make the UI draggable
+  const drag = (el, handle) => {
+    let isDown = false, offset = [0, 0];
+    handle.addEventListener("mousedown", e => {
+      isDown = true;
+      offset = [el.offsetLeft - e.clientX, el.offsetTop - e.clientY];
+    });
+    document.addEventListener("mouseup", () => isDown = false);
+    document.addEventListener("mousemove", e => {
+      if (isDown) {
+        el.style.left = e.clientX + offset[0] + "px";
+        el.style.top = e.clientY + offset[1] + "px";
+      }
+    });
+  };
+  drag(box, document.getElementById("moonlightHeader"));
+
+  // Show the UI after 5 seconds delay
+  setTimeout(() => {
+    box.style.display = "block";  // Make the UI visible after 5 seconds
+  }, 5000);
+
+  // Toggle the UI visibility with V key
+  document.addEventListener("keydown", e => {
+    if (e.key.toLowerCase() === "v") {
+      box.style.display = box.style.display === "none" ? "block" : "none";
+    }
+  });
+
+  // Switch between the Main, Settings, and Credits tabs
+  document.getElementById("mainTabBtn").onclick = function () {
+    document.getElementById("mainContent").style.display = "block";
+    document.getElementById("settingsContent").style.display = "none";
+    document.getElementById("creditsContent").style.display = "none";
+    document.getElementById("mainTabBtn").classList.add("active");
+    document.getElementById("settingsTabBtn").classList.remove("active");
+    document.getElementById("creditsTabBtn").classList.remove("active");
+  };
+  document.getElementById("settingsTabBtn").onclick = function () {
+    document.getElementById("mainContent").style.display = "none";
+    document.getElementById("settingsContent").style.display = "block";
+    document.getElementById("creditsContent").style.display = "none";
+    document.getElementById("settingsTabBtn").classList.add("active");
+    document.getElementById("mainTabBtn").classList.remove("active");
+    document.getElementById("creditsTabBtn").classList.remove("active");
+  };
+  document.getElementById("creditsTabBtn").onclick = function () {
+    document.getElementById("mainContent").style.display = "none";
+    document.getElementById("settingsContent").style.display = "none";
+    document.getElementById("creditsContent").style.display = "block";
+    document.getElementById("creditsTabBtn").classList.add("active");
+    document.getElementById("mainTabBtn").classList.remove("active");
+    document.getElementById("settingsTabBtn").classList.remove("active");
+  };
+
+  // Fetch user data and presence
+  document.getElementById("trackBtn").onclick = async function () {
+    const username = document.getElementById("rbxUser").value.trim();
+    const statusText = document.getElementById("statusText");
+    const extraBtns = document.getElementById("extraBtns");
+    extraBtns.innerHTML = "";
+
+    if (!username) return statusText.textContent = "Please enter a username.";
+    statusText.textContent = "Loading...";
+
+    try {
+      const res1 = await fetch("https://users.roblox.com/v1/usernames/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ usernames: [username] })
+      });
+      const data1 = await res1.json();
+      const user = data1.data[0];
+      if (!user) return statusText.textContent = "User not found.";
+
+      const res2 = await fetch("https://presence.roblox.com/v1/presence/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userIds: [user.id] })
+      });
+      const presence = (await res2.json()).userPresences[0];
+      const type = presence.userPresenceType;
+
+      let presenceText = "Offline";
+      if (type === 1) presenceText = "Online (Website)";
+      else if (type === 2) presenceText = "In Game";
+      else if (type === 3) presenceText = "In Studio";
+
+      let gameInfo = "";
+      let joinButton = "";
+
+      if (type === 2 && presence.rootPlaceId) {
+        const uniRes = await fetch(`https://apis.roblox.com/universes/v1/places/${presence.rootPlaceId}/universe`);
+        const universeId = (await uniRes.json()).universeId;
+
+        const gameRes = await fetch(`https://games.roblox.com/v1/games?universeIds=${universeId}`);
+        const gameData = await gameRes.json();
+        const game = gameData.data[0];
+
+        if (game) {
+          const gameURL = `https://www.roblox.com/games/${presence.rootPlaceId}`;
+          gameInfo = `<br>🎮 Game: <a href="${gameURL}" target="_blank">${game.name}</a>`;
+
+          // Create Join Game button
+          joinButton = `
+            <button class="action" onclick="window.location.href = '${gameURL}';">Join Game</button>
+          `;
+        }
+      }
+
+      statusText.innerHTML = `Status: ${presenceText}${gameInfo}`;
+      extraBtns.innerHTML = joinButton;
+    } catch (error) {
+      console.error(error);
+      statusText.textContent = "An error occurred.";
+    }
+  };
 })();
+
   </textarea>
 
   <button onclick="copyGUI()" style="margin-top: 10px; padding: 10px 20px; background: #0ff; color: #000; font-weight: bold; border: none; border-radius: 6px; cursor: pointer;">📋 Copy Code</button>
