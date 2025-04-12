@@ -3,43 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Moonlight 1.0</title>
   <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Courier New', monospace;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; }
+    body { background: black; color: #0ff; overflow-y: auto; text-align: center; }
 
-    body {
-      background: black;
-      color: #0ff;
-      overflow-y: auto;
-      text-align: center;
-    }
-
-    .terminal {
+    .terminal, .section-box {
       background: rgba(0, 0, 0, 0.9);
       border: 2px solid #0ff;
-      padding: 15px;
+      padding: 15px 20px;
       width: 80%;
-      height: 250px;
       margin: 20px auto;
+      border-radius: 10px;
       text-align: left;
-      font-size: 14px;
-      overflow-y: auto;
-      border-radius: 8px;
     }
+
+    .terminal { height: 250px; overflow-y: auto; font-size: 14px; }
 
     canvas {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       z-index: -1;
     }
 
@@ -56,40 +43,50 @@
       100% { text-shadow: 3px 3px red, -3px -3px blue; }
     }
 
-    .section-box {
-      background: rgba(0, 0, 0, 0.8);
-      border: 2px solid #0ff;
-      padding: 20px;
-      width: 85%;
-      margin: 20px auto;
-      border-radius: 10px;
-      text-align: left;
-    }
-
     .copyright {
       margin-top: 50px;
       font-size: 14px;
       color: #0ff;
       opacity: 0.7;
     }
+
+    #start-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: black;
+      color: #0ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      z-index: 9999;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Background Music (hidden + autoplay + loop) -->
-  <audio id="bg-audio" autoplay loop>
+  <!-- Audio -->
+  <audio id="bg-audio" loop>
     <source src="https://moonlightsoftworks.github.io/mp4/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
+    Your browser does not support the audio tag.
   </audio>
 
+  <!-- Tap to Start -->
+  <div id="start-overlay">▶ Tap anywhere to start</div>
+
   <script>
-    // Unmute and force play on first user interaction
-    document.addEventListener("click", () => {
+    document.getElementById("start-overlay").addEventListener("click", () => {
       const audio = document.getElementById("bg-audio");
       audio.muted = false;
       audio.volume = 1;
-      audio.play().catch(err => console.log("Audio play error:", err));
-    }, { once: true });
+      audio.play().then(() => {
+        console.log("Audio started");
+      }).catch(e => console.error("Audio failed to play:", e));
+
+      document.getElementById("start-overlay").style.display = "none";
+    });
   </script>
 
   <canvas id="matrix"></canvas>
@@ -135,6 +132,7 @@
   </div>
 
   <script>
+    // Terminal simulation
     function simulateConsole() {
       const consoleBox = document.getElementById("console");
       const messages = [
@@ -145,15 +143,13 @@
         "> Awaiting user input..."
       ];
       consoleBox.innerHTML = "";
-
       let index = 0;
       function addMessage() {
         if (index < messages.length) {
           const p = document.createElement("p");
-          p.textContent = messages[index];
+          p.textContent = messages[index++];
           consoleBox.appendChild(p);
           consoleBox.scrollTop = consoleBox.scrollHeight;
-          index++;
           setTimeout(addMessage, 1000);
         }
       }
@@ -161,33 +157,29 @@
     }
     simulateConsole();
 
+    // Matrix animation
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
     const letters = "01010101010101010101";
     const fontSize = 16;
     const columns = canvas.width / fontSize;
     const drops = Array(Math.floor(columns)).fill(0);
-
     function drawMatrix() {
       ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = "#0ff";
       ctx.font = fontSize + "px monospace";
-
       for (let i = 0; i < drops.length; i++) {
         const text = letters[Math.floor(Math.random() * letters.length)];
         const x = i * fontSize;
         const y = drops[i] * fontSize;
         ctx.fillText(text, x, y);
-
         if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
         drops[i]++;
       }
     }
-
     setInterval(drawMatrix, 50);
   </script>
 </body>
