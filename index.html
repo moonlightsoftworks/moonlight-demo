@@ -76,14 +76,14 @@
 </head>
 <body>
 
-  <!-- Background Music (hidden + autoplay + loop) -->
+  <!-- Working Background Music -->
   <audio id="bg-audio" autoplay loop>
-    <source src="https://moonlightsoftworks.github.io/mp4/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
+    <source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
 
+  <!-- Unmute and force play after click (needed for some browsers) -->
   <script>
-    // Unmute and force play on first user interaction
     document.addEventListener("click", () => {
       const audio = document.getElementById("bg-audio");
       audio.muted = false;
@@ -135,6 +135,7 @@
   </div>
 
   <script>
+    // Terminal Simulation
     function simulateConsole() {
       const consoleBox = document.getElementById("console");
       const messages = [
@@ -161,6 +162,7 @@
     }
     simulateConsole();
 
+    // Matrix Animation
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
