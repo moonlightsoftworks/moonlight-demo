@@ -3,10 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Moonlight 1.0</title>
   <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
-
   <style>
     * {
       margin: 0;
@@ -77,19 +75,17 @@
 </head>
 <body>
 
-  <!-- Hidden autoplay looped music (with ID for JS to unmute later) -->
-  <audio id="bg-audio" autoplay loop muted hidden>
-    <source src="moonlight_theme.mp3" type="audio/mpeg">
+  <!-- Hidden autoplay looped music -->
+  <audio autoplay loop hidden id="bg-audio">
+    <source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
   </audio>
 
   <script>
-    // Unmute and play audio after first user interaction
+    // Unmute audio on first user interaction (bypasses browser restrictions)
     window.addEventListener("click", () => {
       const audio = document.getElementById("bg-audio");
       audio.muted = false;
-      audio.play().catch((e) => {
-        console.warn("Audio play failed:", e);
-      });
+      audio.play();
     }, { once: true });
   </script>
 
