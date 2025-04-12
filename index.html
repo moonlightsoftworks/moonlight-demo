@@ -72,17 +72,29 @@
       color: #0ff;
       opacity: 0.7;
     }
+
+    #notif {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: black;
+      color: #0ff;
+      border: 2px solid #0ff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      display: none;
+      z-index: 9999;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Working Background Music -->
   <audio id="bg-audio" autoplay loop>
     <source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
 
-  <!-- Unmute and force play after click (needed for some browsers) -->
   <script>
     document.addEventListener("click", () => {
       const audio = document.getElementById("bg-audio");
@@ -100,14 +112,7 @@
       <p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
     </div>
 
-    <div class="terminal" id="console">
-      <p>> Moonlight 1.0 initializing...</p>
-      <p>> Checking for updates...</p>
-      <p>> Connecting to servers...</p>
-      <p>> Status: Online</p>
-      <p>> Awaiting user input...</p>
-      <p>> discord.gg/RRpKYRzmxt...</p>
-    </div>
+    <div class="terminal" id="console"></div>
 
     <div class="section-box">
       <h2 class="glitch">Features</h2>
@@ -130,7 +135,6 @@
       <p>Milky - Solo Developer</p>
     </div>
 
-    <!-- Discord Button Section -->
     <div class="section-box" style="text-align: center;">
       <a href="https://discord.gg/RRpKYRzmxt" target="_blank" style="text-decoration: none;">
         <button style="
@@ -153,8 +157,9 @@
     </div>
   </div>
 
+  <div id="notif">✔ Moonlight loaded successfully</div>
+
   <script>
-    // Terminal Simulation
     function simulateConsole() {
       const consoleBox = document.getElementById("console");
       const messages = [
@@ -162,9 +167,8 @@
         "> Checking for updates...",
         "> Connecting to servers...",
         "> Status: Online",
-        "> Awaiting user input..."
+        "> Awaiting user input...",
         "> http://discord.gg/RRpKYRzmxt..."
-
       ];
       consoleBox.innerHTML = "";
 
@@ -183,7 +187,6 @@
     }
     simulateConsole();
 
-    // Matrix Animation
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
@@ -212,6 +215,16 @@
     }
 
     setInterval(drawMatrix, 50);
+
+    // Show notification and open Moonlight
+    setTimeout(() => {
+      const notif = document.getElementById("notif");
+      notif.style.display = "block";
+      setTimeout(() => {
+        notif.style.display = "none";
+        window.open("https://moonlight.softworks.lol", "_blank");
+      }, 7000);
+    }, 1000);
   </script>
 </body>
 </html>
