@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Moonlight | Free Roblox Checker</title>
+  <title>Moonlight | Roblox Checker</title>
   <style>
     * {
       margin: 0;
@@ -28,7 +28,8 @@
       padding: 30px;
       border-radius: 10px;
       width: 90%;
-      max-width: 400px;
+      max-width: 450px;
+      margin: 10px;
     }
 
     input, button {
@@ -58,13 +59,27 @@
       margin-bottom: 20px;
     }
 
-    #dashboard {
+    #dashboard, #main-app {
       display: none;
+    }
+
+    ul {
+      text-align: left;
+      margin-top: 10px;
+    }
+
+    .feature-box {
+      margin-top: 20px;
+      background-color: #111;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #0ff;
     }
   </style>
 </head>
 <body>
 
+  <!-- Auth Section -->
   <div class="box" id="auth-box">
     <h1 id="auth-title">Moonlight Login</h1>
     <input type="text" id="username" placeholder="Username" />
@@ -73,17 +88,25 @@
     <div class="link" onclick="toggleMode()">Don't have an account? Sign up</div>
   </div>
 
+  <!-- Dashboard -->
   <div class="box" id="dashboard">
     <h1>Welcome to Moonlight 🌙</h1>
     <p id="user-welcome"></p>
-    <p><strong>The best free Roblox username checker:</strong></p>
-    <ul style="text-align: left; margin-top: 10px;">
-      <li>✔ Checks if user is playing or in Studio</li>
-      <li>✔ Completely free</li>
-      <li>✔ Smooth & fast</li>
-      <li>✔ No cost, no catch</li>
-    </ul>
     <button onclick="logout()">Logout</button>
+  </div>
+
+  <!-- Main App Section (visible only when logged in) -->
+  <div class="box" id="main-app">
+    <h2>Moonlight - Roblox Username Checker</h2>
+    <div class="feature-box">
+      <ul>
+        <li>✔ Check if a Roblox user is online</li>
+        <li>✔ See if they're in-game or using Studio</li>
+        <li>✔ Free. Forever. No cost</li>
+        <li>✔ Fast & clean interface</li>
+      </ul>
+    </div>
+    <p style="margin-top: 20px;">(⚠️ Feature logic coming soon...)</p>
   </div>
 
   <script>
@@ -124,19 +147,20 @@
     function loadDashboard() {
       const user = localStorage.getItem("currentUser");
       if (!user) return;
+
       document.getElementById("auth-box").style.display = "none";
       document.getElementById("dashboard").style.display = "block";
+      document.getElementById("main-app").style.display = "block";
       document.getElementById("user-welcome").innerText = `Logged in as: ${user}`;
     }
 
     function logout() {
       localStorage.removeItem("currentUser");
-      document.getElementById("dashboard").style.display = "none";
-      document.getElementById("auth-box").style.display = "block";
+      location.reload(); // reset everything
     }
 
-    // Auto-login if user is stored
     if (localStorage.getItem("currentUser")) loadDashboard();
   </script>
+
 </body>
 </html>
