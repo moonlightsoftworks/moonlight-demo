@@ -87,9 +87,19 @@
       background-color: #0ff;
       color: black;
     }
+
+    /* Music */
+    audio {
+      display: none;
+    }
   </style>
 </head>
 <body>
+
+  <audio id="bg-audio" autoplay loop>
+    <source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
 
   <div class="container">
     <h1>Moonlight</h1>
@@ -113,10 +123,10 @@
   </div>
 
   <script>
-    // Countdown Timer (example - set for 1 hour)
+    // Countdown Timer (set to 2 weeks)
     function updateTimer() {
       const endDate = new Date();
-      endDate.setMinutes(endDate.getMinutes() + 60); // Add 1 hour for example
+      endDate.setDate(endDate.getDate() + 14); // Add 14 days (2 weeks)
       
       const timerInterval = setInterval(function() {
         const now = new Date();
@@ -126,11 +136,12 @@
           clearInterval(timerInterval);
           document.getElementById("time").innerText = "Website is now live!";
         } else {
-          const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+          const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
           const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
 
-          document.getElementById("time").innerText = `${hours}h ${minutes}m ${seconds}s`;
+          document.getElementById("time").innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
         }
       }, 1000);
     }
