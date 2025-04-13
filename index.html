@@ -1,230 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Moonlight</title>
-<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moonlight</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Courier New', monospace;
+    }
 
-<style>
-* {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
-font-family: 'Courier New', monospace;
-}
+    body {
+      background: black;
+      color: #0ff;
+      overflow-y: auto;
+      text-align: center;
+    }
 
-body {
-background: black;
-color: #0ff;
-overflow-y: auto;
-text-align: center;
-}
+    .terminal {
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid #0ff;
+      padding: 15px;
+      width: 80%;
+      height: 250px;
+      margin: 20px auto;
+      text-align: left;
+      font-size: 14px;
+      overflow-y: auto;
+      border-radius: 8px;
+    }
 
-.terminal {
-background: rgba(0, 0, 0, 0.9);
-border: 2px solid #0ff;
-padding: 15px;
-width: 80%;
-height: 250px;
-margin: 20px auto;
-text-align: left;
-font-size: 14px;
-overflow-y: auto;
-border-radius: 8px;
-}
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
 
-canvas {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-z-index: -1;
-}
+    .glitch {
+      font-size: 3rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      animation: glitch 1.5s infinite;
+    }
 
-.glitch {
-font-size: 3rem;
-font-weight: bold;
-text-transform: uppercase;
-animation: glitch 1.5s infinite;
-}
+    @keyframes glitch {
+      0% { text-shadow: 3px 3px red, -3px -3px blue; }
+      50% { text-shadow: -3px -3px red, 3px 3px blue; }
+      100% { text-shadow: 3px 3px red, -3px -3px blue; }
+    }
 
-@keyframes glitch {
-0% { text-shadow: 3px 3px red, -3px -3px blue; }
-50% { text-shadow: -3px -3px red, 3px 3px blue; }
-100% { text-shadow: 3px 3px red, -3px -3px blue; }
-}
+    .section-box {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid #0ff;
+      padding: 20px;
+      width: 85%;
+      margin: 20px auto;
+      border-radius: 10px;
+      text-align: left;
+    }
 
-.section-box {
-background: rgba(0, 0, 0, 0.8);
-border: 2px solid #0ff;
-padding: 20px;
-width: 85%;
-margin: 20px auto;
-border-radius: 10px;
-text-align: left;
-}
+    .copyright {
+      margin-top: 50px;
+      font-size: 14px;
+      color: #0ff;
+      opacity: 0.7;
+    }
 
-.copyright {
-margin-top: 50px;
-font-size: 14px;
-color: #0ff;
-opacity: 0.7;
-}
+    #notif {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: black;
+      color: #0ff;
+      border: 2px solid #0ff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      display: none;
+      z-index: 9999;
+    }
 
-#notif {
-position: fixed;
-top: 20px;
-right: 20px;
-background: black;
-color: #0ff;
-border: 2px solid #0ff;
-padding: 10px 20px;
-border-radius: 8px;
-font-weight: bold;
-display: none;
-z-index: 9999;
-}
-</style>
+    /* Admin Panel */
+    #admin-panel {
+      display: none;
+      background-color: rgba(0, 0, 0, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 30px;
+      border: 2px solid #0ff;
+    }
+
+    /* User Dashboard */
+    #user-dashboard {
+      display: none;
+      background-color: rgba(0, 0, 0, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 30px;
+      border: 2px solid #0ff;
+    }
+
+    #user-dashboard button {
+      background-color: black;
+      color: #0ff;
+      border: 2px solid #0ff;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+
+    #user-dashboard button:hover {
+      background-color: #0ff;
+      color: black;
+    }
+  </style>
 </head>
 <body>
 
-<audio id="bg-audio" autoplay loop>
-<source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
-Your browser does not support the audio element.
-</audio>
+  <audio id="bg-audio" autoplay loop>
+    <source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
 
-<script>
-document.addEventListener("click", () => {
-const audio = document.getElementById("bg-audio");
-audio.muted = false;
-audio.volume = 1;
-audio.play().catch(err => console.log("Audio play error:", err));
-}, { once: true });
-</script>
+  <script>
+    document.addEventListener("click", () => {
+      const audio = document.getElementById("bg-audio");
+      audio.muted = false;
+      audio.volume = 1;
+      audio.play().catch(err => console.log("Audio play error:", err));
+    }, { once: true });
 
-<canvas id="matrix"></canvas>
+    // Admin check
+    const ADMINS = ['milky'];  // List of admin users (add more as needed)
+    let currentUser = localStorage.getItem("currentUser");
 
-<div class="container">
-<div class="section-box">
-<h1 class="glitch">Moonlight</h1>
-<p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
-</div>
+    function loadUserData() {
+      if (ADMINS.includes(currentUser)) {
+        document.getElementById('admin-panel').style.display = 'block';
+      } else if (currentUser) {
+        document.getElementById('user-dashboard').style.display = 'block';
+        document.getElementById("dashboard-username").innerText = currentUser;
+      }
+    }
 
-<div class="terminal" id="console"></div>
+    function handleLogin() {
+      const username = document.getElementById("login-username").value.trim();
+      const password = document.getElementById("login-password").value.trim();
 
-<div class="section-box">
-<h2 class="glitch">Features</h2>
-<ul>
-<li>✔ Shows if a Roblox user is online</li>
-<li>✔ Detects if user is in-game or using Studio</li>
-<li>✔ Clean and draggable GUI</li>
-<li>✔ Toggle visibility with the "V" key</li>
-</ul>
-</div>
+      // Basic login validation (no real database)
+      const storedPassword = localStorage.getItem(username);
+      if (storedPassword === password) {
+        localStorage.setItem("currentUser", username);
+        loadUserData();
+        alert("Login successful!");
+      } else {
+        alert("Invalid login details.");
+      }
+    }
 
-<div class="section-box">
-<h2 class="glitch">Update Log</h2>
-<p><strong>[v1.0]</strong> First release with Roblox username status detection and clean UI design.</p>
-</div>
+    function handleSignup() {
+      const username = document.getElementById("signup-username").value.trim();
+      const password = document.getElementById("signup-password").value.trim();
 
-<div class="section-box">
-<h2 class="glitch">Developed By</h2>
-<p>Moonlight Team</p>
-<p>Milky - Solo Developer</p>
-</div>
+      if (username && password) {
+        localStorage.setItem(username, password);
+        alert("Signup successful! You can now log in.");
+        document.getElementById('signup-box').style.display = 'none';
+      } else {
+        alert("Please fill out all fields.");
+      }
+    }
 
-<div class="section-box" style="text-align: center;">
-<a href="https://discord.gg/RRpKYRzmxt" target="_blank" style="text-decoration: none;">
-<button style="
-padding: 12px 24px;
-font-size: 16px;
-background-color: black;
-color: #0ff;
-border: 2px solid #0ff;
-border-radius: 8px;
-cursor: pointer;
-transition: 0.3s;
-" onmouseover="this.style.backgroundColor='#0ff'; this.style.color='black'" onmouseout="this.style.backgroundColor='black'; this.style.color='#0ff'">
-Join our Discord
-</button>
-</a>
-</div>
+    // User Logout
+    function logout() {
+      localStorage.removeItem("currentUser");
+      location.reload();
+    }
 
-<div class="copyright">
-<p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
-</div>
-</div>
+    // Admin Features (Admin Panel)
+    function sendAnnouncement() {
+      const announcement = document.getElementById("announcement-text").value;
+      if (announcement) {
+        alert("Announcement sent: " + announcement);
+        localStorage.setItem("announcement", announcement);
+      } else {
+        alert("Please enter an announcement.");
+      }
+    }
 
-<div id="notif">✔ Moonlight loaded successfully, discord.gg/RRpKYRzmxt</div>
+    // Display User Dashboard with options
+    function showUserDashboard() {
+      alert("Welcome to the user dashboard!");
+      // Add more features for the dashboard here
+    }
 
-<script>
-function simulateConsole() {
-const consoleBox = document.getElementById("console");
-const messages = [
-"> Moonlight 1.0 initializing...",
-"> Checking for updates...",
-"> Connecting to servers...",
-"> Status: Online",
-"> Awaiting user input...",
-"> http://discord.gg/RRpKYRzmxt..."
-];
-consoleBox.innerHTML = "";
+    // Simulate Matrix Animation
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-let index = 0;
-function addMessage() {
-if (index < messages.length) {
-const p = document.createElement("p");
-p.textContent = messages[index];
-consoleBox.appendChild(p);
-consoleBox.scrollTop = consoleBox.scrollHeight;
-index++;
-setTimeout(addMessage, 1000);
-}
-}
-addMessage();
-}
-simulateConsole();
+    const letters = "01010101010101010101";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(0);
 
-const canvas = document.getElementById('matrix');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#0ff";
+      ctx.font = fontSize + "px monospace";
 
-const letters = "01010101010101010101";
-const fontSize = 16;
-const columns = canvas.width / fontSize;
-const drops = Array(Math.floor(columns)).fill(0);
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+        ctx.fillText(text, x, y);
 
-function drawMatrix() {
-ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-ctx.fillRect(0, 0, canvas.width, canvas.height);
-ctx.fillStyle = "#0ff";
-ctx.font = fontSize + "px monospace";
+        if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+    setInterval(drawMatrix, 50);
 
-for (let i = 0; i < drops.length; i++) {
-const text = letters[Math.floor(Math.random() * letters.length)];
-const x = i * fontSize;
-const y = drops[i] * fontSize;
-ctx.fillText(text, x, y);
+    window.onload = function() {
+      loadUserData();
+    };
+  </script>
 
-if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
-drops[i]++;
-}
-}
+  <canvas id="matrix"></canvas>
 
-setInterval(drawMatrix, 50);
+  <!-- Login/Signup Forms -->
+  <div id="login-box" class="section-box">
+    <h2 class="glitch">Login</h2>
+    <input type="text" id="login-username" placeholder="Username" /><br>
+    <input type="password" id="login-password" placeholder="Password" /><br>
+    <button onclick="handleLogin()">Login</button>
+    <p>Don't have an account? <a href="javascript:void(0);" onclick="document.getElementById('signup-box').style.display = 'block';">Sign Up</a></p>
+  </div>
 
-// Show notification and open Moonlight
-setTimeout(() => {
-const notif = document.getElementById("notif");
-notif.style.display = "block";
-setTimeout(() => {
-notif.style.display = "none";
-window.open("https://moonlight.softworks.lol", "_blank");
-}, 7000);
-}, 1000);
-</script>
+  <div id="signup-box" class="section-box" style="display:none;">
+    <h2 class="glitch">Sign Up</h2>
+    <input type="text" id="signup-username" placeholder="Username" /><br>
+    <input type="password" id="signup-password" placeholder="Password" /><br>
+    <button onclick="handleSignup()">Sign Up</button>
+    <p>Already have an account? <a href="javascript:void(0);" onclick="document.getElementById('signup-box').style.display = 'none';">Login</a></p>
+  </div>
+
+  <!-- Admin Panel -->
+  <div id="admin-panel" class="section-box">
+    <h2 class="glitch">Admin Panel</h2>
+    <textarea id="announcement-text" placeholder="Write an announcement..." rows="3"></textarea><br>
+    <button onclick="sendAnnouncement()">Send Announcement</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <!-- User Dashboard -->
+  <div id="user-dashboard" class="section-box">
+    <h2>Welcome, <span id="dashboard-username"></span></h2>
+    <p>Where do you want to go?</p>
+    <button onclick="showUserDashboard()">Go to Dashboard</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div class="copyright">
+    <p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
+  </div>
 </body>
 </html>
