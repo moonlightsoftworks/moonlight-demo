@@ -3,50 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moonlight</title>
+  <title>Moonlight - Under Maintenance</title>
   <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
-  
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Courier New', monospace;
-    }
 
+  <style>
     body {
+      font-family: 'Courier New', monospace;
       background: black;
       color: #0ff;
-      overflow-y: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       text-align: center;
+      margin: 0;
     }
 
-    .terminal {
-      background: rgba(0, 0, 0, 0.9);
-      border: 2px solid #0ff;
-      padding: 15px;
+    .container {
       width: 80%;
-      height: 250px;
-      margin: 20px auto;
-      text-align: left;
-      font-size: 14px;
-      overflow-y: auto;
-      border-radius: 8px;
+      max-width: 600px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
     }
 
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-    }
-
-    .glitch {
+    h1 {
       font-size: 3rem;
       font-weight: bold;
       text-transform: uppercase;
+      color: #0ff;
+      margin-bottom: 20px;
       animation: glitch 1.5s infinite;
     }
 
@@ -56,121 +43,47 @@
       100% { text-shadow: 3px 3px red, -3px -3px blue; }
     }
 
-    .section-box {
-      background: rgba(0, 0, 0, 0.8);
-      border: 2px solid #0ff;
-      padding: 20px;
-      width: 85%;
-      margin: 20px auto;
-      border-radius: 10px;
-      text-align: left;
+    p {
+      font-size: 1.2rem;
+      color: #0ff;
+      opacity: 0.8;
+      margin-bottom: 20px;
     }
 
-    .copyright {
+    .quote {
+      font-size: 1rem;
+      color: #0ff;
+      margin-top: 20px;
+      opacity: 0.6;
+    }
+
+    .timer {
+      font-size: 2rem;
+      color: #ff0000;
+      font-weight: bold;
+      margin-top: 30px;
+    }
+
+    .contact {
       margin-top: 50px;
-      font-size: 14px;
       color: #0ff;
       opacity: 0.7;
     }
 
-    #notif {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: black;
-      color: #0ff;
-      border: 2px solid #0ff;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-weight: bold;
-      display: none;
-      z-index: 9999;
-    }
-
-    /* New Login/Signup Style */
-    .login-box, .signup-box {
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 15px;
-      padding: 20px;
-      width: 300px;
-      margin: 50px auto;
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
-    }
-
-    .login-box input, .signup-box input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      background-color: transparent;
-      border: 2px solid #0ff;
-      color: #0ff;
-      border-radius: 8px;
-      font-size: 14px;
-    }
-
-    .login-box button, .signup-box button {
-      width: 100%;
-      padding: 12px;
-      background-color: #0ff;
-      color: black;
-      border: none;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .login-box button:hover, .signup-box button:hover {
-      background-color: #0e0e0e;
-    }
-
-    .switch-auth {
-      text-align: center;
-      color: #0ff;
-      margin-top: 10px;
-    }
-
-    .switch-auth a {
-      text-decoration: none;
-      color: #0ff;
-      font-weight: bold;
-    }
-
-    .switch-auth a:hover {
-      color: #fff;
-    }
-
-    /* Admin Panel */
-    #admin-panel {
-      display: none;
-      background-color: rgba(0, 0, 0, 0.9);
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 30px;
-      border: 2px solid #0ff;
-    }
-
-    /* User Dashboard */
-    #user-dashboard {
-      display: none;
-      background-color: rgba(0, 0, 0, 0.9);
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 30px;
-      border: 2px solid #0ff;
-    }
-
-    #user-dashboard button {
+    /* Button Style */
+    .back-button {
+      padding: 12px 24px;
       background-color: black;
       color: #0ff;
       border: 2px solid #0ff;
-      padding: 10px 20px;
-      cursor: pointer;
       border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 30px;
       transition: 0.3s;
     }
 
-    #user-dashboard button:hover {
+    .back-button:hover {
       background-color: #0ff;
       color: black;
     }
@@ -178,154 +91,52 @@
 </head>
 <body>
 
-  <audio id="bg-audio" autoplay loop>
-    <source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
+  <div class="container">
+    <h1>Moonlight</h1>
+    <p>We're currently working on the website and giving it a major update!</p>
+    <p>Stay tuned for a brand-new design and features!</p>
+
+    <div class="timer" id="countdown">
+      <p>Estimated Time Remaining: <span id="time"></span></p>
+    </div>
+
+    <div class="quote">
+      <p>"Great things take time, and we are working hard to deliver the best experience for you."</p>
+    </div>
+
+    <div class="contact">
+      <p>If you have any questions, feel free to contact us:</p>
+      <p>Email: support@moonlightsoftworks.lol</p>
+    </div>
+
+    <button class="back-button" onclick="window.location.href='https://discord.gg/RRpKYRzmxt'">Join our Discord</button>
+  </div>
 
   <script>
-    document.addEventListener("click", () => {
-      const audio = document.getElementById("bg-audio");
-      audio.muted = false;
-      audio.volume = 1;
-      audio.play().catch(err => console.log("Audio play error:", err));
-    }, { once: true });
+    // Countdown Timer (example - set for 1 hour)
+    function updateTimer() {
+      const endDate = new Date();
+      endDate.setMinutes(endDate.getMinutes() + 60); // Add 1 hour for example
+      
+      const timerInterval = setInterval(function() {
+        const now = new Date();
+        const timeRemaining = endDate - now;
+        
+        if (timeRemaining <= 0) {
+          clearInterval(timerInterval);
+          document.getElementById("time").innerText = "Website is now live!";
+        } else {
+          const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+          const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
 
-    // Admin check
-    const ADMINS = ['milky'];  // List of admin users (add more as needed)
-    let currentUser = localStorage.getItem("currentUser");
-
-    function loadUserData() {
-      if (ADMINS.includes(currentUser)) {
-        document.getElementById('admin-panel').style.display = 'block';
-      } else if (currentUser) {
-        document.getElementById('user-dashboard').style.display = 'block';
-        document.getElementById("dashboard-username").innerText = currentUser;
-      }
+          document.getElementById("time").innerText = `${hours}h ${minutes}m ${seconds}s`;
+        }
+      }, 1000);
     }
 
-    function handleLogin() {
-      const username = document.getElementById("login-username").value.trim();
-      const password = document.getElementById("login-password").value.trim();
-
-      // Basic login validation (no real database)
-      const storedPassword = localStorage.getItem(username);
-      if (storedPassword === password) {
-        localStorage.setItem("currentUser", username);
-        loadUserData();
-        alert("Login successful!");
-      } else {
-        alert("Invalid login details.");
-      }
-    }
-
-    function handleSignup() {
-      const username = document.getElementById("signup-username").value.trim();
-      const password = document.getElementById("signup-password").value.trim();
-
-      if (username && password) {
-        localStorage.setItem(username, password);
-        alert("Signup successful! You can now log in.");
-        document.getElementById('signup-box').style.display = 'none';
-      } else {
-        alert("Please fill out all fields.");
-      }
-    }
-
-    // User Logout
-    function logout() {
-      localStorage.removeItem("currentUser");
-      location.reload();
-    }
-
-    // Admin Features (Admin Panel)
-    function sendAnnouncement() {
-      const announcement = document.getElementById("announcement-text").value;
-      if (announcement) {
-        alert("Announcement sent: " + announcement);
-        localStorage.setItem("announcement", announcement);
-      } else {
-        alert("Please enter an announcement.");
-      }
-    }
-
-    // Display User Dashboard with options
-    function showUserDashboard() {
-      alert("Welcome to the user dashboard!");
-      // Add more features for the dashboard here
-    }
-
-    // Simulate Matrix Animation
-    const canvas = document.getElementById('matrix');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const letters = "01010101010101010101";
-    const fontSize = 16;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(0);
-
-    function drawMatrix() {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#0ff";
-      ctx.font = fontSize + "px monospace";
-
-      for (let i = 0; i < drops.length; i++) {
-        const text = letters[Math.floor(Math.random() * letters.length)];
-        const x = i * fontSize;
-        const y = drops[i] * fontSize;
-        ctx.fillText(text, x, y);
-
-        if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
-      }
-    }
-    setInterval(drawMatrix, 50);
-
-    window.onload = function() {
-      loadUserData();
-    };
+    updateTimer();
   </script>
 
-  <canvas id="matrix"></canvas>
-
-  <!-- Login/Signup Forms -->
-  <div id="login-box" class="login-box">
-    <h2 class="glitch">Login</h2>
-    <input type="text" id="login-username" placeholder="Username" /><br>
-    <input type="password" id="login-password" placeholder="Password" /><br>
-    <button onclick="handleLogin()">Login</button>
-    <p class="switch-auth">Don't have an account? <a href="javascript:void(0);" onclick="document.getElementById('signup-box').style.display = 'block';">Sign Up</a></p>
-  </div>
-
-  <div id="signup-box" class="signup-box" style="display:none;">
-    <h2 class="glitch">Sign Up</h2>
-    <input type="text" id="signup-username" placeholder="Username" /><br>
-    <input type="password" id="signup-password" placeholder="Password" /><br>
-    <button onclick="handleSignup()">Sign Up</button>
-    <p class="switch-auth">Already have an account? <a href="javascript:void(0);" onclick="document.getElementById('signup-box').style.display = 'none';">Login</a></p>
-  </div>
-
-  <!-- Admin Panel -->
-  <div id="admin-panel" class="section-box">
-    <h2 class="glitch">Admin Panel</h2>
-    <textarea id="announcement-text" placeholder="Write an announcement..." rows="3"></textarea><br>
-    <button onclick="sendAnnouncement()">Send Announcement</button>
-    <button onclick="logout()">Logout</button>
-  </div>
-
-  <!-- User Dashboard -->
-  <div id="user-dashboard" class="section-box">
-    <h2>Welcome, <span id="dashboard-username"></span></h2>
-    <p>Where do you want to go?</p>
-    <button onclick="showUserDashboard()">Go to Dashboard</button>
-    <button onclick="logout()">Logout</button>
-  </div>
-
-  <div class="copyright">
-    <p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
-  </div>
 </body>
 </html>
