@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Moonlight | Roblox Checker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moonlight</title>
   <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
 
   <style>
@@ -10,213 +11,231 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: monospace;
+      font-family: 'Courier New', monospace;
     }
 
     body {
       background: black;
       color: #0ff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
+      overflow-y: auto;
       text-align: center;
     }
 
     .box {
       background: rgba(0, 0, 0, 0.8);
       border: 2px solid #0ff;
-      padding: 30px;
+      padding: 20px;
+      width: 85%;
+      margin: 20px auto;
       border-radius: 10px;
-      width: 90%;
-      max-width: 450px;
-      margin: 10px;
-    }
-
-    input, button {
-      padding: 10px;
-      margin: 8px;
-      width: 90%;
-      background: #111;
-      color: #0ff;
-      border: 1px solid #0ff;
-      border-radius: 5px;
-    }
-
-    button:hover {
-      background-color: #0ff;
-      color: black;
-      cursor: pointer;
-    }
-
-    .link {
-      color: #0ff;
-      text-decoration: underline;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    h1 {
-      margin-bottom: 20px;
-    }
-
-    #dashboard, #main-app, #admin-panel {
-      display: none;
-    }
-
-    ul {
       text-align: left;
-      margin-top: 10px;
     }
 
-    .feature-box {
-      margin-top: 20px;
-      background-color: #111;
+    .glitch {
+      font-size: 3rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      animation: glitch 1.5s infinite;
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 3px 3px red, -3px -3px blue; }
+      50% { text-shadow: -3px -3px red, 3px 3px blue; }
+      100% { text-shadow: 3px 3px red, -3px -3px blue; }
+    }
+
+    .terminal {
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid #0ff;
       padding: 15px;
+      width: 80%;
+      height: 250px;
+      margin: 20px auto;
+      text-align: left;
+      font-size: 14px;
+      overflow-y: auto;
       border-radius: 8px;
-      border: 1px solid #0ff;
     }
 
-    audio {
+    #notif {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: black;
+      color: #0ff;
+      border: 2px solid #0ff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      display: none;
+      z-index: 9999;
+    }
+
+    #admin-panel, #user-dashboard {
       display: none;
     }
   </style>
 </head>
 <body>
 
-  <!-- 🔊 Background Music -->
   <audio id="bg-audio" autoplay loop>
     <source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
 
   <script>
-    // Unmute on user interaction (browser autoplay policy)
-    document.addEventListener("click", () => {
-      const audio = document.getElementById("bg-audio");
-      audio.muted = false;
-      audio.volume = 1;
-      audio.play().catch(err => console.log("Audio play error:", err));
-    }, { once: true });
+    // Admin check (use 'milky' as an admin example)
+    const ADMINS = ['milky']; 
+
+    // Simulated user data (store data in localStorage)
+    function loadUserData() {
+      const username = localStorage.getItem("currentUser");
+      if (username && ADMINS.includes(username)) {
+        document.getElementById('admin-panel').style.display = 'block';
+      } else if (username) {
+        document.getElementById('user-dashboard').style.display = 'block';
+        document.getElementById("dashboard-username").innerText = username;
+      }
+    }
+
+    // Announcement Feature
+    function makeAnnouncement() {
+      const announcement = document.getElementById("announcement-text").value.trim();
+      if (!announcement) return alert("Please write an announcement.");
+      localStorage.setItem("announcement", announcement); // Save announcement
+      alert("Announcement sent!");
+    }
+
+    // Display announcement to users
+    function showAnnouncement() {
+      const announcement = localStorage.getItem("announcement");
+      if (announcement) {
+        alert("Announcement: " + announcement); // Can be displayed as an alert or banner
+      }
+    }
+
+    // User Management: Delete user
+    function deleteUser() {
+      const usernameToDelete = document.getElementById("manage-username").value.trim();
+      if (!usernameToDelete) return alert("Please enter a username.");
+      if (localStorage.getItem(usernameToDelete)) {
+        localStorage.removeItem(usernameToDelete); 
+        alert(usernameToDelete + " has been deleted.");
+      } else {
+        alert("User not found.");
+      }
+    }
+
+    // Reset user password
+    function resetPassword() {
+      const usernameToReset = document.getElementById("manage-username").value.trim();
+      if (!usernameToReset) return alert("Please enter a username.");
+      const storedUser = localStorage.getItem(usernameToReset);
+      if (storedUser) {
+        const newPassword = prompt("Enter new password for " + usernameToReset);
+        if (newPassword) {
+          const userData = JSON.parse(storedUser);
+          userData.password = newPassword;
+          localStorage.setItem(usernameToReset, JSON.stringify(userData));
+          alert(usernameToReset + "'s password has been reset.");
+        }
+      } else {
+        alert("User not found.");
+      }
+    }
+
+    // Change website background color
+    function changeBackgroundColor() {
+      const color = prompt("Enter a color for the background (e.g., 'black', 'blue'):");
+      if (color) {
+        document.body.style.backgroundColor = color;
+      }
+    }
+
+    // User Dashboard: Show Roblox Status
+    function checkRobloxStatus() {
+      const status = Math.random() > 0.5 ? "Online" : "Offline";  // Simulate status
+      document.getElementById("roblox-status").innerText = "Roblox Status: " + status;
+    }
+
+    // Handle user login
+    function handleLogin() {
+      const username = document.getElementById("login-username").value.trim();
+      const password = document.getElementById("login-password").value.trim();
+      if (localStorage.getItem(username) && JSON.parse(localStorage.getItem(username)).password === password) {
+        localStorage.setItem("currentUser", username); 
+        loadUserData();
+        alert("Login successful!");
+      } else {
+        alert("Invalid login details.");
+      }
+    }
+
+    // Handle user signup
+    function handleSignup() {
+      const username = document.getElementById("signup-username").value.trim();
+      const password = document.getElementById("signup-password").value.trim();
+      if (username && password) {
+        const userData = { username: username, password: password };
+        localStorage.setItem(username, JSON.stringify(userData));
+        alert("Signup successful! You can now login.");
+      } else {
+        alert("Please fill out all fields.");
+      }
+    }
+
+    // Check for announcement on page load
+    window.onload = function() {
+      showAnnouncement();
+    };
   </script>
 
-  <!-- Auth Section -->
-  <div class="box" id="auth-box">
-    <h1 id="auth-title">Moonlight Login</h1>
-    <input type="text" id="username" placeholder="Username" />
-    <input type="password" id="password" placeholder="Password" />
-    <button onclick="handleAuth()">Login</button>
-    <div class="link" onclick="toggleMode()">Don't have an account? Sign up</div>
+  <!-- Login / Signup -->
+  <div class="box" id="login-box">
+    <h2>Login</h2>
+    <input type="text" id="login-username" placeholder="Username" /><br>
+    <input type="password" id="login-password" placeholder="Password" /><br>
+    <button onclick="handleLogin()">Login</button>
+    <p>Don't have an account? <a href="javascript:void(0);" onclick="document.getElementById('signup-box').style.display = 'block';">Sign Up</a></p>
   </div>
 
-  <!-- Dashboard -->
-  <div class="box" id="dashboard">
-    <h1>Welcome to Moonlight 🌙</h1>
-    <p id="user-welcome"></p>
-    <button onclick="logout()">Logout</button>
+  <div class="box" id="signup-box" style="display:none;">
+    <h2>Sign Up</h2>
+    <input type="text" id="signup-username" placeholder="Username" /><br>
+    <input type="password" id="signup-password" placeholder="Password" /><br>
+    <button onclick="handleSignup()">Sign Up</button>
+    <p>Already have an account? <a href="javascript:void(0);" onclick="document.getElementById('signup-box').style.display = 'none';">Login</a></p>
   </div>
 
   <!-- Admin Panel -->
   <div class="box" id="admin-panel">
     <h2>👑 Admin Panel</h2>
-    <input type="text" id="blacklist-username" placeholder="Username to blacklist" />
-    <button onclick="blacklistUser()">Blacklist User</button>
-    <p id="blacklist-msg" style="margin-top: 10px;"></p>
-  </div>
-
-  <!-- Main App Section -->
-  <div class="box" id="main-app">
-    <h2>Moonlight - Roblox Username Checker</h2>
-    <div class="feature-box">
-      <ul>
-        <li>✔ Check if a Roblox user is online</li>
-        <li>✔ See if they're in-game or using Studio</li>
-        <li>✔ Free. Forever. No cost</li>
-        <li>✔ Fast & clean interface</li>
-      </ul>
+    <div>
+      <h3>📢 Announcements</h3>
+      <textarea id="announcement-text" placeholder="Write an announcement..." rows="3"></textarea><br>
+      <button onclick="makeAnnouncement()">Send Announcement</button>
     </div>
-    <p style="margin-top: 20px;">(⚠️ Feature logic coming soon...)</p>
+    
+    <div style="margin-top: 20px;">
+      <h3>📝 User Management</h3>
+      <input type="text" id="manage-username" placeholder="Username to delete" />
+      <button onclick="deleteUser()">Delete User</button>
+      <button onclick="resetPassword()">Reset Password</button>
+    </div>
+
+    <div style="margin-top: 20px;">
+      <h3>⚙️ Website Settings</h3>
+      <button onclick="changeBackgroundColor()">Change Background Color</button>
+    </div>
   </div>
 
-  <script>
-    let isLogin = true;
-    const ADMINS = ['milky']; // Your admin username here
-    let blacklist = JSON.parse(localStorage.getItem("blacklist")) || [];
+  <!-- User Dashboard -->
+  <div class="box" id="user-dashboard">
+    <h3>Welcome, <span id="dashboard-username"></span></h3>
+    <p>Check your Roblox status:</p>
+    <button onclick="checkRobloxStatus()">Check Roblox Status</button>
+    <p id="roblox-status"></p>
+  </div>
 
-    function toggleMode() {
-      isLogin = !isLogin;
-      document.getElementById("auth-title").innerText = isLogin ? "Moonlight Login" : "Moonlight Sign Up";
-      document.querySelector("button").innerText = isLogin ? "Login" : "Sign Up";
-      document.querySelector(".link").innerText = isLogin ? "Don't have an account? Sign up" : "Already have an account? Login";
-    }
-
-    function handleAuth() {
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
-
-      if (!username || !password) return alert("Fill out all fields.");
-
-      // Check if user is blacklisted
-      if (blacklist.includes(username)) {
-        return alert("Access Denied. You have been blacklisted.");
-      }
-
-      if (isLogin) {
-        const stored = JSON.parse(localStorage.getItem(username));
-        if (stored && stored.password === password) {
-          localStorage.setItem("currentUser", username);
-          loadDashboard();
-        } else {
-          alert("Invalid login.");
-        }
-      } else {
-        if (localStorage.getItem(username)) {
-          alert("Username already exists.");
-        } else {
-          localStorage.setItem(username, JSON.stringify({ password }));
-          alert("Account created. Now login.");
-          toggleMode();
-        }
-      }
-    }
-
-    function loadDashboard() {
-      const user = localStorage.getItem("currentUser");
-      if (!user) return;
-
-      document.getElementById("auth-box").style.display = "none";
-      document.getElementById("dashboard").style.display = "block";
-      document.getElementById("main-app").style.display = "block";
-      document.getElementById("user-welcome").innerText = `Logged in as: ${user}`;
-
-      // Show admin panel if user is admin
-      if (ADMINS.includes(user)) {
-        document.getElementById("admin-panel").style.display = "block";
-      }
-    }
-
-    function logout() {
-      localStorage.removeItem("currentUser");
-      location.reload();
-    }
-
-    // Blacklist a user from the admin panel
-    function blacklistUser() {
-      const userToBlock = document.getElementById("blacklist-username").value.trim();
-      if (!userToBlock) return;
-
-      if (!blacklist.includes(userToBlock)) {
-        blacklist.push(userToBlock);
-        localStorage.setItem("blacklist", JSON.stringify(blacklist));
-        document.getElementById("blacklist-msg").innerText = `${userToBlock} has been blacklisted.`;
-      } else {
-        document.getElementById("blacklist-msg").innerText = `${userToBlock} is already blacklisted.`;
-      }
-    }
-
-    // Auto-load dashboard if already logged in
-    if (localStorage.getItem("currentUser")) loadDashboard();
-  </script>
 </body>
 </html>
