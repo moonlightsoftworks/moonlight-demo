@@ -15,7 +15,9 @@
 }
 
 body {
-  background: black;
+  background: linear-gradient(45deg, #6a0dad, #ff1493, #00bfff, #ff6347);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
   color: #0ff;
   display: flex;
   justify-content: center;
@@ -24,6 +26,13 @@ body {
   text-align: center;
   margin: 0;
   position: relative;
+  overflow: hidden;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .container {
@@ -34,6 +43,8 @@ body {
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+  position: relative;
+  overflow: hidden;
 }
 
 h1 {
@@ -82,11 +93,32 @@ p {
   font-size: 16px;
   margin-top: 30px;
   transition: 0.3s;
+  position: relative;
+  overflow: hidden;
 }
 
 .back-button:hover {
   background-color: #0ff;
   color: black;
+}
+
+.back-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 300%;
+  background-color: black;
+  transition: 0.4s ease;
+  border-radius: 50%;
+  z-index: -1;
+  transform: translate(-50%, -50%);
+}
+
+.back-button:hover::before {
+  width: 0;
+  height: 0;
 }
 
 /* Matrix Effect */
@@ -103,6 +135,28 @@ canvas {
 audio {
   display: none;
 }
+
+/* Loader */
+.loader {
+  border: 8px solid #0ff;
+  border-top: 8px solid transparent;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1.5s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Custom Cursor */
+body {
+  cursor: url('https://cdn-icons-png.flaticon.com/512/11081/11081983.png'), auto;
+}
+
 </style>
 </head>
 <body>
@@ -118,6 +172,8 @@ audio {
   <h1>Moonlight</h1>
   <p>We're currently working on the website and giving it a major update!</p>
   <p>Stay tuned for a brand-new design and features!</p>
+
+  <div class="loader"></div> <!-- Loader animation -->
 
   <div class="quote">
     <p>"Great things take time, and we are working hard to deliver the best experience for you."</p>
