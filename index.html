@@ -1,241 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moonlight</title>
-  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Moonlight</title>
+<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Courier New', monospace;
-    }
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Courier New', monospace;
+}
 
-    body {
-      background: black;
-      color: #0ff;
-      overflow-y: auto;
-      text-align: center;
-    }
+body {
+background: black;
+color: #0ff;
+overflow-y: auto;
+text-align: center;
+}
 
-    .box {
-      background: rgba(0, 0, 0, 0.8);
-      border: 2px solid #0ff;
-      padding: 20px;
-      width: 85%;
-      margin: 20px auto;
-      border-radius: 10px;
-      text-align: left;
-    }
+.terminal {
+background: rgba(0, 0, 0, 0.9);
+border: 2px solid #0ff;
+padding: 15px;
+width: 80%;
+height: 250px;
+margin: 20px auto;
+text-align: left;
+font-size: 14px;
+overflow-y: auto;
+border-radius: 8px;
+}
 
-    .glitch {
-      font-size: 3rem;
-      font-weight: bold;
-      text-transform: uppercase;
-      animation: glitch 1.5s infinite;
-    }
+canvas {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: -1;
+}
 
-    @keyframes glitch {
-      0% { text-shadow: 3px 3px red, -3px -3px blue; }
-      50% { text-shadow: -3px -3px red, 3px 3px blue; }
-      100% { text-shadow: 3px 3px red, -3px -3px blue; }
-    }
+.glitch {
+font-size: 3rem;
+font-weight: bold;
+text-transform: uppercase;
+animation: glitch 1.5s infinite;
+}
 
-    .terminal {
-      background: rgba(0, 0, 0, 0.9);
-      border: 2px solid #0ff;
-      padding: 15px;
-      width: 80%;
-      height: 250px;
-      margin: 20px auto;
-      text-align: left;
-      font-size: 14px;
-      overflow-y: auto;
-      border-radius: 8px;
-    }
+@keyframes glitch {
+0% { text-shadow: 3px 3px red, -3px -3px blue; }
+50% { text-shadow: -3px -3px red, 3px 3px blue; }
+100% { text-shadow: 3px 3px red, -3px -3px blue; }
+}
 
-    #notif {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: black;
-      color: #0ff;
-      border: 2px solid #0ff;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-weight: bold;
-      display: none;
-      z-index: 9999;
-    }
+.section-box {
+background: rgba(0, 0, 0, 0.8);
+border: 2px solid #0ff;
+padding: 20px;
+width: 85%;
+margin: 20px auto;
+border-radius: 10px;
+text-align: left;
+}
 
-    #admin-panel, #user-dashboard {
-      display: none;
-    }
-  </style>
+.copyright {
+margin-top: 50px;
+font-size: 14px;
+color: #0ff;
+opacity: 0.7;
+}
+
+#notif {
+position: fixed;
+top: 20px;
+right: 20px;
+background: black;
+color: #0ff;
+border: 2px solid #0ff;
+padding: 10px 20px;
+border-radius: 8px;
+font-weight: bold;
+display: none;
+z-index: 9999;
+}
+</style>
 </head>
 <body>
 
-  <audio id="bg-audio" autoplay loop>
-    <source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
+<audio id="bg-audio" autoplay loop>
+<source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
 
-  <script>
-    // Admin check (use 'milky' as an admin example)
-    const ADMINS = ['milky']; 
+<script>
+document.addEventListener("click", () => {
+const audio = document.getElementById("bg-audio");
+audio.muted = false;
+audio.volume = 1;
+audio.play().catch(err => console.log("Audio play error:", err));
+}, { once: true });
+</script>
 
-    // Simulated user data (store data in localStorage)
-    function loadUserData() {
-      const username = localStorage.getItem("currentUser");
-      if (username && ADMINS.includes(username)) {
-        document.getElementById('admin-panel').style.display = 'block';
-      } else if (username) {
-        document.getElementById('user-dashboard').style.display = 'block';
-        document.getElementById("dashboard-username").innerText = username;
-      }
-    }
+<canvas id="matrix"></canvas>
 
-    // Announcement Feature
-    function makeAnnouncement() {
-      const announcement = document.getElementById("announcement-text").value.trim();
-      if (!announcement) return alert("Please write an announcement.");
-      localStorage.setItem("announcement", announcement); // Save announcement
-      alert("Announcement sent!");
-    }
+<div class="container">
+<div class="section-box">
+<h1 class="glitch">Moonlight</h1>
+<p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
+</div>
 
-    // Display announcement to users
-    function showAnnouncement() {
-      const announcement = localStorage.getItem("announcement");
-      if (announcement) {
-        alert("Announcement: " + announcement); // Can be displayed as an alert or banner
-      }
-    }
+<div class="terminal" id="console"></div>
 
-    // User Management: Delete user
-    function deleteUser() {
-      const usernameToDelete = document.getElementById("manage-username").value.trim();
-      if (!usernameToDelete) return alert("Please enter a username.");
-      if (localStorage.getItem(usernameToDelete)) {
-        localStorage.removeItem(usernameToDelete); 
-        alert(usernameToDelete + " has been deleted.");
-      } else {
-        alert("User not found.");
-      }
-    }
+<div class="section-box">
+<h2 class="glitch">Features</h2>
+<ul>
+<li>✔ Shows if a Roblox user is online</li>
+<li>✔ Detects if user is in-game or using Studio</li>
+<li>✔ Clean and draggable GUI</li>
+<li>✔ Toggle visibility with the "V" key</li>
+</ul>
+</div>
 
-    // Reset user password
-    function resetPassword() {
-      const usernameToReset = document.getElementById("manage-username").value.trim();
-      if (!usernameToReset) return alert("Please enter a username.");
-      const storedUser = localStorage.getItem(usernameToReset);
-      if (storedUser) {
-        const newPassword = prompt("Enter new password for " + usernameToReset);
-        if (newPassword) {
-          const userData = JSON.parse(storedUser);
-          userData.password = newPassword;
-          localStorage.setItem(usernameToReset, JSON.stringify(userData));
-          alert(usernameToReset + "'s password has been reset.");
-        }
-      } else {
-        alert("User not found.");
-      }
-    }
+<div class="section-box">
+<h2 class="glitch">Update Log</h2>
+<p><strong>[v1.0]</strong> First release with Roblox username status detection and clean UI design.</p>
+</div>
 
-    // Change website background color
-    function changeBackgroundColor() {
-      const color = prompt("Enter a color for the background (e.g., 'black', 'blue'):");
-      if (color) {
-        document.body.style.backgroundColor = color;
-      }
-    }
+<div class="section-box">
+<h2 class="glitch">Developed By</h2>
+<p>Moonlight Team</p>
+<p>Milky - Solo Developer</p>
+</div>
 
-    // User Dashboard: Show Roblox Status
-    function checkRobloxStatus() {
-      const status = Math.random() > 0.5 ? "Online" : "Offline";  // Simulate status
-      document.getElementById("roblox-status").innerText = "Roblox Status: " + status;
-    }
+<div class="section-box" style="text-align: center;">
+<a href="https://discord.gg/RRpKYRzmxt" target="_blank" style="text-decoration: none;">
+<button style="
+padding: 12px 24px;
+font-size: 16px;
+background-color: black;
+color: #0ff;
+border: 2px solid #0ff;
+border-radius: 8px;
+cursor: pointer;
+transition: 0.3s;
+" onmouseover="this.style.backgroundColor='#0ff'; this.style.color='black'" onmouseout="this.style.backgroundColor='black'; this.style.color='#0ff'">
+Join our Discord
+</button>
+</a>
+</div>
 
-    // Handle user login
-    function handleLogin() {
-      const username = document.getElementById("login-username").value.trim();
-      const password = document.getElementById("login-password").value.trim();
-      if (localStorage.getItem(username) && JSON.parse(localStorage.getItem(username)).password === password) {
-        localStorage.setItem("currentUser", username); 
-        loadUserData();
-        alert("Login successful!");
-      } else {
-        alert("Invalid login details.");
-      }
-    }
+<div class="copyright">
+<p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
+</div>
+</div>
 
-    // Handle user signup
-    function handleSignup() {
-      const username = document.getElementById("signup-username").value.trim();
-      const password = document.getElementById("signup-password").value.trim();
-      if (username && password) {
-        const userData = { username: username, password: password };
-        localStorage.setItem(username, JSON.stringify(userData));
-        alert("Signup successful! You can now login.");
-      } else {
-        alert("Please fill out all fields.");
-      }
-    }
+<div id="notif">✔ Moonlight loaded successfully, discord.gg/RRpKYRzmxt</div>
 
-    // Check for announcement on page load
-    window.onload = function() {
-      showAnnouncement();
-    };
-  </script>
+<script>
+function simulateConsole() {
+const consoleBox = document.getElementById("console");
+const messages = [
+"> Moonlight 1.0 initializing...",
+"> Checking for updates...",
+"> Connecting to servers...",
+"> Status: Online",
+"> Awaiting user input...",
+"> http://discord.gg/RRpKYRzmxt..."
+];
+consoleBox.innerHTML = "";
 
-  <!-- Login / Signup -->
-  <div class="box" id="login-box">
-    <h2>Login</h2>
-    <input type="text" id="login-username" placeholder="Username" /><br>
-    <input type="password" id="login-password" placeholder="Password" /><br>
-    <button onclick="handleLogin()">Login</button>
-    <p>Don't have an account? <a href="javascript:void(0);" onclick="document.getElementById('signup-box').style.display = 'block';">Sign Up</a></p>
-  </div>
+let index = 0;
+function addMessage() {
+if (index < messages.length) {
+const p = document.createElement("p");
+p.textContent = messages[index];
+consoleBox.appendChild(p);
+consoleBox.scrollTop = consoleBox.scrollHeight;
+index++;
+setTimeout(addMessage, 1000);
+}
+}
+addMessage();
+}
+simulateConsole();
 
-  <div class="box" id="signup-box" style="display:none;">
-    <h2>Sign Up</h2>
-    <input type="text" id="signup-username" placeholder="Username" /><br>
-    <input type="password" id="signup-password" placeholder="Password" /><br>
-    <button onclick="handleSignup()">Sign Up</button>
-    <p>Already have an account? <a href="javascript:void(0);" onclick="document.getElementById('signup-box').style.display = 'none';">Login</a></p>
-  </div>
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-  <!-- Admin Panel -->
-  <div class="box" id="admin-panel">
-    <h2>👑 Admin Panel</h2>
-    <div>
-      <h3>📢 Announcements</h3>
-      <textarea id="announcement-text" placeholder="Write an announcement..." rows="3"></textarea><br>
-      <button onclick="makeAnnouncement()">Send Announcement</button>
-    </div>
-    
-    <div style="margin-top: 20px;">
-      <h3>📝 User Management</h3>
-      <input type="text" id="manage-username" placeholder="Username to delete" />
-      <button onclick="deleteUser()">Delete User</button>
-      <button onclick="resetPassword()">Reset Password</button>
-    </div>
+const letters = "01010101010101010101";
+const fontSize = 16;
+const columns = canvas.width / fontSize;
+const drops = Array(Math.floor(columns)).fill(0);
 
-    <div style="margin-top: 20px;">
-      <h3>⚙️ Website Settings</h3>
-      <button onclick="changeBackgroundColor()">Change Background Color</button>
-    </div>
-  </div>
+function drawMatrix() {
+ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.fillStyle = "#0ff";
+ctx.font = fontSize + "px monospace";
 
-  <!-- User Dashboard -->
-  <div class="box" id="user-dashboard">
-    <h3>Welcome, <span id="dashboard-username"></span></h3>
-    <p>Check your Roblox status:</p>
-    <button onclick="checkRobloxStatus()">Check Roblox Status</button>
-    <p id="roblox-status"></p>
-  </div>
+for (let i = 0; i < drops.length; i++) {
+const text = letters[Math.floor(Math.random() * letters.length)];
+const x = i * fontSize;
+const y = drops[i] * fontSize;
+ctx.fillText(text, x, y);
 
+if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+drops[i]++;
+}
+}
+
+setInterval(drawMatrix, 50);
+
+// Show notification and open Moonlight
+setTimeout(() => {
+const notif = document.getElementById("notif");
+notif.style.display = "block";
+setTimeout(() => {
+notif.style.display = "none";
+window.open("https://moonlight.softworks.lol", "_blank");
+}, 7000);
+}, 1000);
+</script>
 </body>
 </html>
