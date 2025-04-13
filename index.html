@@ -87,6 +87,59 @@
       z-index: 9999;
     }
 
+    /* New Login/Signup Style */
+    .login-box, .signup-box {
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 15px;
+      padding: 20px;
+      width: 300px;
+      margin: 50px auto;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+    }
+
+    .login-box input, .signup-box input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      background-color: transparent;
+      border: 2px solid #0ff;
+      color: #0ff;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .login-box button, .signup-box button {
+      width: 100%;
+      padding: 12px;
+      background-color: #0ff;
+      color: black;
+      border: none;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .login-box button:hover, .signup-box button:hover {
+      background-color: #0e0e0e;
+    }
+
+    .switch-auth {
+      text-align: center;
+      color: #0ff;
+      margin-top: 10px;
+    }
+
+    .switch-auth a {
+      text-decoration: none;
+      color: #0ff;
+      font-weight: bold;
+    }
+
+    .switch-auth a:hover {
+      color: #fff;
+    }
+
     /* Admin Panel */
     #admin-panel {
       display: none;
@@ -239,20 +292,20 @@
   <canvas id="matrix"></canvas>
 
   <!-- Login/Signup Forms -->
-  <div id="login-box" class="section-box">
+  <div id="login-box" class="login-box">
     <h2 class="glitch">Login</h2>
     <input type="text" id="login-username" placeholder="Username" /><br>
     <input type="password" id="login-password" placeholder="Password" /><br>
     <button onclick="handleLogin()">Login</button>
-    <p>Don't have an account? <a href="javascript:void(0);" onclick="document.getElementById('signup-box').style.display = 'block';">Sign Up</a></p>
+    <p class="switch-auth">Don't have an account? <a href="javascript:void(0);" onclick="document.getElementById('signup-box').style.display = 'block';">Sign Up</a></p>
   </div>
 
-  <div id="signup-box" class="section-box" style="display:none;">
+  <div id="signup-box" class="signup-box" style="display:none;">
     <h2 class="glitch">Sign Up</h2>
     <input type="text" id="signup-username" placeholder="Username" /><br>
     <input type="password" id="signup-password" placeholder="Password" /><br>
     <button onclick="handleSignup()">Sign Up</button>
-    <p>Already have an account? <a href="javascript:void(0);" onclick="document.getElementById('signup-box').style.display = 'none';">Login</a></p>
+    <p class="switch-auth">Already have an account? <a href="javascript:void(0);" onclick="document.getElementById('signup-box').style.display = 'none';">Login</a></p>
   </div>
 
   <!-- Admin Panel -->
