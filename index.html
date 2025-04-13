@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>Moonlight | Roblox Checker</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
+
   <style>
     * {
       margin: 0;
@@ -75,9 +77,29 @@
       border-radius: 8px;
       border: 1px solid #0ff;
     }
+
+    audio {
+      display: none;
+    }
   </style>
 </head>
 <body>
+
+  <!-- 🔊 Background Music -->
+  <audio id="bg-audio" autoplay loop>
+    <source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    // Unmute on user interaction (browser autoplay policy)
+    document.addEventListener("click", () => {
+      const audio = document.getElementById("bg-audio");
+      audio.muted = false;
+      audio.volume = 1;
+      audio.play().catch(err => console.log("Audio play error:", err));
+    }, { once: true });
+  </script>
 
   <!-- Auth Section -->
   <div class="box" id="auth-box">
@@ -95,7 +117,7 @@
     <button onclick="logout()">Logout</button>
   </div>
 
-  <!-- Main App Section (visible only when logged in) -->
+  <!-- Main App Section -->
   <div class="box" id="main-app">
     <h2>Moonlight - Roblox Username Checker</h2>
     <div class="feature-box">
@@ -156,11 +178,11 @@
 
     function logout() {
       localStorage.removeItem("currentUser");
-      location.reload(); // reset everything
+      location.reload();
     }
 
+    // Auto-load dashboard if already logged in
     if (localStorage.getItem("currentUser")) loadDashboard();
   </script>
-
 </body>
 </html>
