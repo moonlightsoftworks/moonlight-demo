@@ -1,3 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Moonlight</title>
+<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Courier New', monospace;
+}
+
+body {
+  background: black;
+  color: #0ff;
+  overflow-y: auto;
+  text-align: center;
+}
+
+.terminal {
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid #0ff;
+  padding: 15px;
+  width: 80%;
+  height: 250px;
+  margin: 20px auto;
+  text-align: left;
+  font-size: 14px;
+  overflow-y: auto;
+  border-radius: 8px;
+}
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.glitch {
+  font-size: 3rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  animation: glitch 1.5s infinite;
+}
+
+@keyframes glitch {
+  0% { text-shadow: 3px 3px red, -3px -3px blue; }
+  50% { text-shadow: -3px -3px red, 3px 3px blue; }
+  100% { text-shadow: 3px 3px red, -3px -3px blue; }
+}
+
+.section-box {
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #0ff;
+  padding: 20px;
+  width: 85%;
+  margin: 20px auto;
+  border-radius: 10px;
+  text-align: left;
+}
+
+#typewriter {
+  font-weight: bold;
+  color: #0ff;
+  padding-bottom: 10px;
+}
+
+.copyright {
+  margin-top: 50px;
+  font-size: 14px;
+  color: #0ff;
+  opacity: 0.7;
+}
+
+#notif {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: black;
+  color: #0ff;
+  border: 2px solid #0ff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  display: none;
+  z-index: 9999;
+}
+</style>
+</head>
 <body>
 
 <audio id="bg-audio" autoplay loop>
@@ -23,7 +119,7 @@ document.addEventListener("click", () => {
   </div>
 
   <div class="terminal" id="console">
-    <div id="typewriter" style="color: #0ff; font-weight: bold;"></div>
+    <div id="typewriter"></div>
   </div>
 
   <div class="section-box">
@@ -130,7 +226,7 @@ setTimeout(() => {
   }, 7000);
 }, 1000);
 
-// 🔥 TYPEWRITER EFFECT
+// Typewriter Effect
 const phrases = [
   "The best free Roblox username checker",
   "Check if the player is playing or not",
@@ -148,7 +244,6 @@ let isEnd = false;
 
 function loop() {
   const typewriter = document.getElementById('typewriter');
-
   isEnd = false;
   typewriter.innerHTML = currentPhrase.join('');
 
@@ -180,7 +275,7 @@ function loop() {
   const speed = isEnd ? 1500 : isDeleting ? 50 : 100;
   setTimeout(loop, speed);
 }
-
 loop();
 </script>
 </body>
+</html>
