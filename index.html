@@ -17,31 +17,36 @@ font-family: 'Courier New', monospace;
 body {
 background: black;
 color: #0ff;
-display: flex;
-justify-content: center;
-align-items: center;
-height: 100vh;
+overflow-y: auto;
 text-align: center;
-margin: 0;
-position: relative;
 }
 
-.container {
-z-index: 2;
+.terminal {
+background: rgba(0, 0, 0, 0.9);
+border: 2px solid #0ff;
+padding: 15px;
 width: 80%;
-max-width: 600px;
-background: rgba(0, 0, 0, 0.8);
-padding: 20px;
-border-radius: 12px;
-box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+height: 250px;
+margin: 20px auto;
+text-align: left;
+font-size: 14px;
+overflow-y: auto;
+border-radius: 8px;
 }
 
-h1 {
+canvas {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: -1;
+}
+
+.glitch {
 font-size: 3rem;
 font-weight: bold;
 text-transform: uppercase;
-color: #0ff;
-margin-bottom: 20px;
 animation: glitch 1.5s infinite;
 }
 
@@ -51,57 +56,35 @@ animation: glitch 1.5s infinite;
 100% { text-shadow: 3px 3px red, -3px -3px blue; }
 }
 
-p {
-font-size: 1.2rem;
+.section-box {
+background: rgba(0, 0, 0, 0.8);
+border: 2px solid #0ff;
+padding: 20px;
+width: 85%;
+margin: 20px auto;
+border-radius: 10px;
+text-align: left;
+}
+
+.copyright {
+margin-top: 50px;
+font-size: 14px;
 color: #0ff;
-opacity: 0.8;
-margin-bottom: 20px;
+opacity: 0.7;
 }
 
-.quote {
-font-size: 1rem;
-color: #0ff;
-margin-top: 20px;
-opacity: 0.6;
-}
-
-.timer {
-font-size: 2rem;
-color: #ff0000;
-font-weight: bold;
-margin-top: 30px;
-}
-
-.back-button {
-padding: 12px 24px;
-background-color: black;
+#notif {
+position: fixed;
+top: 20px;
+right: 20px;
+background: black;
 color: #0ff;
 border: 2px solid #0ff;
+padding: 10px 20px;
 border-radius: 8px;
-cursor: pointer;
-font-size: 16px;
-margin-top: 30px;
-transition: 0.3s;
-}
-
-.back-button:hover {
-background-color: #0ff;
-color: black;
-}
-
-/* Matrix Effect */
-canvas {
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-z-index: 1;
-}
-
-/* Music */
-audio {
+font-weight: bold;
 display: none;
+z-index: 9999;
 }
 </style>
 </head>
@@ -112,76 +95,98 @@ display: none;
 Your browser does not support the audio element.
 </audio>
 
+<script>
+document.addEventListener("click", () => {
+const audio = document.getElementById("bg-audio");
+audio.muted = false;
+audio.volume = 1;
+audio.play().catch(err => console.log("Audio play error:", err));
+}, { once: true });
+</script>
+
 <canvas id="matrix"></canvas>
 
 <div class="container">
-<h1>Moonlight</h1>
-<p>We're currently working on the website and giving it a major update!</p>
-<p>Stay tuned for a brand-new design and features!</p>
-
-<div class="timer" id="countdown">
-<p>Moonlight will come back in 1 week.</p>
+<div class="section-box">
+<h1 class="glitch">Moonlight</h1>
+<p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
 </div>
 
-<div class="quote">
-<p>"Great things take time, and we are working hard to deliver the best experience for you."</p>
+<div class="terminal" id="console"></div>
+
+<div class="section-box">
+<h2 class="glitch">Features</h2>
+<ul>
+<li>✔ Shows if a Roblox user is online</li>
+<li>✔ Detects if user is in-game or using Studio</li>
+<li>✔ Clean and draggable GUI</li>
+<li>✔ Toggle visibility with the "V" key</li>
+</ul>
 </div>
 
-<button class="back-button" onclick="window.location.href='https://discord.gg/RRpKYRzmxt'">Join our Discord</button>
+<div class="section-box">
+<h2 class="glitch">Update Log</h2>
+<p><strong>[v1.0]</strong> First release with Roblox username status detection and clean UI design.</p>
 </div>
+
+<div class="section-box">
+<h2 class="glitch">Developed By</h2>
+<p>Moonlight Team</p>
+<p>Milky - Solo Developer</p>
+</div>
+
+<div class="section-box" style="text-align: center;">
+<a href="https://discord.gg/RRpKYRzmxt" target="_blank" style="text-decoration: none;">
+<button style="
+padding: 12px 24px;
+font-size: 16px;
+background-color: black;
+color: #0ff;
+border: 2px solid #0ff;
+border-radius: 8px;
+cursor: pointer;
+transition: 0.3s;
+" onmouseover="this.style.backgroundColor='#0ff'; this.style.color='black'" onmouseout="this.style.backgroundColor='black'; this.style.color='#0ff'">
+Join our Discord
+</button>
+</a>
+</div>
+
+<div class="copyright">
+<p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
+</div>
+</div>
+
+<div id="notif">✔ Moonlight loaded successfully, discord.gg/RRpKYRzmxt</div>
 
 <script>
-// Music autoplay fix for modern browsers
-document.addEventListener('click', function() {
-const audio = document.getElementById("bg-audio");
-audio.muted = false;
-audio.play().catch(function(error) {
-console.error("Audio autoplay failed:", error);
-});
-}, { once: true });
+function simulateConsole() {
+const consoleBox = document.getElementById("console");
+const messages = [
+"> Moonlight 1.0 initializing...",
+"> Checking for updates...",
+"> Connecting to servers...",
+"> Status: Online",
+"> Awaiting user input...",
+"> http://discord.gg/RRpKYRzmxt..."
+];
+consoleBox.innerHTML = "";
 
-// Countdown Timer (set to 1 week)
-function updateTimer() {
-const startDate = new Date();
-// For demonstration, we're setting the "launch date" 7 days from now
-const endDate = new Date(startDate.getTime() + (7 * 24 * 60 * 60 * 1000));
-
-localStorage.setItem("endDate", endDate);
-
-const timerInterval = setInterval(function() {
-const now = new Date();
-const endTime = new Date(localStorage.getItem("endDate"));
-
-const timeRemaining = endTime - now;
-
-if (timeRemaining <= 0) {
-clearInterval(timerInterval);
-document.getElementById("time").innerText = "Website is now live!";
-} else {
-const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-
-document.getElementById("time").innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-}
-}, 1000);
-}
-
-// Check if we already have the end date stored, otherwise set it
-if (!localStorage.getItem("endDate")) {
-updateTimer();
-} else {
-const savedDate = new Date(localStorage.getItem("endDate"));
-const now = new Date();
-if (now > savedDate) {
-document.getElementById("time").innerText = "Website is now live!";
-} else {
-updateTimer();
+let index = 0;
+function addMessage() {
+if (index < messages.length) {
+const p = document.createElement("p");
+p.textContent = messages[index];
+consoleBox.appendChild(p);
+consoleBox.scrollTop = consoleBox.scrollHeight;
+index++;
+setTimeout(addMessage, 1000);
 }
 }
+addMessage();
+}
+simulateConsole();
 
-// Matrix Effect
 const canvas = document.getElementById('matrix');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
@@ -210,7 +215,16 @@ drops[i]++;
 }
 
 setInterval(drawMatrix, 50);
-</script>
 
+// Show notification and open Moonlight
+setTimeout(() => {
+const notif = document.getElementById("notif");
+notif.style.display = "block";
+setTimeout(() => {
+notif.style.display = "none";
+window.open("https://moonlight.softworks.lol", "_blank");
+}, 7000);
+}, 1000);
+</script>
 </body>
 </html>
