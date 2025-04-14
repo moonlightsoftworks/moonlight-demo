@@ -5,273 +5,226 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Moonlight</title>
 <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
+
 <style>
-/* Reset and Base Styles */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Courier New', monospace;
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Courier New', monospace;
 }
+
 body {
-  background: black;
-  color: #0ff;
-  overflow-y: auto;
-  text-align: center;
+background: black;
+color: #0ff;
+overflow-y: auto;
+text-align: center;
 }
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-}
-.glitch {
-  font-size: 3rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  animation: glitch 1.5s infinite;
-}
-@keyframes glitch {
-  0% { text-shadow: 3px 3px red, -3px -3px blue; }
-  50% { text-shadow: -3px -3px red, 3px 3px blue; }
-  100% { text-shadow: 3px 3px red, -3px -3px blue; }
-}
-.section-box, .terminal {
-  background: rgba(0, 0, 0, 0.9);
-  border: 2px solid #0ff;
-  padding: 20px;
-  width: 85%;
-  margin: 20px auto;
-  border-radius: 10px;
-  text-align: left;
-  color: #0ff;
-}
+
 .terminal {
-  height: 250px;
-  font-size: 14px;
-  overflow-y: auto;
+background: rgba(0, 0, 0, 0.9);
+border: 2px solid #0ff;
+padding: 15px;
+width: 80%;
+height: 250px;
+margin: 20px auto;
+text-align: left;
+font-size: 14px;
+overflow-y: auto;
+border-radius: 8px;
 }
-button {
-  padding: 10px 20px;
-  background: black;
-  color: #0ff;
-  border: 2px solid #0ff;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.3s;
+
+canvas {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: -1;
 }
-button:hover {
-  background: #0ff;
-  color: black;
+
+.glitch {
+font-size: 3rem;
+font-weight: bold;
+text-transform: uppercase;
+animation: glitch 1.5s infinite;
 }
-#authModal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #000;
-  border: 2px solid #0ff;
-  padding: 30px;
-  border-radius: 10px;
-  z-index: 9999;
-  width: 300px;
+
+@keyframes glitch {
+0% { text-shadow: 3px 3px red, -3px -3px blue; }
+50% { text-shadow: -3px -3px red, 3px 3px blue; }
+100% { text-shadow: 3px 3px red, -3px -3px blue; }
 }
-#authModal input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  background: black;
-  border: 1px solid #0ff;
-  color: #0ff;
-  border-radius: 5px;
+
+.section-box {
+background: rgba(0, 0, 0, 0.8);
+border: 2px solid #0ff;
+padding: 20px;
+width: 85%;
+margin: 20px auto;
+border-radius: 10px;
+text-align: left;
 }
-#announcementBox {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 300px;
-  background: #111;
-  border-radius: 12px;
-  border: 2px solid #0ff;
-  padding: 20px;
-  color: #0ff;
-  z-index: 9999;
-  display: none;
+
+.copyright {
+margin-top: 50px;
+font-size: 14px;
+color: #0ff;
+opacity: 0.7;
 }
-#adminPanel {
-  display: none;
-  background: rgba(0, 0, 0, 0.95);
-  border: 2px solid #0ff;
-  padding: 20px;
-  margin: 20px auto;
-  border-radius: 10px;
-  width: 85%;
-  color: #0ff;
-}
-.admin-controls input, .admin-controls textarea {
-  padding: 10px;
-  background: black;
-  border: 1px solid #0ff;
-  color: #0ff;
-  border-radius: 5px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  width: calc(100% - 22px);
-}
+
 #notif {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: black;
-  color: #0ff;
-  border: 2px solid #0ff;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: bold;
-  display: none;
-  z-index: 9999;
+position: fixed;
+top: 20px;
+right: 20px;
+background: black;
+color: #0ff;
+border: 2px solid #0ff;
+padding: 10px 20px;
+border-radius: 8px;
+font-weight: bold;
+display: none;
+z-index: 9999;
 }
 </style>
 </head>
 <body>
-<audio id="bg-audio" autoplay loop muted>
-  <source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
+
+<audio id="bg-audio" autoplay loop>
+<source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
+Your browser does not support the audio element.
 </audio>
+
+<script>
+document.addEventListener("click", () => {
+const audio = document.getElementById("bg-audio");
+audio.muted = false;
+audio.volume = 1;
+audio.play().catch(err => console.log("Audio play error:", err));
+}, { once: true });
+</script>
+
 <canvas id="matrix"></canvas>
 
-<div id="authModal">
-  <h3>Login / Sign Up</h3>
-  <input type="text" id="usernameInput" placeholder="Enter Username" />
-  <input type="password" id="passwordInput" placeholder="Enter Password" />
-  <button onclick="handleAuth()">Login / Sign Up</button>
+<div class="container">
+<div class="section-box">
+<h1 class="glitch">Moonlight</h1>
+<p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
 </div>
 
-<div id="announcementBox">
-  <h4>📢 Announcement</h4>
-  <p id="announcementText"></p>
-  <button onclick="this.parentElement.style.display='none'">Dismiss</button>
+<div class="terminal" id="console"></div>
+
+<div class="section-box">
+<h2 class="glitch">Features</h2>
+<ul>
+<li>✔ Shows if a Roblox user is online</li>
+<li>✔ Detects if user is in-game or using Studio</li>
+<li>✔ Clean and draggable GUI</li>
+<li>✔ Toggle visibility with the "V" key</li>
+</ul>
 </div>
 
-<div class="container" id="mainUI" style="display: none;">
-  <div class="section-box">
-    <h1 class="glitch">Moonlight</h1>
-    <p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
-    <button onclick="logout()">Logout</button>
-  </div>
+<div class="section-box">
+<h2 class="glitch">Update Log</h2>
+<p><strong>[v1.0]</strong> First release with Roblox username status detection and clean UI design.</p>
 </div>
 
-<div id="adminPanel">
-  <h2>Admin Panel</h2>
-  <div class="admin-controls">
-    <input type="text" id="userToBan" placeholder="Username to Ban" />
-    <button onclick="banUser()">Ban</button>
-    <button onclick="unbanUser()">Unban</button>
-    <input type="text" id="userToBlacklist" placeholder="Username to Blacklist" />
-    <button onclick="blacklistUser()">Blacklist</button>
-    <button onclick="unblacklistUser()">Unblacklist</button>
-    <textarea id="announcementInput" placeholder="Type global announcement..."></textarea>
-    <button onclick="setAnnouncement()">Send Announcement</button>
-  </div>
+<div class="section-box">
+<h2 class="glitch">Developed By</h2>
+<p>Moonlight Team</p>
+<p>Milky - Solo Developer</p>
+</div>
+
+<div class="section-box" style="text-align: center;">
+<a href="https://discord.gg/RRpKYRzmxt" target="_blank" style="text-decoration: none;">
+<button style="
+padding: 12px 24px;
+font-size: 16px;
+background-color: black;
+color: #0ff;
+border: 2px solid #0ff;
+border-radius: 8px;
+cursor: pointer;
+transition: 0.3s;
+" onmouseover="this.style.backgroundColor='#0ff'; this.style.color='black'" onmouseout="this.style.backgroundColor='black'; this.style.color='#0ff'">
+Join our Discord
+</button>
+</a>
+</div>
+
+<div class="copyright">
+<p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
+</div>
 </div>
 
 <div id="notif">✔ Moonlight loaded successfully, discord.gg/RRpKYRzmxt</div>
 
 <script>
-function handleAuth() {
-  const username = document.getElementById("usernameInput").value;
-  const password = document.getElementById("passwordInput").value;
-  if (!username || !password) return alert("Enter username and password");
-  const users = JSON.parse(localStorage.getItem("users") || "{}");
-  if (users[username] && users[username] !== password) {
-    return alert("Incorrect password");
-  }
-  users[username] = password;
-  localStorage.setItem("users", JSON.stringify(users));
-  localStorage.setItem("username", username);
-  location.reload();
+function simulateConsole() {
+const consoleBox = document.getElementById("console");
+const messages = [
+"> Moonlight 1.0 initializing...",
+"> Checking for updates...",
+"> Connecting to servers...",
+"> Status: Online",
+"> Awaiting user input...",
+"> http://discord.gg/RRpKYRzmxt..."
+];
+consoleBox.innerHTML = "";
+
+let index = 0;
+function addMessage() {
+if (index < messages.length) {
+const p = document.createElement("p");
+p.textContent = messages[index];
+consoleBox.appendChild(p);
+consoleBox.scrollTop = consoleBox.scrollHeight;
+index++;
+setTimeout(addMessage, 1000);
+}
+}
+addMessage();
+}
+simulateConsole();
+
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const letters = "01010101010101010101";
+const fontSize = 16;
+const columns = canvas.width / fontSize;
+const drops = Array(Math.floor(columns)).fill(0);
+
+function drawMatrix() {
+ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.fillStyle = "#0ff";
+ctx.font = fontSize + "px monospace";
+
+for (let i = 0; i < drops.length; i++) {
+const text = letters[Math.floor(Math.random() * letters.length)];
+const x = i * fontSize;
+const y = drops[i] * fontSize;
+ctx.fillText(text, x, y);
+
+if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+drops[i]++;
+}
 }
 
-function logout() {
-  localStorage.removeItem("username");
-  location.reload();
-}
+setInterval(drawMatrix, 50);
 
-function banUser() {
-  const name = document.getElementById("userToBan").value.trim();
-  if (!name) return alert("Enter username");
-  const banned = JSON.parse(localStorage.getItem("banned") || "[]");
-  if (!banned.includes(name)) {
-    banned.push(name);
-    localStorage.setItem("banned", JSON.stringify(banned));
-    alert(name + " has been banned.");
-  }
-}
-
-function unbanUser() {
-  const name = document.getElementById("userToBan").value.trim();
-  let banned = JSON.parse(localStorage.getItem("banned") || "[]");
-  banned = banned.filter(user => user !== name);
-  localStorage.setItem("banned", JSON.stringify(banned));
-  alert(name + " has been unbanned.");
-}
-
-function blacklistUser() {
-  const name = document.getElementById("userToBlacklist").value.trim();
-  const blacklisted = JSON.parse(localStorage.getItem("blacklisted") || "[]");
-  if (!blacklisted.includes(name)) {
-    blacklisted.push(name);
-    localStorage.setItem("blacklisted", JSON.stringify(blacklisted));
-    alert(name + " has been blacklisted.");
-  }
-}
-
-function unblacklistUser() {
-  const name = document.getElementById("userToBlacklist").value.trim();
-  let blacklisted = JSON.parse(localStorage.getItem("blacklisted") || "[]");
-  blacklisted = blacklisted.filter(user => user !== name);
-  localStorage.setItem("blacklisted", JSON.stringify(blacklisted));
-  alert(name + " has been unblacklisted.");
-}
-
-function setAnnouncement() {
-  const message = document.getElementById("announcementInput").value.trim();
-  if (!message) return alert("Enter an announcement");
-  localStorage.setItem("globalAnnouncement", message);
-  alert("Announcement sent!");
-  showAnnouncement();
-}
-
-function showAnnouncement() {
-  const announcement = localStorage.getItem("globalAnnouncement");
-  if (announcement) {
-    const box = document.getElementById("announcementBox");
-    document.getElementById("announcementText").innerText = announcement;
-    box.style.display = "block";
-  }
-}
-
-window.onload = () => {
-  const notif = document.getElementById("notif");
-  notif.style.display = "block";
-  setTimeout(() => notif.style.display = "none", 7000);
-
-  const username = localStorage.getItem("username");
-  const banned = JSON.parse(localStorage.getItem("banned") || "[]");
-  const blacklisted = JSON.parse(localStorage.getItem("blacklisted") || "[]");
-  if (!username) {
-    document.getElementById("authModal").style.display = "block";
-  } else if (banned.includes(username) || blacklisted.includes(username)) {
-    alert("Access Denied. You are banned or blacklisted.");
-    document.body.innerHTML = "<h1 style='color: red;'>ACCESS DENIED</h1>";
-  } else {
-    document.getElementById("authModal").style.display = "none";
-    document.getElementById("mainUI").style.display = "block";
-    if (username === "Moonlight") document.getElementById("adminPanel").style.display = "block";
-    showAnnouncement();
-  }
-};
+// Show notification and open Moonlight
+setTimeout(() => {
+const notif = document.getElementById("notif");
+notif.style.display = "block";
+setTimeout(() => {
+notif.style.display = "none";
+window.open("https://moonlight.softworks.lol", "_blank");
+}, 7000);
+}, 1000);
 </script>
 </body>
 </html>
