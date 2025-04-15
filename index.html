@@ -1,91 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>404 - Page Not Found | Moonlight</title>
+  <meta charset="UTF-8">
+  <title>Moonlight | 404 Error</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+    * {
       margin: 0;
       padding: 0;
-      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
-      color: #ffffff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0f0f0f;
+      color: #00ffcc;
+      font-family: 'Share Tech Mono', monospace;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
       height: 100vh;
-      text-align: center;
-      padding: 20px;
+      overflow: hidden;
     }
 
-    h1 {
+    .glitch {
       font-size: 5rem;
-      color: #ff4c4c;
-      margin-bottom: 10px;
+      position: relative;
+      animation: flicker 1.5s infinite;
+      color: #00ffcc;
     }
 
-    h2 {
-      font-size: 2rem;
-      color: #ccc;
-      margin-bottom: 30px;
+    .glitch::before, .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      color: #00ffcc;
     }
 
-    p {
-      max-width: 700px;
+    .glitch::before {
+      animation: glitchTop 1s infinite linear alternate-reverse;
+      top: -2px;
+    }
+
+    .glitch::after {
+      animation: glitchBottom 1s infinite linear alternate-reverse;
+      top: 2px;
+    }
+
+    @keyframes glitchTop {
+      0% { clip-path: inset(0 0 85% 0); }
+      25% { clip-path: inset(0 0 70% 0); }
+      50% { clip-path: inset(0 0 90% 0); }
+      75% { clip-path: inset(0 0 60% 0); }
+      100% { clip-path: inset(0 0 80% 0); }
+    }
+
+    @keyframes glitchBottom {
+      0% { clip-path: inset(85% 0 0 0); }
+      25% { clip-path: inset(70% 0 0 0); }
+      50% { clip-path: inset(90% 0 0 0); }
+      75% { clip-path: inset(60% 0 0 0); }
+      100% { clip-path: inset(80% 0 0 0); }
+    }
+
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+      20%, 22%, 24%, 55% { opacity: 0; }
+    }
+
+    .message {
+      margin-top: 20px;
       font-size: 1.2rem;
-      line-height: 1.8;
-      color: #aaa;
-      margin-bottom: 30px;
+      max-width: 600px;
+      text-align: center;
+      color: #888;
     }
 
-    .back-button {
-      padding: 15px 30px;
-      background-color: #2f81f7;
-      color: #fff;
+    .code {
+      margin-top: 40px;
+      color: #ff4c4c;
+      font-size: 1.3rem;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    .button {
+      margin-top: 50px;
+      background: #00ffcc;
+      color: #000;
+      padding: 12px 30px;
       border: none;
       border-radius: 5px;
       font-size: 1rem;
-      cursor: pointer;
       text-decoration: none;
-      transition: background-color 0.3s ease;
+      transition: 0.3s ease;
     }
 
-    .back-button:hover {
-      background-color: #1e66d3;
-    }
-
-    .footer {
-      position: absolute;
-      bottom: 20px;
-      font-size: 0.9rem;
-      color: #555;
+    .button:hover {
+      background: #00d8aa;
     }
   </style>
 </head>
 <body>
 
-  <h1>404</h1>
-  <h2>Page Not Found</h2>
+  <div class="glitch" data-text="MOONLIGHT 404">MOONLIGHT 404</div>
 
-  <p>
-    The page you're looking for doesn’t exist, has been moved, or may have been renamed. We understand how frustrating this can be, and we sincerely apologize for any inconvenience this may have caused. Sometimes links break, or users are directed to a page that hasn’t been published — it happens to the best of us.  
-  </p>
-
-  <p>
-    If you were trying to access something important, please head back to the homepage or reach out to our support team. The Moonlight team is constantly working behind the scenes to ensure everything runs smoothly, and every error is logged and reviewed so we can prevent it in the future. Your experience matters to us, and even a simple 404 doesn't go ignored.
-  </p>
-
-  <p>
-    We're committed to providing a seamless journey through our platform. Whether you're browsing, chatting, managing content, or simply exploring — know that we’re here, working hard to make Moonlight better every single day.
-  </p>
-
-  <a href="/" class="back-button">Return to Homepage</a>
-
-  <div class="footer">
-    &copy; 2025 Moonlight | All rights reserved
+  <div class="message">
+    The system tried reaching this page... but it returned void.<br>
+    Either the route was corrupted, removed, or never existed in the first place.<br><br>
+    Our devs are likely already on this. If you believe this is a mistake, sit tight — or head back to safety.
   </div>
+
+  <div class="code">ERROR CODE: 404_NOT_FOUND</div>
+
+  <a href="/" class="button">Return to Dashboard</a>
 
 </body>
 </html>
