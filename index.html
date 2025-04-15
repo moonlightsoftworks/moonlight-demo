@@ -1,159 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Moonlight - Auth</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Orbitron', monospace;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Moonlight</title>
+<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
 
-    body {
-      background: #000;
-      color: #0ff;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Courier New', monospace;
+}
 
-    .auth-box {
-      background: rgba(0, 0, 0, 0.85);
-      border: 2px solid #0ff;
-      padding: 30px;
-      border-radius: 12px;
-      width: 350px;
-      text-align: center;
-      box-shadow: 0 0 20px #0ff44f;
-    }
+body {
+background: black;
+color: #0ff;
+overflow-y: auto;
+text-align: center;
+}
 
-    .auth-box h2 {
-      margin-bottom: 20px;
-    }
+.terminal {
+background: rgba(0, 0, 0, 0.9);
+border: 2px solid #0ff;
+padding: 15px;
+width: 80%;
+height: 250px;
+margin: 20px auto;
+text-align: left;
+font-size: 14px;
+overflow-y: auto;
+border-radius: 8px;
+}
 
-    input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: 2px solid #0ff;
-      background: black;
-      color: #0ff;
-      border-radius: 8px;
-      font-size: 14px;
-    }
+canvas {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: -1;
+}
 
-    button {
-      width: 100%;
-      padding: 12px;
-      background: black;
-      color: #0ff;
-      border: 2px solid #0ff;
-      border-radius: 8px;
-      font-size: 14px;
-      cursor: pointer;
-      margin-bottom: 10px;
-    }
+.glitch {
+font-size: 3rem;
+font-weight: bold;
+text-transform: uppercase;
+animation: glitch 1.5s infinite;
+}
 
-    button:hover {
-      background: #0ff;
-      color: black;
-    }
+@keyframes glitch {
+0% { text-shadow: 3px 3px red, -3px -3px blue; }
+50% { text-shadow: -3px -3px red, 3px 3px blue; }
+100% { text-shadow: 3px 3px red, -3px -3px blue; }
+}
 
-    .toggle {
-      font-size: 13px;
-      color: #aaa;
-      cursor: pointer;
-      margin-top: 10px;
-    }
+.section-box {
+background: rgba(0, 0, 0, 0.8);
+border: 2px solid #0ff;
+padding: 20px;
+width: 85%;
+margin: 20px auto;
+border-radius: 10px;
+text-align: left;
+}
 
-    #dashboard {
-      display: none;
-      text-align: center;
-    }
+.copyright {
+margin-top: 50px;
+font-size: 14px;
+color: #0ff;
+opacity: 0.7;
+}
 
-    .admin-panel {
-      margin-top: 30px;
-      border-top: 1px solid #0ff;
-      padding-top: 15px;
-    }
-  </style>
+#notif {
+position: fixed;
+top: 20px;
+right: 20px;
+background: black;
+color: #0ff;
+border: 2px solid #0ff;
+padding: 10px 20px;
+border-radius: 8px;
+font-weight: bold;
+display: none;
+z-index: 9999;
+}
+</style>
 </head>
 <body>
-  <div class="auth-box" id="authBox">
-    <h2 id="formTitle">Login to Moonlight</h2>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="handleAuth()" id="authBtn">Login</button>
-    <div class="toggle" onclick="toggleMode()">Don't have an account? <u>Sign up</u></div>
-  </div>
 
-  <div class="auth-box" id="dashboard">
-    <h2 id="welcomeUser"></h2>
-    <button onclick="goToMoonlight()">Go to Moonlight Official Page</button>
-    <button onclick="logout()">Logout</button>
-    <div class="admin-panel" id="adminPanel" style="display:none;">
-      <h3>Admin Panel</h3>
-      <p>More admin features will be added here</p>
-    </div>
-  </div>
+<audio id="bg-audio" autoplay loop>
+<source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
 
-  <script>
-    let mode = 'login';
-    let users = JSON.parse(localStorage.getItem('users') || '{}');
+<script>
+document.addEventListener("click", () => {
+const audio = document.getElementById("bg-audio");
+audio.muted = false;
+audio.volume = 1;
+audio.play().catch(err => console.log("Audio play error:", err));
+}, { once: true });
+</script>
 
-    const user = localStorage.getItem('currentUser');
-    if (user) showDashboard(user);
+<canvas id="matrix"></canvas>
 
-    function toggleMode() {
-      mode = mode === 'login' ? 'signup' : 'login';
-      document.getElementById('formTitle').innerText = mode === 'login' ? 'Login to Moonlight' : 'Sign up for Moonlight';
-      document.getElementById('authBtn').innerText = mode === 'login' ? 'Login' : 'Sign Up';
-      document.querySelector('.toggle').innerHTML = mode === 'login' ? `Don't have an account? <u>Sign up</u>` : `Already have an account? <u>Login</u>`;
-    }
+<div class="container">
+<div class="section-box">
+<h1 class="glitch">Moonlight</h1>
+<p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
+</div>
 
-    function handleAuth() {
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value.trim();
+<div class="terminal" id="console"></div>
 
-      if (!username || !password) return alert('Fill all fields');
+<div class="section-box">
+<h2 class="glitch">Features</h2>
+<ul>
+<li>✔ Shows if a Roblox user is online</li>
+<li>✔ Detects if user is in-game or using Studio</li>
+<li>✔ Clean and draggable GUI</li>
+<li>✔ Toggle visibility with the "V" key</li>
+</ul>
+</div>
 
-      if (mode === 'signup') {
-        if (users[username]) return alert('User already exists');
-        users[username] = { password };
-        localStorage.setItem('users', JSON.stringify(users));
-        alert('Sign-up successful! Please login.');
-        toggleMode();
-      } else {
-        if (!users[username]) return alert('User not found');
-        if (users[username].password !== password) return alert('Wrong password');
-        localStorage.setItem('currentUser', username);
-        showDashboard(username);
-      }
-    }
+<div class="section-box">
+<h2 class="glitch">Update Log</h2>
+<p><strong>[v1.0]</strong> First release with Roblox username status detection and clean UI design.</p>
+</div>
 
-    function showDashboard(user) {
-      document.getElementById('authBox').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
-      document.getElementById('welcomeUser').innerText = `Hi, ${user}`;
-      if (user === 'moonlight') {
-        document.getElementById('adminPanel').style.display = 'block';
-      }
-    }
+<div class="section-box">
+<h2 class="glitch">Developed By</h2>
+<p>Moonlight Team</p>
+<p>Milky - Solo Developer</p>
+</div>
 
-    function logout() {
-      localStorage.removeItem('currentUser');
-      location.reload();
-    }
+<div class="section-box" style="text-align: center;">
+<a href="https://discord.gg/RRpKYRzmxt" target="_blank" style="text-decoration: none;">
+<button style="
+padding: 12px 24px;
+font-size: 16px;
+background-color: black;
+color: #0ff;
+border: 2px solid #0ff;
+border-radius: 8px;
+cursor: pointer;
+transition: 0.3s;
+" onmouseover="this.style.backgroundColor='#0ff'; this.style.color='black'" onmouseout="this.style.backgroundColor='black'; this.style.color='#0ff'">
+Join our Discord
+</button>
+</a>
+</div>
 
-    function goToMoonlight() {
-      window.open('https://moonlight.softworks.lol', '_blank');
-    }
-  </script>
+<div class="copyright">
+<p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
+</div>
+</div>
+
+<div id="notif">✔ Moonlight loaded successfully, discord.gg/RRpKYRzmxt</div>
+
+<script>
+function simulateConsole() {
+const consoleBox = document.getElementById("console");
+const messages = [
+"> Moonlight 1.0 initializing...",
+"> Checking for updates...",
+"> Connecting to servers...",
+"> Status: Online",
+"> Awaiting user input...",
+"> http://discord.gg/RRpKYRzmxt..."
+];
+consoleBox.innerHTML = "";
+
+let index = 0;
+function addMessage() {
+if (index < messages.length) {
+const p = document.createElement("p");
+p.textContent = messages[index];
+consoleBox.appendChild(p);
+consoleBox.scrollTop = consoleBox.scrollHeight;
+index++;
+setTimeout(addMessage, 1000);
+}
+}
+addMessage();
+}
+simulateConsole();
+
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const letters = "01010101010101010101";
+const fontSize = 16;
+const columns = canvas.width / fontSize;
+const drops = Array(Math.floor(columns)).fill(0);
+
+function drawMatrix() {
+ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.fillStyle = "#0ff";
+ctx.font = fontSize + "px monospace";
+
+for (let i = 0; i < drops.length; i++) {
+const text = letters[Math.floor(Math.random() * letters.length)];
+const x = i * fontSize;
+const y = drops[i] * fontSize;
+ctx.fillText(text, x, y);
+
+if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+drops[i]++;
+}
+}
+
+setInterval(drawMatrix, 50);
+
+// Show notification
+setTimeout(() => {
+const notif = document.getElementById("notif");
+notif.style.display = "block";
+setTimeout(() => {
+notif.style.display = "none";
+}, 7000);
+}, 1000);
+</script>
 </body>
 </html>
