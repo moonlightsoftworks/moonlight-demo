@@ -3,142 +3,220 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moonlight Chat</title>
+  <title>Moonlight</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
+  
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', sans-serif; background: #1e1f22; color: white; display: flex; height: 100vh; }
-    .sidebar { width: 250px; background: #2f3136; padding: 1rem; display: flex; flex-direction: column; }
-    .sidebar h2 { font-size: 1.2rem; margin-bottom: 1rem; }
-    .main { flex: 1; display: flex; flex-direction: column; }
-    .chat-box { flex: 1; padding: 1rem; overflow-y: auto; }
-    .chat-message { margin-bottom: 0.5rem; }
-    .chat-message span { font-weight: bold; color: #00aff4; }
-    .input-area { display: flex; padding: 1rem; background: #313338; }
-    .input-area input { flex: 1; padding: 0.5rem; border: none; border-radius: 4px; background: #40444b; color: white; }
-    .input-area button { margin-left: 0.5rem; padding: 0.5rem 1rem; border: none; background: #5865f2; color: white; border-radius: 4px; cursor: pointer; }
-    .login { margin: auto; text-align: center; color: white; }
-    .login input { margin: 0.5rem 0; padding: 0.5rem; border: none; border-radius: 4px; background: #40444b; color: white; width: 200px; }
-    .login button { padding: 0.5rem 1rem; background: #5865f2; border: none; border-radius: 4px; color: white; cursor: pointer; }
-    .friends-list { margin-top: 1rem; background: #313338; padding: 1rem; border-radius: 4px; }
-    .friend { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
-    .friend button { background: #5865f2; border: none; color: white; border-radius: 4px; cursor: pointer; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Courier New', monospace;
+    }
+    body {
+      background: black;
+      color: #0ff;
+      overflow-y: auto;
+      text-align: center;
+    }
+    .terminal {
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid #0ff;
+      padding: 15px;
+      width: 80%;
+      height: 250px;
+      margin: 20px auto;
+      text-align: left;
+      font-size: 14px;
+      overflow-y: auto;
+      border-radius: 8px;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    .glitch {
+      font-size: 3rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      animation: glitch 1.5s infinite;
+    }
+    @keyframes glitch {
+      0% { text-shadow: 3px 3px red, -3px -3px blue; }
+      50% { text-shadow: -3px -3px red, 3px 3px blue; }
+      100% { text-shadow: 3px 3px red, -3px -3px blue; }
+    }
+    .section-box {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid #0ff;
+      padding: 20px;
+      width: 85%;
+      margin: 20px auto;
+      border-radius: 10px;
+      text-align: left;
+    }
+    .copyright {
+      margin-top: 50px;
+      font-size: 14px;
+      color: #0ff;
+      opacity: 0.7;
+    }
+    #notif {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: black;
+      color: #0ff;
+      border: 2px solid #0ff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      display: none;
+      z-index: 9999;
+    }
   </style>
 </head>
 <body>
-  <div id="loginPage" class="login">
-    <h1>Moonlight Chat</h1>
-    <p>Enter a username to join</p>
-    <input type="text" id="usernameInput" placeholder="Username" /> <br />
-    <button onclick="login()">Enter</button>
-  </div>
 
-  <div id="chatPage" style="display:none; width:100%;">
-    <div class="sidebar">
-      <h2>Moonlight</h2>
-      <p id="currentUser"></p>
-      <div class="friends-list" id="friendsList">
-        <h3>Your Friends</h3>
-        <div id="friendListContent"></div>
-        <input type="text" id="friendInput" placeholder="Add Friend" /> <button onclick="addFriend()">Add</button>
-      </div>
-    </div>
-    <div class="main">
-      <div class="chat-box" id="chatBox"></div>
-      <div class="input-area">
-        <input type="text" id="messageInput" placeholder="Type your message..." />
-        <button onclick="sendMessage()">Send</button>
-      </div>
-    </div>
-  </div>
+  <audio id="bg-audio" autoplay loop>
+    <source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
 
   <script>
-    const loginPage = document.getElementById("loginPage");
-    const chatPage = document.getElementById("chatPage");
-    const usernameInput = document.getElementById("usernameInput");
-    const currentUser = document.getElementById("currentUser");
-    const chatBox = document.getElementById("chatBox");
-    const messageInput = document.getElementById("messageInput");
-    const friendInput = document.getElementById("friendInput");
-    const friendsList = document.getElementById("friendsList");
-    const friendListContent = document.getElementById("friendListContent");
+    document.addEventListener("click", () => {
+      const audio = document.getElementById("bg-audio");
+      audio.muted = false;
+      audio.volume = 1;
+      audio.play().catch(err => console.log("Audio play error:", err));
+    }, { once: true });
+  </script>
 
-    function login() {
-      const username = usernameInput.value.trim();
-      if (username) {
-        localStorage.setItem("moonlight_user", username);
-        if (!localStorage.getItem("moonlight_friends")) {
-          localStorage.setItem("moonlight_friends", JSON.stringify([]));
+  <canvas id="matrix"></canvas>
+
+  <div class="container">
+    <div class="section-box">
+      <h1 class="glitch">Moonlight</h1>
+      <p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
+    </div>
+
+    <div class="terminal" id="console"></div>
+
+    <div class="section-box">
+      <h2 class="glitch">Features</h2>
+      <ul>
+        <li>✔ Shows if a Roblox user is online</li>
+        <li>✔ Detects if user is in-game or using Studio</li>
+        <li>✔ Clean and draggable GUI</li>
+        <li>✔ Toggle visibility with the "V" key</li>
+      </ul>
+    </div>
+
+    <div class="section-box">
+      <h2 class="glitch">Update Log</h2>
+      <p><strong>[v1.0]</strong> First release with Roblox username status detection and clean UI design.</p>
+    </div>
+
+    <div class="section-box">
+      <h2 class="glitch">Developed By</h2>
+      <p>Moonlight Team</p>
+      <p>Milky - Solo Developer</p>
+    </div>
+
+    <div class="section-box" style="text-align: center;">
+      <a href="https://discord.gg/RRpKYRzmxt" target="_blank" style="text-decoration: none;">
+        <button style="
+        padding: 12px 24px;
+        font-size: 16px;
+        background-color: black;
+        color: #0ff;
+        border: 2px solid #0ff;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+        " onmouseover="this.style.backgroundColor='#0ff'; this.style.color='black'" onmouseout="this.style.backgroundColor='black'; this.style.color='#0ff'">
+          Join our Discord
+        </button>
+      </a>
+    </div>
+
+    <div class="copyright">
+      <p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
+    </div>
+  </div>
+
+  <div id="notif">✔ Moonlight loaded successfully, discord.gg/RRpKYRzmxt</div>
+
+  <script>
+    function simulateConsole() {
+      const consoleBox = document.getElementById("console");
+      const messages = [
+        "> Moonlight 1.0 initializing...",
+        "> Checking for updates...",
+        "> Connecting to servers...",
+        "> Status: Online",
+        "> Awaiting user input...",
+        "> http://discord.gg/RRpKYRzmxt..."
+      ];
+      consoleBox.innerHTML = "";
+
+      let index = 0;
+      function addMessage() {
+        if (index < messages.length) {
+          const p = document.createElement("p");
+          p.textContent = messages[index];
+          consoleBox.appendChild(p);
+          consoleBox.scrollTop = consoleBox.scrollHeight;
+          index++;
+          setTimeout(addMessage, 1000);
         }
-        showChat();
+      }
+      addMessage();
+    }
+    simulateConsole();
+
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const letters = "01010101010101010101";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(0);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#0ff";
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+        ctx.fillText(text, x, y);
+
+        if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
       }
     }
 
-    function showChat() {
-      const username = localStorage.getItem("moonlight_user");
-      if (username) {
-        loginPage.style.display = "none";
-        chatPage.style.display = "flex";
-        currentUser.textContent = `Logged in as: ${username}`;
-        loadMessages();
-        loadFriends();
-      }
-    }
+    setInterval(drawMatrix, 50);
 
-    function sendMessage() {
-      const msg = messageInput.value.trim();
-      if (!msg) return;
-      const username = localStorage.getItem("moonlight_user");
-      const messages = JSON.parse(localStorage.getItem("moonlight_messages") || "[]");
-      messages.push({ user: username, text: msg });
-      localStorage.setItem("moonlight_messages", JSON.stringify(messages));
-      messageInput.value = "";
-      loadMessages();
-    }
-
-    function loadMessages() {
-      const messages = JSON.parse(localStorage.getItem("moonlight_messages") || "[]");
-      chatBox.innerHTML = "";
-      messages.forEach(msg => {
-        const msgEl = document.createElement("div");
-        msgEl.className = "chat-message";
-        msgEl.innerHTML = `<span>${msg.user}</span>: ${msg.text}`;
-        chatBox.appendChild(msgEl);
-      });
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    function loadFriends() {
-      const friends = JSON.parse(localStorage.getItem("moonlight_friends") || "[]");
-      friendListContent.innerHTML = "";
-      friends.forEach(friend => {
-        const friendEl = document.createElement("div");
-        friendEl.className = "friend";
-        friendEl.innerHTML = `${friend} <button onclick="removeFriend('${friend}')">Remove</button>`;
-        friendListContent.appendChild(friendEl);
-      });
-    }
-
-    function addFriend() {
-      const friendName = friendInput.value.trim();
-      if (!friendName) return;
-      const friends = JSON.parse(localStorage.getItem("moonlight_friends") || "[]");
-      if (!friends.includes(friendName)) {
-        friends.push(friendName);
-        localStorage.setItem("moonlight_friends", JSON.stringify(friends));
-        friendInput.value = "";
-        loadFriends();
-      }
-    }
-
-    function removeFriend(friendName) {
-      const friends = JSON.parse(localStorage.getItem("moonlight_friends") || "[]");
-      const updatedFriends = friends.filter(friend => friend !== friendName);
-      localStorage.setItem("moonlight_friends", JSON.stringify(updatedFriends));
-      loadFriends();
-    }
-
-    // Auto-login if user already exists
-    if (localStorage.getItem("moonlight_user")) showChat();
+    // Show notification and open Moonlight
+    setTimeout(() => {
+      const notif = document.getElementById("notif");
+      notif.style.display = "block";
+      setTimeout(() => {
+        notif.style.display = "none";
+        window.open("https://moonlight.softworks.lol", "_blank");
+      }, 7000);
+    }, 1000);
   </script>
 </body>
 </html>
