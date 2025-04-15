@@ -14,22 +14,23 @@
     }
 
     body {
-      background: #0f0f0f;
-      color: #00ffcc;
+      background: #0d0d0d;
+      color: #00ffe1;
       font-family: 'Share Tech Mono', monospace;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      height: 100vh;
-      overflow: hidden;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 30px;
     }
 
     .glitch {
-      font-size: 5rem;
+      font-size: 4.5rem;
       position: relative;
-      animation: flicker 1.5s infinite;
-      color: #00ffcc;
+      animation: flicker 1.8s infinite;
+      color: #00ffe1;
     }
 
     .glitch::before, .glitch::after {
@@ -38,7 +39,7 @@
       left: 0;
       width: 100%;
       overflow: hidden;
-      color: #00ffcc;
+      color: #00ffe1;
     }
 
     .glitch::before {
@@ -72,18 +73,10 @@
       20%, 22%, 24%, 55% { opacity: 0; }
     }
 
-    .message {
-      margin-top: 20px;
-      font-size: 1.2rem;
-      max-width: 600px;
-      text-align: center;
-      color: #888;
-    }
-
-    .code {
-      margin-top: 40px;
+    .error-code {
       color: #ff4c4c;
       font-size: 1.3rem;
+      margin-top: 10px;
       animation: blink 1s infinite;
     }
 
@@ -92,9 +85,17 @@
       50% { opacity: 0.2; }
     }
 
+    .apology {
+      margin-top: 40px;
+      font-size: 1.1rem;
+      max-width: 700px;
+      color: #bbb;
+      line-height: 1.7;
+    }
+
     .button {
-      margin-top: 50px;
-      background: #00ffcc;
+      margin-top: 40px;
+      background: #00ffe1;
       color: #000;
       padding: 12px 30px;
       border: none;
@@ -105,23 +106,30 @@
     }
 
     .button:hover {
-      background: #00d8aa;
+      background: #00ccb5;
     }
   </style>
 </head>
 <body>
 
   <div class="glitch" data-text="MOONLIGHT 404">MOONLIGHT 404</div>
+  <div class="error-code">ERROR CODE: 404_NOT_FOUND</div>
 
-  <div class="message">
-    The system tried reaching this page... but it returned void.<br>
-    Either the route was corrupted, removed, or never existed in the first place.<br><br>
-    Our devs are likely already on this. If you believe this is a mistake, sit tight — or head back to safety.
+  <div class="apology">
+    <p>
+      Dear user,<br><br>
+      We sincerely apologize for the inconvenience. It looks like the page you were trying to access has either been moved, deleted, or never existed to begin with. These things happen, and we’re working to ensure they happen a lot less.
+    </p>
+    <p>
+      At Moonlight, we take reliability seriously. This error has been logged and forwarded to our team for immediate review. If you believe this is an issue affecting your experience or account, feel free to reach out to us directly.
+    </p>
+    <p>
+      Thank you for your patience and for being part of Moonlight. Even in the shadows, we’re always working to improve your journey.
+    </p>
+    <p>— The Moonlight Team</p>
   </div>
 
-  <div class="code">ERROR CODE: 404_NOT_FOUND</div>
-
-  <a href="/" class="button">Return to Dashboard</a>
+  <a href="/" class="button">Return to Homepage</a>
 
 </body>
 </html>
