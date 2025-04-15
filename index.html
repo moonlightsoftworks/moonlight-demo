@@ -11,14 +11,65 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Courier New', monospace;
+      font-family: 'Poppins', sans-serif;
     }
     body {
-      background: black;
-      color: #0ff;
-      overflow-y: auto;
+      background: radial-gradient(circle, rgba(0, 0, 0, 1) 0%, rgba(36, 36, 36, 1) 100%);
+      color: #fff;
+      overflow: hidden;
       text-align: center;
     }
+
+    /* Glow effect for titles */
+    .glitch {
+      font-size: 4rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: #0ff;
+      animation: glitch 1.5s infinite alternate;
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 3px 3px 0 #f00, -3px -3px 0 #00f; }
+      50% { text-shadow: -3px -3px 0 #f00, 3px 3px 0 #00f; }
+      100% { text-shadow: 3px 3px 0 #f00, -3px -3px 0 #00f; }
+    }
+
+    /* Sexy, rounded UI boxes */
+    .section-box {
+      background: rgba(0, 0, 0, 0.85);
+      border: 2px solid #0ff;
+      padding: 30px;
+      margin: 20px auto;
+      border-radius: 15px;
+      width: 80%;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .section-box:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px 2px rgba(0, 255, 255, 0.5);
+    }
+
+    .button {
+      background-color: #0ff;
+      color: black;
+      border: 2px solid #0ff;
+      padding: 15px 30px;
+      font-size: 18px;
+      text-transform: uppercase;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+      margin-top: 20px;
+      display: inline-block;
+    }
+
+    .button:hover {
+      background-color: #fff;
+      color: #0ff;
+    }
+
     .terminal {
       background: rgba(0, 0, 0, 0.9);
       border: 2px solid #0ff;
@@ -29,8 +80,9 @@
       text-align: left;
       font-size: 14px;
       overflow-y: auto;
-      border-radius: 8px;
+      border-radius: 10px;
     }
+
     canvas {
       position: fixed;
       top: 0;
@@ -39,38 +91,20 @@
       height: 100%;
       z-index: -1;
     }
-    .glitch {
-      font-size: 3rem;
-      font-weight: bold;
-      text-transform: uppercase;
-      animation: glitch 1.5s infinite;
-    }
-    @keyframes glitch {
-      0% { text-shadow: 3px 3px red, -3px -3px blue; }
-      50% { text-shadow: -3px -3px red, 3px 3px blue; }
-      100% { text-shadow: 3px 3px red, -3px -3px blue; }
-    }
-    .section-box {
-      background: rgba(0, 0, 0, 0.8);
-      border: 2px solid #0ff;
-      padding: 20px;
-      width: 85%;
-      margin: 20px auto;
-      border-radius: 10px;
-      text-align: left;
-    }
+
     .copyright {
       margin-top: 50px;
       font-size: 14px;
       color: #0ff;
-      opacity: 0.7;
+      opacity: 0.8;
     }
+
     #notif {
       position: fixed;
       top: 20px;
       right: 20px;
-      background: black;
-      color: #0ff;
+      background: #0ff;
+      color: black;
       border: 2px solid #0ff;
       padding: 10px 20px;
       border-radius: 8px;
@@ -78,6 +112,52 @@
       display: none;
       z-index: 9999;
     }
+
+    /* Add Neon Glow on Hover */
+    .neon-button {
+      position: relative;
+      display: inline-block;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 30px;
+      color: #0ff;
+      text-transform: uppercase;
+      border: 2px solid #0ff;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .neon-button::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300%;
+      height: 300%;
+      background: rgba(0, 255, 255, 0.5);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+    }
+
+    .neon-button:hover::before {
+      opacity: 1;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.4);
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -101,7 +181,7 @@
   <div class="container">
     <div class="section-box">
       <h1 class="glitch">Moonlight</h1>
-      <p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
+      <p>A futuristic, sexy interface to check if a Roblox username is online or in-game.</p>
     </div>
 
     <div class="terminal" id="console"></div>
@@ -109,16 +189,16 @@
     <div class="section-box">
       <h2 class="glitch">Features</h2>
       <ul>
-        <li>✔ Shows if a Roblox user is online</li>
-        <li>✔ Detects if user is in-game or using Studio</li>
-        <li>✔ Clean and draggable GUI</li>
-        <li>✔ Toggle visibility with the "V" key</li>
+        <li>✔ Sexy neon-themed interface</li>
+        <li>✔ Real-time Roblox username status detection</li>
+        <li>✔ Smooth, animated UI</li>
+        <li>✔ Clean draggable interface</li>
       </ul>
     </div>
 
     <div class="section-box">
       <h2 class="glitch">Update Log</h2>
-      <p><strong>[v1.0]</strong> First release with Roblox username status detection and clean UI design.</p>
+      <p><strong>[v1.0]</strong> First release with a sleek, futuristic UI design and Roblox status detection.</p>
     </div>
 
     <div class="section-box">
@@ -129,16 +209,7 @@
 
     <div class="section-box" style="text-align: center;">
       <a href="https://discord.gg/RRpKYRzmxt" target="_blank" style="text-decoration: none;">
-        <button style="
-        padding: 12px 24px;
-        font-size: 16px;
-        background-color: black;
-        color: #0ff;
-        border: 2px solid #0ff;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: 0.3s;
-        " onmouseover="this.style.backgroundColor='#0ff'; this.style.color='black'" onmouseout="this.style.backgroundColor='black'; this.style.color='#0ff'">
+        <button class="neon-button">
           Join our Discord
         </button>
       </a>
@@ -208,7 +279,6 @@
 
     setInterval(drawMatrix, 50);
 
-    // Show notification and open Moonlight
     setTimeout(() => {
       const notif = document.getElementById("notif");
       notif.style.display = "block";
