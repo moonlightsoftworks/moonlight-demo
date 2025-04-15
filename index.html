@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Script-Ware | Premium Script Hub</title>
+  <title>Moonlight - Premium Roblox Exploit</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   <style>
     body {
@@ -14,76 +14,158 @@
       padding: 0;
       box-sizing: border-box;
     }
+
+    /* Header Section */
     header {
       background: #1c1c1c;
       padding: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: fixed;
+      width: 100%;
+      z-index: 1000;
+      transition: all 0.3s ease;
     }
+
     header h1 {
       color: #00ffe1;
       font-size: 2rem;
+      font-weight: bold;
     }
+
     header nav a {
       color: #fff;
       text-decoration: none;
       margin-left: 20px;
       font-weight: 500;
+      transition: color 0.3s ease;
     }
+
     header nav a:hover {
       color: #00ffe1;
     }
+
+    /* Hero Section */
     .hero {
-      background: url('hero-image.jpg') no-repeat center center;
+      background: url('your-background-image.jpg') no-repeat center center;
       background-size: cover;
-      height: 60vh;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
       color: white;
       text-align: center;
+      animation: fadeIn 2s ease-in-out;
     }
+
     .hero h2 {
-      font-size: 3rem;
+      font-size: 3.5rem;
       margin-bottom: 20px;
+      animation: fadeInUp 1s ease-out;
     }
+
     .hero .cta {
       background: #00ffe1;
       padding: 15px 30px;
       color: #000;
       text-decoration: none;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       border-radius: 5px;
+      transition: background-color 0.3s ease;
     }
+
     .cta:hover {
       background: #00bfae;
     }
+
+    /* Smooth scroll effects */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Features Section */
     .features {
       display: flex;
       justify-content: space-around;
-      padding: 50px;
+      padding: 50px 20px;
       background: #2a2a2a;
+      animation: fadeIn 2s ease-in-out;
     }
+
     .feature {
       text-align: center;
-      max-width: 250px;
+      max-width: 300px;
+      transition: transform 0.3s ease;
     }
+
     .feature i {
-      font-size: 2.5rem;
+      font-size: 3rem;
       color: #00ffe1;
+      margin-bottom: 10px;
     }
+
+    .feature h3 {
+      font-size: 1.5rem;
+      color: #fff;
+    }
+
+    .feature p {
+      color: #bbb;
+    }
+
+    .feature:hover {
+      transform: scale(1.05);
+    }
+
+    /* Footer Section */
     footer {
       background: #121212;
       color: #aaa;
       padding: 20px;
       text-align: center;
     }
+
+    /* Admin Panel Styles */
+    .admin-panel {
+      background: #1c1c1c;
+      padding: 20px;
+      margin: 50px auto;
+      max-width: 1000px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .admin-panel input[type="text"], .admin-panel input[type="button"] {
+      padding: 10px;
+      font-size: 1.1rem;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: none;
+    }
+
+    .admin-panel input[type="button"] {
+      background: #00ffe1;
+      color: #000;
+      cursor: pointer;
+    }
+
+    .admin-panel input[type="button"]:hover {
+      background: #00bfae;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Header Section -->
   <header>
-    <h1>Script-Ware</h1>
+    <h1>Moonlight</h1>
     <nav>
       <a href="#">Home</a>
       <a href="#">Features</a>
@@ -93,33 +175,49 @@
     </nav>
   </header>
 
+  <!-- Hero Section -->
   <section class="hero">
     <div>
-      <h2>Unleash the Power of Premium Scripts</h2>
-      <a href="#buy" class="cta">Buy Now</a>
+      <h2>Unlock Your Power with Moonlight</h2>
+      <a href="#buy" class="cta">Get Started</a>
     </div>
   </section>
 
+  <!-- Features Section -->
   <section class="features">
     <div class="feature">
       <i class="fas fa-cogs"></i>
       <h3>Advanced Features</h3>
-      <p>Access the best tools and features available in the market.</p>
+      <p>Get access to cutting-edge tools for Roblox.</p>
     </div>
     <div class="feature">
       <i class="fas fa-shield-alt"></i>
       <h3>Secure & Safe</h3>
-      <p>Our scripts are tested and certified to be secure and undetected.</p>
+      <p>Enjoy a secure, undetected experience every time.</p>
     </div>
     <div class="feature">
       <i class="fas fa-users"></i>
-      <h3>Community Support</h3>
-      <p>Join our active community for 24/7 support and updates.</p>
+      <h3>Community</h3>
+      <p>Join a thriving community for support and updates.</p>
     </div>
   </section>
 
+  <!-- Admin Panel Section (for the future) -->
+  <section class="admin-panel">
+    <h2>Admin Panel</h2>
+    <input type="text" placeholder="Search User..." />
+    <input type="button" value="Ban User" />
+    <input type="button" value="Unban User" />
+    <input type="button" value="Blacklist User" />
+    <input type="button" value="Unblacklist User" />
+    <input type="button" value="Terminate Account" />
+    <input type="button" value="Send Public Announcement" />
+  </section>
+
+  <!-- Footer Section -->
   <footer>
-    <p>&copy; 2025 Script-Ware | All Rights Reserved</p>
+    <p>&copy; 2025 Moonlight | All Rights Reserved</p>
   </footer>
+
 </body>
 </html>
