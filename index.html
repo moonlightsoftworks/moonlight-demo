@@ -1,230 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Moonlight</title>
-<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
-
-<style>
-* {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
-font-family: 'Courier New', monospace;
-}
-
-body {
-background: black;
-color: #0ff;
-overflow-y: auto;
-text-align: center;
-}
-
-.terminal {
-background: rgba(0, 0, 0, 0.9);
-border: 2px solid #0ff;
-padding: 15px;
-width: 80%;
-height: 250px;
-margin: 20px auto;
-text-align: left;
-font-size: 14px;
-overflow-y: auto;
-border-radius: 8px;
-}
-
-canvas {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-z-index: -1;
-}
-
-.glitch {
-font-size: 3rem;
-font-weight: bold;
-text-transform: uppercase;
-animation: glitch 1.5s infinite;
-}
-
-@keyframes glitch {
-0% { text-shadow: 3px 3px red, -3px -3px blue; }
-50% { text-shadow: -3px -3px red, 3px 3px blue; }
-100% { text-shadow: 3px 3px red, -3px -3px blue; }
-}
-
-.section-box {
-background: rgba(0, 0, 0, 0.8);
-border: 2px solid #0ff;
-padding: 20px;
-width: 85%;
-margin: 20px auto;
-border-radius: 10px;
-text-align: left;
-}
-
-.copyright {
-margin-top: 50px;
-font-size: 14px;
-color: #0ff;
-opacity: 0.7;
-}
-
-#notif {
-position: fixed;
-top: 20px;
-right: 20px;
-background: black;
-color: #0ff;
-border: 2px solid #0ff;
-padding: 10px 20px;
-border-radius: 8px;
-font-weight: bold;
-display: none;
-z-index: 9999;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Milky Auth</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 2rem;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+    input, button {
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border: none;
+      border-radius: 10px;
+    }
+    input {
+      background: #2a2a2a;
+      color: white;
+    }
+    button {
+      background: #6a5acd;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #7f73e3;
+    }
+    #adminPanel {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      display: none;
+    }
+  </style>
 </head>
 <body>
+  <div class="container" id="home">
+    <h2>Welcome to Milky</h2>
+    <button onclick="showLogin()">Login</button>
+    <button onclick="showSignup()">Sign Up</button>
+  </div>
 
-<audio id="bg-audio" autoplay loop>
-<source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
-Your browser does not support the audio element.
-</audio>
+  <div class="container" id="login" style="display:none">
+    <h2>Login</h2>
+    <input type="text" id="loginUsername" placeholder="Username" />
+    <input type="password" id="loginPassword" placeholder="Password" />
+    <button onclick="loginUser()">Login</button>
+    <button onclick="goHome()">Back</button>
+  </div>
 
-<script>
-document.addEventListener("click", () => {
-const audio = document.getElementById("bg-audio");
-audio.muted = false;
-audio.volume = 1;
-audio.play().catch(err => console.log("Audio play error:", err));
-}, { once: true });
-</script>
+  <div class="container" id="signup" style="display:none">
+    <h2>Sign Up</h2>
+    <input type="text" id="signupUsername" placeholder="Username" />
+    <input type="password" id="signupPassword" placeholder="Password" />
+    <button onclick="signupUser()">Sign Up</button>
+    <button onclick="goHome()">Back</button>
+  </div>
 
-<canvas id="matrix"></canvas>
+  <div class="container" id="dashboard" style="display:none">
+    <h2 id="welcomeMsg"></h2>
+    <button onclick="logout()">Logout</button>
+    <div id="adminPanel">
+      <h3>Admin Panel</h3>
+      <p>Welcome, Milky. You have admin access.</p>
+    </div>
+  </div>
 
-<div class="container">
-<div class="section-box">
-<h1 class="glitch">Moonlight</h1>
-<p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
-</div>
+  <script>
+    function showLogin() {
+      document.getElementById('home').style.display = 'none';
+      document.getElementById('login').style.display = 'block';
+    }
 
-<div class="terminal" id="console"></div>
+    function showSignup() {
+      document.getElementById('home').style.display = 'none';
+      document.getElementById('signup').style.display = 'block';
+    }
 
-<div class="section-box">
-<h2 class="glitch">Features</h2>
-<ul>
-<li>✔ Shows if a Roblox user is online</li>
-<li>✔ Detects if user is in-game or using Studio</li>
-<li>✔ Clean and draggable GUI</li>
-<li>✔ Toggle visibility with the "V" key</li>
-</ul>
-</div>
+    function goHome() {
+      document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
+      document.getElementById('home').style.display = 'block';
+    }
 
-<div class="section-box">
-<h2 class="glitch">Update Log</h2>
-<p><strong>[v1.0]</strong> First release with Roblox username status detection and clean UI design.</p>
-</div>
+    function signupUser() {
+      const user = document.getElementById('signupUsername').value;
+      const pass = document.getElementById('signupPassword').value;
+      if (user && pass) {
+        let users = JSON.parse(localStorage.getItem('users') || '{}');
+        if (users[user]) return alert('User already exists.');
+        users[user] = pass;
+        localStorage.setItem('users', JSON.stringify(users));
+        alert('Signup successful! You can log in now.');
+        showLogin();
+      } else {
+        alert('Please fill out both fields.');
+      }
+    }
 
-<div class="section-box">
-<h2 class="glitch">Developed By</h2>
-<p>Moonlight Team</p>
-<p>Milky - Solo Developer</p>
-</div>
+    function loginUser() {
+      const user = document.getElementById('loginUsername').value;
+      const pass = document.getElementById('loginPassword').value;
+      let users = JSON.parse(localStorage.getItem('users') || '{}');
+      if (users[user] && users[user] === pass) {
+        localStorage.setItem('loggedInUser', user);
+        showDashboard(user);
+      } else {
+        alert('Invalid login.');
+      }
+    }
 
-<div class="section-box" style="text-align: center;">
-<a href="https://discord.gg/RRpKYRzmxt" target="_blank" style="text-decoration: none;">
-<button style="
-padding: 12px 24px;
-font-size: 16px;
-background-color: black;
-color: #0ff;
-border: 2px solid #0ff;
-border-radius: 8px;
-cursor: pointer;
-transition: 0.3s;
-" onmouseover="this.style.backgroundColor='#0ff'; this.style.color='black'" onmouseout="this.style.backgroundColor='black'; this.style.color='#0ff'">
-Join our Discord
-</button>
-</a>
-</div>
+    function showDashboard(user) {
+      document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
+      document.getElementById('dashboard').style.display = 'block';
+      document.getElementById('welcomeMsg').innerText = `Hi, ${user}`;
+      if (user.toLowerCase() === 'milky') {
+        document.getElementById('adminPanel').style.display = 'block';
+      } else {
+        document.getElementById('adminPanel').style.display = 'none';
+      }
+    }
 
-<div class="copyright">
-<p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
-</div>
-</div>
+    function logout() {
+      localStorage.removeItem('loggedInUser');
+      goHome();
+    }
 
-<div id="notif">✔ Moonlight loaded successfully, discord.gg/RRpKYRzmxt</div>
-
-<script>
-function simulateConsole() {
-const consoleBox = document.getElementById("console");
-const messages = [
-"> Moonlight 1.0 initializing...",
-"> Checking for updates...",
-"> Connecting to servers...",
-"> Status: Online",
-"> Awaiting user input...",
-"> http://discord.gg/RRpKYRzmxt..."
-];
-consoleBox.innerHTML = "";
-
-let index = 0;
-function addMessage() {
-if (index < messages.length) {
-const p = document.createElement("p");
-p.textContent = messages[index];
-consoleBox.appendChild(p);
-consoleBox.scrollTop = consoleBox.scrollHeight;
-index++;
-setTimeout(addMessage, 1000);
-}
-}
-addMessage();
-}
-simulateConsole();
-
-const canvas = document.getElementById('matrix');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-const letters = "01010101010101010101";
-const fontSize = 16;
-const columns = canvas.width / fontSize;
-const drops = Array(Math.floor(columns)).fill(0);
-
-function drawMatrix() {
-ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-ctx.fillRect(0, 0, canvas.width, canvas.height);
-ctx.fillStyle = "#0ff";
-ctx.font = fontSize + "px monospace";
-
-for (let i = 0; i < drops.length; i++) {
-const text = letters[Math.floor(Math.random() * letters.length)];
-const x = i * fontSize;
-const y = drops[i] * fontSize;
-ctx.fillText(text, x, y);
-
-if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
-drops[i]++;
-}
-}
-
-setInterval(drawMatrix, 50);
-
-// Show notification and open Moonlight
-setTimeout(() => {
-const notif = document.getElementById("notif");
-notif.style.display = "block";
-setTimeout(() => {
-notif.style.display = "none";
-window.open("https://moonlight.softworks.lol", "_blank");
-}, 7000);
-}, 1000);
-</script>
+    window.onload = function () {
+      const user = localStorage.getItem('loggedInUser');
+      if (user) showDashboard(user);
+    }
+  </script>
 </body>
 </html>
