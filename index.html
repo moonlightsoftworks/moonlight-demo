@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moonlight Auth</title>
+  <title>Moonlight</title>
   <style>
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: url('https://images.unsplash.com/photo-1549887534-23418f5a5b05?auto=format&fit=crop&w=1950&q=80') center/cover no-repeat;
+      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
       color: white;
       display: flex;
       justify-content: center;
@@ -17,13 +17,13 @@
       height: 100vh;
     }
     .container {
-      background: rgba(0,0,0,0.6);
+      background: rgba(255,255,255,0.05);
       backdrop-filter: blur(10px);
       border-radius: 15px;
       padding: 2rem;
-      width: 320px;
+      width: 300px;
       text-align: center;
-      box-shadow: 0 0 25px rgba(0,0,0,0.6);
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
     }
     input, button {
       width: 100%;
@@ -53,9 +53,11 @@
       border-radius: 10px;
       display: none;
     }
-    #adminPanel input {
-      background: #1c1c1c;
-      color: white;
+    .forum-thread {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
     }
   </style>
 </head>
@@ -64,6 +66,7 @@
     <h2>Welcome to Moonlight</h2>
     <button onclick="showLogin()">Login</button>
     <button onclick="showSignup()">Sign Up</button>
+    <button onclick="showForum()">Forum</button>
   </div>
 
   <div class="container" id="login" style="display:none">
@@ -87,33 +90,34 @@
     <button onclick="logout()">Logout</button>
     <div id="adminPanel">
       <h3>Admin Panel</h3>
-      <p>Welcome, Milky. You have admin access.</p>
-      <input type="text" id="adminActionUser" placeholder="Enter username" />
-      <button onclick="banUser()">Ban</button>
-      <button onclick="unbanUser()">Unban</button>
-      <button onclick="blacklistUser()">Blacklist</button>
-      <button onclick="unblacklistUser()">Unblacklist</button>
+      <button onclick="banUser()">Ban User</button>
+      <button onclick="unbanUser()">Unban User</button>
     </div>
+  </div>
+
+  <div class="container" id="forum" style="display:none">
+    <h2>Forum</h2>
+    <div id="threadsContainer"></div>
+    <input type="text" id="threadTitle" placeholder="Thread Title" />
+    <textarea id="threadContent" placeholder="Thread Content"></textarea>
+    <button onclick="createThread()">Create Thread</button>
+    <button onclick="goHome()">Back</button>
   </div>
 
   <script>
     function showLogin() {
-      hideAll();
+      document.getElementById('home').style.display = 'none';
       document.getElementById('login').style.display = 'block';
     }
 
     function showSignup() {
-      hideAll();
+      document.getElementById('home').style.display = 'none';
       document.getElementById('signup').style.display = 'block';
     }
 
     function goHome() {
-      hideAll();
-      document.getElementById('home').style.display = 'block';
-    }
-
-    function hideAll() {
       document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
+      document.getElementById('home').style.display = 'block';
     }
 
     function signupUser() {
@@ -144,7 +148,7 @@
     }
 
     function showDashboard(user) {
-      hideAll();
+      document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
       document.getElementById('dashboard').style.display = 'block';
       document.getElementById('welcomeMsg').innerText = `Hi, ${user}`;
       if (user.toLowerCase() === 'milky') {
@@ -159,38 +163,65 @@
       goHome();
     }
 
+    function showForum() {
+      document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
+      document.getElementById('forum').style.display = 'block';
+      loadThreads();
+    }
+
+    function createThread() {
+      const title = document.getElementById('threadTitle').value;
+      const content = document.getElementById('threadContent').value;
+      if (title && content) {
+        let threads = JSON.parse(localStorage.getItem('threads') || '[]');
+        threads.push({ title, content, user: localStorage.getItem('loggedInUser') });
+        localStorage.setItem('threads', JSON.stringify(threads));
+        loadThreads();
+        alert('Thread created!');
+      } else {
+        alert('Please fill out both fields.');
+      }
+    }
+
+    function loadThreads() {
+      const threads = JSON.parse(localStorage.getItem('threads') || '[]');
+      const threadsContainer = document.getElementById('threadsContainer');
+      threadsContainer.innerHTML = '';
+      threads.forEach(thread => {
+        const threadDiv = document.createElement('div');
+        threadDiv.classList.add('forum-thread');
+        threadDiv.innerHTML = `
+          <h3>${thread.title}</h3>
+          <p>${thread.content}</p>
+          <small>Posted by ${thread.user}</small>
+        `;
+        threadsContainer.appendChild(threadDiv);
+      });
+    }
+
     function banUser() {
-      const user = document.getElementById('adminActionUser').value;
-      if (!user) return alert('Enter a username');
-      let bans = JSON.parse(localStorage.getItem('bannedUsers') || '[]');
-      if (!bans.includes(user)) bans.push(user);
-      localStorage.setItem('bannedUsers', JSON.stringify(bans));
-      alert(`${user} has been banned.`);
+      const userToBan = prompt('Enter username to ban');
+      let bannedUsers = JSON.parse(localStorage.getItem('bannedUsers') || '[]');
+      if (!bannedUsers.includes(userToBan)) {
+        bannedUsers.push(userToBan);
+        localStorage.setItem('bannedUsers', JSON.stringify(bannedUsers));
+        alert(`${userToBan} has been banned.`);
+      } else {
+        alert(`${userToBan} is already banned.`);
+      }
     }
 
     function unbanUser() {
-      const user = document.getElementById('adminActionUser').value;
-      let bans = JSON.parse(localStorage.getItem('bannedUsers') || '[]');
-      bans = bans.filter(u => u !== user);
-      localStorage.setItem('bannedUsers', JSON.stringify(bans));
-      alert(`${user} has been unbanned.`);
-    }
-
-    function blacklistUser() {
-      const user = document.getElementById('adminActionUser').value;
-      if (!user) return alert('Enter a username');
-      let bl = JSON.parse(localStorage.getItem('blacklistedUsers') || '[]');
-      if (!bl.includes(user)) bl.push(user);
-      localStorage.setItem('blacklistedUsers', JSON.stringify(bl));
-      alert(`${user} has been blacklisted.`);
-    }
-
-    function unblacklistUser() {
-      const user = document.getElementById('adminActionUser').value;
-      let bl = JSON.parse(localStorage.getItem('blacklistedUsers') || '[]');
-      bl = bl.filter(u => u !== user);
-      localStorage.setItem('blacklistedUsers', JSON.stringify(bl));
-      alert(`${user} has been unblacklisted.`);
+      const userToUnban = prompt('Enter username to unban');
+      let bannedUsers = JSON.parse(localStorage.getItem('bannedUsers') || '[]');
+      const index = bannedUsers.indexOf(userToUnban);
+      if (index !== -1) {
+        bannedUsers.splice(index, 1);
+        localStorage.setItem('bannedUsers', JSON.stringify(bannedUsers));
+        alert(`${userToUnban} has been unbanned.`);
+      } else {
+        alert(`${userToUnban} is not banned.`);
+      }
     }
 
     window.onload = function () {
