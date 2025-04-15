@@ -19,6 +19,9 @@
     .login { margin: auto; text-align: center; color: white; }
     .login input { margin: 0.5rem 0; padding: 0.5rem; border: none; border-radius: 4px; background: #40444b; color: white; width: 200px; }
     .login button { padding: 0.5rem 1rem; background: #5865f2; border: none; border-radius: 4px; color: white; cursor: pointer; }
+    .friends-list { margin-top: 1rem; background: #313338; padding: 1rem; border-radius: 4px; }
+    .friend { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+    .friend button { background: #5865f2; border: none; color: white; border-radius: 4px; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -33,6 +36,11 @@
     <div class="sidebar">
       <h2>Moonlight</h2>
       <p id="currentUser"></p>
+      <div class="friends-list" id="friendsList">
+        <h3>Your Friends</h3>
+        <div id="friendListContent"></div>
+        <input type="text" id="friendInput" placeholder="Add Friend" /> <button onclick="addFriend()">Add</button>
+      </div>
     </div>
     <div class="main">
       <div class="chat-box" id="chatBox"></div>
@@ -50,11 +58,17 @@
     const currentUser = document.getElementById("currentUser");
     const chatBox = document.getElementById("chatBox");
     const messageInput = document.getElementById("messageInput");
+    const friendInput = document.getElementById("friendInput");
+    const friendsList = document.getElementById("friendsList");
+    const friendListContent = document.getElementById("friendListContent");
 
     function login() {
       const username = usernameInput.value.trim();
       if (username) {
         localStorage.setItem("moonlight_user", username);
+        if (!localStorage.getItem("moonlight_friends")) {
+          localStorage.setItem("moonlight_friends", JSON.stringify([]));
+        }
         showChat();
       }
     }
@@ -66,6 +80,7 @@
         chatPage.style.display = "flex";
         currentUser.textContent = `Logged in as: ${username}`;
         loadMessages();
+        loadFriends();
       }
     }
 
@@ -90,6 +105,36 @@
         chatBox.appendChild(msgEl);
       });
       chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function loadFriends() {
+      const friends = JSON.parse(localStorage.getItem("moonlight_friends") || "[]");
+      friendListContent.innerHTML = "";
+      friends.forEach(friend => {
+        const friendEl = document.createElement("div");
+        friendEl.className = "friend";
+        friendEl.innerHTML = `${friend} <button onclick="removeFriend('${friend}')">Remove</button>`;
+        friendListContent.appendChild(friendEl);
+      });
+    }
+
+    function addFriend() {
+      const friendName = friendInput.value.trim();
+      if (!friendName) return;
+      const friends = JSON.parse(localStorage.getItem("moonlight_friends") || "[]");
+      if (!friends.includes(friendName)) {
+        friends.push(friendName);
+        localStorage.setItem("moonlight_friends", JSON.stringify(friends));
+        friendInput.value = "";
+        loadFriends();
+      }
+    }
+
+    function removeFriend(friendName) {
+      const friends = JSON.parse(localStorage.getItem("moonlight_friends") || "[]");
+      const updatedFriends = friends.filter(friend => friend !== friendName);
+      localStorage.setItem("moonlight_friends", JSON.stringify(updatedFriends));
+      loadFriends();
     }
 
     // Auto-login if user already exists
