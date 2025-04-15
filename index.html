@@ -66,6 +66,35 @@ border-radius: 10px;
 text-align: left;
 }
 
+input {
+padding: 8px;
+width: 80%;
+margin-bottom: 10px;
+background: black;
+border: 2px solid #0ff;
+color: #0ff;
+border-radius: 6px;
+}
+
+button {
+padding: 10px 20px;
+background-color: black;
+color: #0ff;
+border: 2px solid #0ff;
+border-radius: 8px;
+cursor: pointer;
+transition: 0.3s;
+}
+
+button:hover {
+background-color: #0ff;
+color: black;
+}
+
+a {
+color: #0ff;
+}
+
 .copyright {
 margin-top: 50px;
 font-size: 14px;
@@ -107,59 +136,137 @@ audio.play().catch(err => console.log("Audio play error:", err));
 <canvas id="matrix"></canvas>
 
 <div class="container">
-<div class="section-box">
-<h1 class="glitch">Moonlight</h1>
-<p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
-</div>
+  <div id="auth-section" class="section-box">
+    <h2 class="glitch">Moonlight Access</h2>
+    <div id="signup-form">
+      <h3>Create Account</h3>
+      <input type="text" id="signup-username" placeholder="Username" /><br/>
+      <input type="password" id="signup-password" placeholder="Password" /><br/>
+      <button onclick="signup()">Sign Up</button>
+      <p>Already have an account? <a href="#" onclick="toggleAuth('login')">Login here</a></p>
+    </div>
 
-<div class="terminal" id="console"></div>
+    <div id="login-form" style="display:none;">
+      <h3>Login</h3>
+      <input type="text" id="login-username" placeholder="Username" /><br/>
+      <input type="password" id="login-password" placeholder="Password" /><br/>
+      <button onclick="login()">Login</button>
+      <p>Don't have an account? <a href="#" onclick="toggleAuth('signup')">Sign up here</a></p>
+    </div>
+  </div>
 
-<div class="section-box">
-<h2 class="glitch">Features</h2>
-<ul>
-<li>✔ Shows if a Roblox user is online</li>
-<li>✔ Detects if user is in-game or using Studio</li>
-<li>✔ Clean and draggable GUI</li>
-<li>✔ Toggle visibility with the "V" key</li>
-</ul>
-</div>
+  <div id="dashboard" class="section-box" style="display:none;">
+    <h2 class="glitch">Dashboard</h2>
+    <p id="welcome-user">Hi, </p>
+    <button onclick="logout()">Logout</button>
 
-<div class="section-box">
-<h2 class="glitch">Update Log</h2>
-<p><strong>[v1.0]</strong> First release with Roblox username status detection and clean UI design.</p>
-</div>
+    <div id="admin-panel" style="margin-top:20px; display:none;">
+      <h3>Admin Panel</h3>
+      <input type="text" id="admin-username" placeholder="Enter username" /><br/>
+      <button onclick="banUser()">Ban</button>
+      <button onclick="unbanUser()">Unban</button>
+      <button onclick="blacklistUser()">Blacklist</button>
+      <button onclick="unblacklistUser()">Unblacklist</button>
+    </div>
+  </div>
 
-<div class="section-box">
-<h2 class="glitch">Developed By</h2>
-<p>Moonlight Team</p>
-<p>Milky - Solo Developer</p>
-</div>
+  <div class="section-box">
+    <h1 class="glitch">Moonlight</h1>
+    <p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
+  </div>
 
-<div class="section-box" style="text-align: center;">
-<a href="https://discord.gg/RRpKYRzmxt" target="_blank" style="text-decoration: none;">
-<button style="
-padding: 12px 24px;
-font-size: 16px;
-background-color: black;
-color: #0ff;
-border: 2px solid #0ff;
-border-radius: 8px;
-cursor: pointer;
-transition: 0.3s;
-" onmouseover="this.style.backgroundColor='#0ff'; this.style.color='black'" onmouseout="this.style.backgroundColor='black'; this.style.color='#0ff'">
-Join our Discord
-</button>
-</a>
-</div>
+  <div class="terminal" id="console"></div>
 
-<div class="copyright">
-<p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
-</div>
+  <div class="section-box">
+    <h2 class="glitch">Features</h2>
+    <ul>
+      <li>✔ Shows if a Roblox user is online</li>
+      <li>✔ Detects if user is in-game or using Studio</li>
+      <li>✔ Clean and draggable GUI</li>
+      <li>✔ Toggle visibility with the "V" key</li>
+    </ul>
+  </div>
+
+  <div class="section-box">
+    <h2 class="glitch">Update Log</h2>
+    <p><strong>[v1.0]</strong> First release with Roblox username status detection and clean UI design.</p>
+  </div>
+
+  <div class="section-box">
+    <h2 class="glitch">Developed By</h2>
+    <p>Moonlight Team</p>
+    <p>Milky - Solo Developer</p>
+  </div>
+
+  <div class="section-box" style="text-align: center;">
+    <a href="https://discord.gg/RRpKYRzmxt" target="_blank" style="text-decoration: none;">
+      <button>Join our Discord</button>
+    </a>
+  </div>
+
+  <div class="copyright">
+    <p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
+  </div>
 </div>
 
 <div id="notif">✔ Moonlight loaded successfully, discord.gg/RRpKYRzmxt</div>
 
 <script>
+function toggleAuth(mode) {
+  document.getElementById('signup-form').style.display = mode === 'signup' ? 'block' : 'none';
+  document.getElementById('login-form').style.display = mode === 'login' ? 'block' : 'none';
+}
+
+function signup() {
+  const username = document.getElementById('signup-username').value;
+  const password = document.getElementById('signup-password').value;
+  if (!username || !password) return alert('Fill all fields');
+  if (localStorage.getItem('user_' + username)) return alert('Username already exists!');
+  localStorage.setItem('user_' + username, JSON.stringify({ password }));
+  alert('Account created! You can now log in.');
+  toggleAuth('login');
+}
+
+function login() {
+  const username = document.getElementById('login-username').value;
+  const password = document.getElementById('login-password').value;
+  const user = JSON.parse(localStorage.getItem('user_' + username));
+  if (!user || user.password !== password) return alert('Invalid credentials');
+  localStorage.setItem('loggedInUser', username);
+  showDashboard(username);
+}
+
+function showDashboard(username) {
+  document.getElementById('auth-section').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  document.getElementById('welcome-user').textContent = `Hi, ${username}`;
+  if (username === 'moonlight') {
+    document.getElementById('admin-panel').style.display = 'block';
+  }
+}
+
+function logout() {
+  localStorage.removeItem('loggedInUser');
+  location.reload();
+}
+
+function banUser() {
+  const user = document.getElementById('admin-username').value;
+  alert(`User ${user} has been banned.`);
+}
+function unbanUser() {
+  const user = document.getElementById('admin-username').value;
+  alert(`User ${user} has been unbanned.`);
+}
+function blacklistUser() {
+  const user = document.getElementById('admin-username').value;
+  alert(`User ${user} has been blacklisted.`);
+}
+function unblacklistUser() {
+  const user = document.getElementById('admin-username').value;
+  alert(`User ${user} has been unblacklisted.`);
+}
+
 function simulateConsole() {
 const consoleBox = document.getElementById("console");
 const messages = [
@@ -171,7 +278,6 @@ const messages = [
 "> http://discord.gg/RRpKYRzmxt..."
 ];
 consoleBox.innerHTML = "";
-
 let index = 0;
 function addMessage() {
 if (index < messages.length) {
@@ -208,15 +314,12 @@ const text = letters[Math.floor(Math.random() * letters.length)];
 const x = i * fontSize;
 const y = drops[i] * fontSize;
 ctx.fillText(text, x, y);
-
 if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
 drops[i]++;
 }
 }
-
 setInterval(drawMatrix, 50);
 
-// Show notification and open Moonlight
 setTimeout(() => {
 const notif = document.getElementById("notif");
 notif.style.display = "block";
@@ -225,6 +328,12 @@ notif.style.display = "none";
 window.open("https://moonlight.softworks.lol", "_blank");
 }, 7000);
 }, 1000);
+
+// Auto-login if previously logged in
+const currentUser = localStorage.getItem('loggedInUser');
+if (currentUser) {
+  showDashboard(currentUser);
+}
 </script>
 </body>
 </html>
