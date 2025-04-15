@@ -1,109 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moonlight - Service Ending</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Moonlight</title>
+<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
 
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #111;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      overflow: hidden;
-    }
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Courier New', monospace;
+}
 
-    .container {
-      text-align: center;
-      max-width: 500px;
-      width: 100%;
-      padding: 2rem;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-      opacity: 0;
-      animation: fadeInUp 1s forwards;
-    }
+body {
+background: black;
+color: #0ff;
+overflow-y: auto;
+text-align: center;
+}
 
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      color: #ff6f61;
-      animation: fadeInUp 1s forwards;
-    }
+.terminal {
+background: rgba(0, 0, 0, 0.9);
+border: 2px solid #0ff;
+padding: 15px;
+width: 80%;
+height: 250px;
+margin: 20px auto;
+text-align: left;
+font-size: 14px;
+overflow-y: auto;
+border-radius: 8px;
+}
 
-    h2 {
-      font-size: 1.5rem;
-      color: #ddd;
-      margin-bottom: 2rem;
-      animation: fadeInUp 1s forwards;
-      animation-delay: 1s;
-    }
+canvas {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: -1;
+}
 
-    .message {
-      font-size: 1rem;
-      color: #ccc;
-      line-height: 1.5;
-      margin-bottom: 3rem;
-      animation: fadeInUp 1s forwards;
-      animation-delay: 1.5s;
-    }
+.glitch {
+font-size: 3rem;
+font-weight: bold;
+text-transform: uppercase;
+animation: glitch 1.5s infinite;
+}
 
-    .button {
-      padding: 1rem 3rem;
-      background: #6a5acd;
-      color: white;
-      font-weight: bold;
-      border-radius: 50px;
-      cursor: pointer;
-      font-size: 1.2rem;
-      margin-top: 20px;
-      transition: all 0.3s;
-      border: none;
-    }
+@keyframes glitch {
+0% { text-shadow: 3px 3px red, -3px -3px blue; }
+50% { text-shadow: -3px -3px red, 3px 3px blue; }
+100% { text-shadow: 3px 3px red, -3px -3px blue; }
+}
 
-    .button:hover {
-      background: #7f73e3;
-      transform: translateY(-5px);
-    }
+.section-box {
+background: rgba(0, 0, 0, 0.8);
+border: 2px solid #0ff;
+padding: 20px;
+width: 85%;
+margin: 20px auto;
+border-radius: 10px;
+text-align: left;
+}
 
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-  </style>
+.copyright {
+margin-top: 50px;
+font-size: 14px;
+color: #0ff;
+opacity: 0.7;
+}
+
+#notif {
+position: fixed;
+top: 20px;
+right: 20px;
+background: black;
+color: #0ff;
+border: 2px solid #0ff;
+padding: 10px 20px;
+border-radius: 8px;
+font-weight: bold;
+display: none;
+z-index: 9999;
+}
+</style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>Moonlight is Shutting Down</h1>
-    <h2>We appreciate your support over the years. The service is officially ending soon.</h2>
-    <div class="message">
-      <p>As we move forward with new ventures, we want to thank you for being part of Moonlight's journey. You will be missed!</p>
-      <p>Stay tuned for new projects and future announcements.</p>
-    </div>
-    <button class="button" onclick="redirectToNewSite()">Explore Our New Project</button>
-  </div>
+<audio id="bg-audio" autoplay loop>
+<source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
 
-  <script>
-    function redirectToNewSite() {
-      window.location.href = "https://yournewproject.com";  // Replace with your new project's URL
-    }
-  </script>
+<script>
+document.addEventListener("click", () => {
+const audio = document.getElementById("bg-audio");
+audio.muted = false;
+audio.volume = 1;
+audio.play().catch(err => console.log("Audio play error:", err));
+}, { once: true });
+</script>
 
+<canvas id="matrix"></canvas>
+
+<div class="container">
+<div class="section-box">
+<h1 class="glitch">Moonlight</h1>
+<p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
+</div>
+
+<div class="terminal" id="console"></div>
+
+<div class="section-box">
+<h2 class="glitch">Features</h2>
+<ul>
+<li>✔ Shows if a Roblox user is online</li>
+<li>✔ Detects if user is in-game or using Studio</li>
+<li>✔ Clean and draggable GUI</li>
+<li>✔ Toggle visibility with the "V" key</li>
+</ul>
+</div>
+
+<div class="section-box">
+<h2 class="glitch">Update Log</h2>
+<p><strong>[v1.0]</strong> First release with Roblox username status detection and clean UI design.</p>
+</div>
+
+<div class="section-box">
+<h2 class="glitch">Developed By</h2>
+<p>Moonlight Team</p>
+<p>Milky - Solo Developer</p>
+</div>
+
+<div class="section-box" style="text-align: center;">
+<a href="https://discord.gg/RRpKYRzmxt" target="_blank" style="text-decoration: none;">
+<button style="
+padding: 12px 24px;
+font-size: 16px;
+background-color: black;
+color: #0ff;
+border: 2px solid #0ff;
+border-radius: 8px;
+cursor: pointer;
+transition: 0.3s;
+" onmouseover="this.style.backgroundColor='#0ff'; this.style.color='black'" onmouseout="this.style.backgroundColor='black'; this.style.color='#0ff'">
+Join our Discord
+</button>
+</a>
+</div>
+
+<div class="copyright">
+<p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
+</div>
+</div>
+
+<div id="notif">✔ Moonlight loaded successfully, discord.gg/RRpKYRzmxt</div>
+
+<script>
+function simulateConsole() {
+const consoleBox = document.getElementById("console");
+const messages = [
+"> Moonlight 1.0 initializing...",
+"> Checking for updates...",
+"> Connecting to servers...",
+"> Status: Online",
+"> Awaiting user input...",
+"> http://discord.gg/RRpKYRzmxt..."
+];
+consoleBox.innerHTML = "";
+
+let index = 0;
+function addMessage() {
+if (index < messages.length) {
+const p = document.createElement("p");
+p.textContent = messages[index];
+consoleBox.appendChild(p);
+consoleBox.scrollTop = consoleBox.scrollHeight;
+index++;
+setTimeout(addMessage, 1000);
+}
+}
+addMessage();
+}
+simulateConsole();
+
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const letters = "01010101010101010101";
+const fontSize = 16;
+const columns = canvas.width / fontSize;
+const drops = Array(Math.floor(columns)).fill(0);
+
+function drawMatrix() {
+ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.fillStyle = "#0ff";
+ctx.font = fontSize + "px monospace";
+
+for (let i = 0; i < drops.length; i++) {
+const text = letters[Math.floor(Math.random() * letters.length)];
+const x = i * fontSize;
+const y = drops[i] * fontSize;
+ctx.fillText(text, x, y);
+
+if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+drops[i]++;
+}
+}
+
+setInterval(drawMatrix, 50);
+
+// Show notification and open Moonlight
+setTimeout(() => {
+const notif = document.getElementById("notif");
+notif.style.display = "block";
+setTimeout(() => {
+notif.style.display = "none";
+window.open("https://moonlight.softworks.lol", "_blank");
+}, 7000);
+}, 1000);
+</script>
 </body>
 </html>
