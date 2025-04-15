@@ -5,85 +5,158 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Moonlight Showcase</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #111;
-      color: white;
+      color: #fff;
       height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       overflow-x: hidden;
+      margin: 0;
     }
+
     h1, h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
+      font-size: 3rem;
       text-align: center;
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(50px);
+      animation: fadeInUp 1s forwards;
     }
+
+    h1 {
+      animation-delay: 0.2s;
+    }
+
+    h2 {
+      animation-delay: 0.4s;
+    }
+
     .container {
-      max-width: 800px;
+      max-width: 1000px;
+      padding: 2rem;
       text-align: center;
-      padding: 1rem;
     }
+
+    .intro {
+      max-width: 800px;
+      margin: 20px auto;
+      font-size: 1.2rem;
+      color: #bbb;
+      opacity: 0;
+      transform: translateY(50px);
+      animation: fadeInUp 1s forwards;
+      animation-delay: 0.6s;
+    }
+
     .feature {
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
       border-radius: 10px;
       padding: 2rem;
       margin: 1rem 0;
-      transition: transform 0.3s, opacity 0.3s;
+      transition: all 0.3s ease-in-out;
+      opacity: 0;
+      transform: translateY(50px);
+      animation: fadeInUp 1s forwards;
     }
+
     .feature:hover {
       transform: translateY(-10px);
-      opacity: 1;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
     }
+
     .button {
-      padding: 1rem 2rem;
+      padding: 1rem 3rem;
       background: #6a5acd;
       color: white;
-      border-radius: 10px;
       font-weight: bold;
+      border-radius: 10px;
       cursor: pointer;
+      font-size: 1.1rem;
       transition: 0.3s;
+      margin-top: 20px;
     }
+
     .button:hover {
       background: #7f73e3;
     }
+
     .scroll-animate {
       opacity: 0;
       transform: translateY(50px);
       animation: fadeInUp 1s forwards;
     }
+
     @keyframes fadeInUp {
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
+
+    /* Scroll Reveal */
+    .section {
+      max-width: 900px;
+      margin: 50px auto;
+    }
+
+    .feature-content {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      opacity: 0;
+      transform: translateY(50px);
+      animation: fadeInUp 1s forwards;
+    }
+
+    .feature-content > div {
+      flex: 1;
+      background: #222;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .feature-content > div:hover {
+      transform: translateY(-10px);
+    }
+
   </style>
 </head>
 <body>
 
   <div class="container">
     <h1>Welcome to Moonlight</h1>
-    <h2>The Ultimate Roblox Account Status Checker</h2>
-    <p>With Moonlight, you can easily check if a user is online, in-game, or using Studio. Explore more features below!</p>
+    <h2>Your Ultimate Roblox Tool</h2>
+    <p class="intro">Check if a Roblox account is online, in-game, or using Studio with Moonlight. A seamless tool to enhance your experience.</p>
     <div class="button" onclick="scrollToFeatures()">Explore Features</div>
   </div>
 
-  <div class="container" id="features" style="display:none">
-    <div class="feature scroll-animate">
-      <h2>Check Roblox Account Status</h2>
-      <p>Instantly see if a Roblox user is online, playing a game, or in Studio mode.</p>
-    </div>
-    <div class="feature scroll-animate">
-      <h2>Join Games Directly</h2>
-      <p>Click on a user to join their game directly from the Moonlight interface.</p>
-    </div>
-    <div class="feature scroll-animate">
-      <h2>User Dashboard</h2>
-      <p>Access a personalized dashboard to manage your Moonlight account.</p>
+  <div id="features" class="container section" style="display: none;">
+    <h2 class="scroll-animate">Key Features of Moonlight</h2>
+    <div class="feature-content">
+      <div class="feature scroll-animate">
+        <h3>Account Status Checker</h3>
+        <p>Instantly check if a user is online, in a game, or using Studio.</p>
+      </div>
+      <div class="feature scroll-animate">
+        <h3>Game Joiner</h3>
+        <p>Join your friends' games directly with a simple click.</p>
+      </div>
+      <div class="feature scroll-animate">
+        <h3>Live Updates</h3>
+        <p>Stay updated with real-time user and game status information.</p>
+      </div>
     </div>
     <div class="button" onclick="goHome()">Back to Home</div>
   </div>
