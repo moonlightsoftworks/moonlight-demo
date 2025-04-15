@@ -2,16 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Moonlight | 404 Error</title>
+  <title>Moonlight | Error: 404</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       background: #0d0d0d;
@@ -85,12 +81,18 @@
       50% { opacity: 0.2; }
     }
 
-    .apology {
-      margin-top: 40px;
+    .apology, .status {
+      margin-top: 35px;
       font-size: 1.1rem;
       max-width: 700px;
       color: #bbb;
       line-height: 1.7;
+    }
+
+    .status {
+      border-top: 1px solid #333;
+      padding-top: 25px;
+      margin-top: 50px;
     }
 
     .button {
@@ -112,21 +114,25 @@
 </head>
 <body>
 
-  <div class="glitch" data-text="MOONLIGHT">MOONLIGHT ERROR: 404</div>
+  <div class="glitch" data-text="Error: 404">Error: 404</div>
   <div class="error-code">ERROR CODE: 404_NOT_FOUND</div>
 
   <div class="apology">
     <p>
       Dear user,<br><br>
-      We sincerely apologize for the inconvenience. It looks like the page you were trying to access has either been moved, deleted, or never existed to begin with. These things happen, and we’re working to ensure they happen a lot less.
+      We sincerely apologize for the inconvenience. The page you tried to access doesn’t exist, was moved, or is temporarily unavailable. Our devs have been notified and are working on it.
     </p>
     <p>
-      At Moonlight, we take reliability seriously. This error has been logged and forwarded to our team for immediate review. If you believe this is an issue affecting your experience or account, feel free to reach out to us directly.
+      We also want to inform you that our Roblox UI Bookmarklet (Roblox detector, user activity, etc.) is currently <strong>under revamp</strong> and unavailable. Estimated return: within 24 hours — or 1–2 days max.
     </p>
     <p>
-      Thank you for your patience and for being part of Moonlight. Even in the shadows, we’re always working to improve your journey.
+      We appreciate your patience and continued support while we improve your Moonlight experience.
     </p>
     <p>— The Moonlight Team</p>
+  </div>
+
+  <div class="status">
+    <strong>Website Status:</strong> Under Maintenance  
   </div>
 
   <a href="/" class="button">Return to Homepage</a>
