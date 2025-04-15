@@ -3,58 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moonlight Showcase</title>
+  <title>Moonlight - Service Ending</title>
   <style>
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #111;
-      color: #fff;
+      color: white;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      overflow-x: hidden;
+      align-items: center;
+      height: 100vh;
       margin: 0;
-    }
-
-    h1 {
-      font-size: 4rem;
-      font-weight: bold;
-      margin-bottom: 20px;
-      text-align: center;
-      opacity: 0;
-      animation: fadeInUp 1s forwards;
-    }
-
-    h2 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      text-align: center;
-      opacity: 0;
-      animation: fadeInUp 1s forwards;
-      animation-delay: 0.5s;
+      overflow: hidden;
     }
 
     .container {
       text-align: center;
-      margin-top: 50px;
+      max-width: 500px;
+      width: 100%;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      animation: fadeInUp 1s forwards;
     }
 
-    .intro {
-      max-width: 700px;
-      margin: 20px auto;
-      font-size: 1.2rem;
-      color: #aaa;
-      opacity: 0;
-      transform: translateY(50px);
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #ff6f61;
+      animation: fadeInUp 1s forwards;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      color: #ddd;
+      margin-bottom: 2rem;
       animation: fadeInUp 1s forwards;
       animation-delay: 1s;
+    }
+
+    .message {
+      font-size: 1rem;
+      color: #ccc;
+      line-height: 1.5;
+      margin-bottom: 3rem;
+      animation: fadeInUp 1s forwards;
+      animation-delay: 1.5s;
     }
 
     .button {
@@ -65,8 +69,8 @@
       border-radius: 50px;
       cursor: pointer;
       font-size: 1.2rem;
-      transition: all 0.3s;
       margin-top: 20px;
+      transition: all 0.3s;
       border: none;
     }
 
@@ -75,95 +79,29 @@
       transform: translateY(-5px);
     }
 
-    /* Feature Section */
-    .feature-section {
-      display: flex;
-      justify-content: space-around;
-      margin: 50px 0;
-      opacity: 0;
-      transform: translateY(50px);
-      animation: fadeInUp 1s forwards;
-      animation-delay: 1.5s;
-    }
-
-    .feature-card {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      padding: 30px;
-      width: 280px;
-      text-align: center;
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-    }
-
-    .feature-card h3 {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-    }
-
-    .feature-card p {
-      font-size: 1rem;
-      color: #aaa;
-    }
-
-    /* Animation for scrolling features */
     @keyframes fadeInUp {
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
-
-    /* Section Divider */
-    .divider {
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, rgba(106, 90, 205, 0.6), rgba(255, 255, 255, 0.2));
-      margin: 50px 0;
-    }
-
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h1>Welcome to Moonlight</h1>
-    <h2>Powerful Tools for Roblox</h2>
-    <p class="intro">Moonlight provides real-time tracking and access to Roblox players, allowing you to join games, view their status, and more. Let's dive in.</p>
-    <button class="button" onclick="scrollToFeatures()">Explore Features</button>
+    <h1>Moonlight is Shutting Down</h1>
+    <h2>We appreciate your support over the years. The service is officially ending soon.</h2>
+    <div class="message">
+      <p>As we move forward with new ventures, we want to thank you for being part of Moonlight's journey. You will be missed!</p>
+      <p>Stay tuned for new projects and future announcements.</p>
+    </div>
+    <button class="button" onclick="redirectToNewSite()">Explore Our New Project</button>
   </div>
-
-  <div class="divider"></div>
-
-  <div class="feature-section">
-    <div class="feature-card">
-      <h3>Real-Time User Status</h3>
-      <p>Check if a player is online, in-game, or using Roblox Studio instantly.</p>
-    </div>
-    <div class="feature-card">
-      <h3>Join Games Directly</h3>
-      <p>Launch Roblox games directly by clicking a user’s profile. No more searching!</p>
-    </div>
-    <div class="feature-card">
-      <h3>Easy-to-Use Dashboard</h3>
-      <p>Access your personal dashboard to track Roblox accounts and manage settings.</p>
-    </div>
-  </div>
-
-  <div class="divider"></div>
 
   <script>
-    function scrollToFeatures() {
-      document.querySelector('.feature-section').style.animation = 'fadeInUp 1s forwards';
-    }
-
-    window.onload = function () {
-      document.querySelector('.feature-section').style.animation = 'fadeInUp 1s forwards';
+    function redirectToNewSite() {
+      window.location.href = "https://yournewproject.com";  // Replace with your new project's URL
     }
   </script>
 
