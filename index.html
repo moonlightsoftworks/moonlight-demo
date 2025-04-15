@@ -1,231 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moonlight</title>
-  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moonlight - Auth</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Courier New', monospace;
+      font-family: 'Orbitron', monospace;
     }
 
     body {
-      background: black;
+      background: #000;
       color: #0ff;
-      overflow-y: auto;
-      text-align: center;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
     }
 
-    .login-container, .dashboard-container {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.9);
+    .auth-box {
+      background: rgba(0, 0, 0, 0.85);
+      border: 2px solid #0ff;
       padding: 30px;
-      border: 2px solid #0ff;
-      border-radius: 10px;
+      border-radius: 12px;
       width: 350px;
-      z-index: 10;
+      text-align: center;
+      box-shadow: 0 0 20px #0ff44f;
     }
 
-    .login-container.active, .dashboard-container.active {
-      display: block;
+    .auth-box h2 {
+      margin-bottom: 20px;
     }
 
-    input, button {
+    input {
       width: 100%;
-      padding: 10px;
-      margin: 8px 0;
+      padding: 12px;
+      margin-bottom: 15px;
       border: 2px solid #0ff;
       background: black;
       color: #0ff;
-      border-radius: 5px;
+      border-radius: 8px;
       font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: black;
+      color: #0ff;
+      border: 2px solid #0ff;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 10px;
     }
 
     button:hover {
       background: #0ff;
       color: black;
+    }
+
+    .toggle {
+      font-size: 13px;
+      color: #aaa;
       cursor: pointer;
+      margin-top: 10px;
     }
 
-    .terminal, .section-box, .copyright {
+    #dashboard {
       display: none;
+      text-align: center;
     }
 
-    .terminal {
-      background: rgba(0, 0, 0, 0.9);
-      border: 2px solid #0ff;
-      padding: 15px;
-      width: 80%;
-      height: 250px;
-      margin: 20px auto;
-      text-align: left;
-      font-size: 14px;
-      overflow-y: auto;
-      border-radius: 8px;
-    }
-
-    .section-box {
-      background: rgba(0, 0, 0, 0.8);
-      border: 2px solid #0ff;
-      padding: 20px;
-      width: 85%;
-      margin: 20px auto;
-      border-radius: 10px;
-      text-align: left;
+    .admin-panel {
+      margin-top: 30px;
+      border-top: 1px solid #0ff;
+      padding-top: 15px;
     }
   </style>
 </head>
 <body>
-  <audio id="bg-audio" autoplay loop>
-    <source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
-  </audio>
-
-  <script>
-    document.addEventListener("click", () => {
-      const audio = document.getElementById("bg-audio");
-      audio.muted = false;
-      audio.volume = 1;
-      audio.play().catch(err => console.log("Audio play error:", err));
-    }, { once: true });
-  </script>
-
-  <div class="login-container active" id="loginBox">
-    <h2>Moonlight Login</h2>
+  <div class="auth-box" id="authBox">
+    <h2 id="formTitle">Login to Moonlight</h2>
     <input type="text" id="username" placeholder="Username">
     <input type="password" id="password" placeholder="Password">
-    <button onclick="signup()">Sign Up</button>
-    <button onclick="login()">Login</button>
+    <button onclick="handleAuth()" id="authBtn">Login</button>
+    <div class="toggle" onclick="toggleMode()">Don't have an account? <u>Sign up</u></div>
   </div>
 
-  <div class="dashboard-container" id="dashboard">
-    <h2 id="welcomeText"></h2>
-    <button onclick="goToOfficialPage()">Go to Moonlight Official Page</button>
-    <button onclick="showMoonlightApp()">Go to Dashboard</button>
+  <div class="auth-box" id="dashboard">
+    <h2 id="welcomeUser"></h2>
+    <button onclick="goToMoonlight()">Go to Moonlight Official Page</button>
     <button onclick="logout()">Logout</button>
-    <div id="adminPanel" style="margin-top: 20px; display: none;">
+    <div class="admin-panel" id="adminPanel" style="display:none;">
       <h3>Admin Panel</h3>
-      <input type="text" id="adminUser" placeholder="Username">
-      <button onclick="banUser()">Ban</button>
-      <button onclick="unbanUser()">Unban</button>
-      <button onclick="blacklistUser()">Blacklist</button>
-      <button onclick="unblacklistUser()">Unblacklist</button>
-      <button onclick="viewAllUsers()">View All Users</button>
-      <button onclick="clearUserData()">Clear All User Data</button>
-      <pre id="adminLog" style="text-align: left; margin-top: 10px;"></pre>
+      <p>More admin features will be added here</p>
     </div>
   </div>
 
   <script>
-    let users = JSON.parse(localStorage.getItem("users") || '{}');
-    const currentUser = localStorage.getItem("currentUser");
+    let mode = 'login';
+    let users = JSON.parse(localStorage.getItem('users') || '{}');
 
-    if (currentUser) showDashboard(currentUser);
+    const user = localStorage.getItem('currentUser');
+    if (user) showDashboard(user);
 
-    function signup() {
-      const user = document.getElementById("username").value;
-      const pass = document.getElementById("password").value;
-      if (users[user]) return alert("User already exists");
-      users[user] = { password: pass, banned: false, blacklisted: false };
-      localStorage.setItem("users", JSON.stringify(users));
-      alert("Signup successful. You can now login.");
+    function toggleMode() {
+      mode = mode === 'login' ? 'signup' : 'login';
+      document.getElementById('formTitle').innerText = mode === 'login' ? 'Login to Moonlight' : 'Sign up for Moonlight';
+      document.getElementById('authBtn').innerText = mode === 'login' ? 'Login' : 'Sign Up';
+      document.querySelector('.toggle').innerHTML = mode === 'login' ? `Don't have an account? <u>Sign up</u>` : `Already have an account? <u>Login</u>`;
     }
 
-    function login() {
-      const user = document.getElementById("username").value;
-      const pass = document.getElementById("password").value;
-      if (!users[user]) return alert("User not found");
-      if (users[user].password !== pass) return alert("Wrong password");
-      if (users[user].banned) return alert("You are banned");
-      if (users[user].blacklisted) return alert("You are blacklisted");
-      localStorage.setItem("currentUser", user);
-      showDashboard(user);
+    function handleAuth() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!username || !password) return alert('Fill all fields');
+
+      if (mode === 'signup') {
+        if (users[username]) return alert('User already exists');
+        users[username] = { password };
+        localStorage.setItem('users', JSON.stringify(users));
+        alert('Sign-up successful! Please login.');
+        toggleMode();
+      } else {
+        if (!users[username]) return alert('User not found');
+        if (users[username].password !== password) return alert('Wrong password');
+        localStorage.setItem('currentUser', username);
+        showDashboard(username);
+      }
     }
 
     function showDashboard(user) {
-      document.getElementById("loginBox").classList.remove("active");
-      document.getElementById("dashboard").classList.add("active");
-      document.getElementById("welcomeText").textContent = `Hi ${user}`;
-      if (user === "moonlight") {
-        document.getElementById("adminPanel").style.display = "block";
+      document.getElementById('authBox').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      document.getElementById('welcomeUser').innerText = `Hi, ${user}`;
+      if (user === 'moonlight') {
+        document.getElementById('adminPanel').style.display = 'block';
       }
     }
 
     function logout() {
-      localStorage.removeItem("currentUser");
+      localStorage.removeItem('currentUser');
       location.reload();
     }
 
-    function goToOfficialPage() {
-      window.open("https://moonlight.softworks.lol", "_blank");
-    }
-
-    function showMoonlightApp() {
-      document.querySelectorAll('.terminal, .section-box, .copyright').forEach(el => el.style.display = 'block');
-      document.getElementById("dashboard").style.display = "none";
-    }
-
-    function banUser() {
-      const name = document.getElementById("adminUser").value;
-      if (users[name]) {
-        users[name].banned = true;
-        saveUsers();
-        log(`User '${name}' has been banned.`);
-      }
-    }
-
-    function unbanUser() {
-      const name = document.getElementById("adminUser").value;
-      if (users[name]) {
-        users[name].banned = false;
-        saveUsers();
-        log(`User '${name}' has been unbanned.`);
-      }
-    }
-
-    function blacklistUser() {
-      const name = document.getElementById("adminUser").value;
-      if (users[name]) {
-        users[name].blacklisted = true;
-        saveUsers();
-        log(`User '${name}' has been blacklisted.`);
-      }
-    }
-
-    function unblacklistUser() {
-      const name = document.getElementById("adminUser").value;
-      if (users[name]) {
-        users[name].blacklisted = false;
-        saveUsers();
-        log(`User '${name}' has been unblacklisted.`);
-      }
-    }
-
-    function viewAllUsers() {
-      log(JSON.stringify(users, null, 2));
-    }
-
-    function clearUserData() {
-      if (confirm("Are you sure you want to delete all user data?")) {
-        users = {};
-        saveUsers();
-        log("All user data cleared.");
-      }
-    }
-
-    function saveUsers() {
-      localStorage.setItem("users", JSON.stringify(users));
-    }
-
-    function log(msg) {
-      document.getElementById("adminLog").textContent = msg;
+    function goToMoonlight() {
+      window.open('https://moonlight.softworks.lol', '_blank');
     }
   </script>
 </body>
