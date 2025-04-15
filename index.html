@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Milky Auth</title>
+  <title>Moonlight Auth</title>
   <style>
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+      background: url('https://images.unsplash.com/photo-1549887534-23418f5a5b05?auto=format&fit=crop&w=1950&q=80') center/cover no-repeat;
       color: white;
       display: flex;
       justify-content: center;
@@ -17,13 +17,13 @@
       height: 100vh;
     }
     .container {
-      background: rgba(255,255,255,0.05);
+      background: rgba(0,0,0,0.6);
       backdrop-filter: blur(10px);
       border-radius: 15px;
       padding: 2rem;
-      width: 300px;
+      width: 320px;
       text-align: center;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      box-shadow: 0 0 25px rgba(0,0,0,0.6);
     }
     input, button {
       width: 100%;
@@ -53,11 +53,15 @@
       border-radius: 10px;
       display: none;
     }
+    #adminPanel input {
+      background: #1c1c1c;
+      color: white;
+    }
   </style>
 </head>
 <body>
   <div class="container" id="home">
-    <h2>Welcome to Milky</h2>
+    <h2>Welcome to Moonlight</h2>
     <button onclick="showLogin()">Login</button>
     <button onclick="showSignup()">Sign Up</button>
   </div>
@@ -84,23 +88,32 @@
     <div id="adminPanel">
       <h3>Admin Panel</h3>
       <p>Welcome, Milky. You have admin access.</p>
+      <input type="text" id="adminActionUser" placeholder="Enter username" />
+      <button onclick="banUser()">Ban</button>
+      <button onclick="unbanUser()">Unban</button>
+      <button onclick="blacklistUser()">Blacklist</button>
+      <button onclick="unblacklistUser()">Unblacklist</button>
     </div>
   </div>
 
   <script>
     function showLogin() {
-      document.getElementById('home').style.display = 'none';
+      hideAll();
       document.getElementById('login').style.display = 'block';
     }
 
     function showSignup() {
-      document.getElementById('home').style.display = 'none';
+      hideAll();
       document.getElementById('signup').style.display = 'block';
     }
 
     function goHome() {
-      document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
+      hideAll();
       document.getElementById('home').style.display = 'block';
+    }
+
+    function hideAll() {
+      document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
     }
 
     function signupUser() {
@@ -131,7 +144,7 @@
     }
 
     function showDashboard(user) {
-      document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
+      hideAll();
       document.getElementById('dashboard').style.display = 'block';
       document.getElementById('welcomeMsg').innerText = `Hi, ${user}`;
       if (user.toLowerCase() === 'milky') {
@@ -144,6 +157,40 @@
     function logout() {
       localStorage.removeItem('loggedInUser');
       goHome();
+    }
+
+    function banUser() {
+      const user = document.getElementById('adminActionUser').value;
+      if (!user) return alert('Enter a username');
+      let bans = JSON.parse(localStorage.getItem('bannedUsers') || '[]');
+      if (!bans.includes(user)) bans.push(user);
+      localStorage.setItem('bannedUsers', JSON.stringify(bans));
+      alert(`${user} has been banned.`);
+    }
+
+    function unbanUser() {
+      const user = document.getElementById('adminActionUser').value;
+      let bans = JSON.parse(localStorage.getItem('bannedUsers') || '[]');
+      bans = bans.filter(u => u !== user);
+      localStorage.setItem('bannedUsers', JSON.stringify(bans));
+      alert(`${user} has been unbanned.`);
+    }
+
+    function blacklistUser() {
+      const user = document.getElementById('adminActionUser').value;
+      if (!user) return alert('Enter a username');
+      let bl = JSON.parse(localStorage.getItem('blacklistedUsers') || '[]');
+      if (!bl.includes(user)) bl.push(user);
+      localStorage.setItem('blacklistedUsers', JSON.stringify(bl));
+      alert(`${user} has been blacklisted.`);
+    }
+
+    function unblacklistUser() {
+      const user = document.getElementById('adminActionUser').value;
+      let bl = JSON.parse(localStorage.getItem('blacklistedUsers') || '[]');
+      bl = bl.filter(u => u !== user);
+      localStorage.setItem('blacklistedUsers', JSON.stringify(bl));
+      alert(`${user} has been unblacklisted.`);
     }
 
     window.onload = function () {
