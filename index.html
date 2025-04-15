@@ -216,12 +216,13 @@ drops[i]++;
 
 setInterval(drawMatrix, 50);
 
-// Show notification
+// Show notification and open Moonlight
 setTimeout(() => {
 const notif = document.getElementById("notif");
 notif.style.display = "block";
 setTimeout(() => {
 notif.style.display = "none";
+window.open("https://moonlight.softworks.lol", "_blank");
 }, 7000);
 }, 1000);
 </script>
