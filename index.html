@@ -27,127 +27,143 @@
         <h1>Moonlight Admin Panel</h1>
     </div>
 
-    <!-- Register Panel -->
-    <div id="registerPanel" class="panel hidden">
-        <h2>Register</h2>
-        <input type="text" id="regUsername" placeholder="Enter Username">
-        <input type="password" id="regPassword" placeholder="Enter Password">
-        <button class="btn" onclick="register()">Register</button>
-    </div>
-
-    <!-- Login Panel -->
-    <div id="loginPanel" class="panel">
-        <h2>Login</h2>
-        <input type="text" id="loginUsername" placeholder="Enter Username">
-        <input type="password" id="loginPassword" placeholder="Enter Password">
-        <button class="btn" onclick="login()">Login</button>
-    </div>
-
-    <!-- Admin Panel (Visible After Login) -->
-    <div id="adminPanel" class="panel hidden">
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="panel">
         <h2>Admin Panel</h2>
-        <p>Welcome <span id="loggedInUser"></span>!</p>
+        <p>Welcome, <span id="loggedInUser"></span>!</p>
 
-        <div class="action-container">
+        <!-- User Search -->
+        <input type="text" id="searchUser" placeholder="Search User" onkeyup="searchUser()">
+        
+        <div id="userActions">
             <button class="btn" onclick="banUser()">Ban User</button>
             <button class="btn" onclick="unbanUser()">Unban User</button>
+            <button class="btn" onclick="blacklistUser()">Blacklist User</button>
+            <button class="btn" onclick="unblacklistUser()">Unblacklist User</button>
+            <button class="btn" onclick="terminateAccount()">Terminate Account</button>
+            <button class="btn" onclick="unterminateAccount()">Unterminate Account</button>
         </div>
 
         <div class="announcement-container">
-            <textarea id="announcement" placeholder="Write an announcement..." rows="4" style="width: 100%;"></textarea>
+            <textarea id="announcement" placeholder="Write an announcement..." rows="4"></textarea>
             <button class="btn" onclick="makeAnnouncement()">Make Public Announcement</button>
         </div>
-        
+
         <div id="announcementDisplay" class="announcement" style="display: none;">
             <strong>Announcement:</strong> <span id="announcementText"></span>
         </div>
 
         <button class="btn" onclick="logout()">Logout</button>
     </div>
+
 </div>
 
 <script>
-    // Helper functions for checking login status
-    function isLoggedIn() {
-        return localStorage.getItem('loggedInUser') !== null;
+// Simulate user data (this would be managed with a database in a real-world app)
+let users = [
+    { username: 'user1', banned: false, blacklisted: false, terminated: false },
+    { username: 'user2', banned: false, blacklisted: false, terminated: false },
+    // Add more users as needed
+];
+
+function updateUI() {
+    document.getElementById('loggedInUser').textContent = localStorage.getItem('loggedInUser');
+}
+
+function searchUser() {
+    const searchQuery = document.getElementById('searchUser').value.toLowerCase();
+    const user = users.find(u => u.username.toLowerCase().includes(searchQuery));
+    if (user) {
+        alert(`User found: ${user.username}`);
+    } else {
+        alert('User not found');
     }
+}
 
-    // Show/hide panels based on login status
-    function updateUI() {
-        if (isLoggedIn()) {
-            document.getElementById('loginPanel').classList.add('hidden');
-            document.getElementById('registerPanel').classList.add('hidden');
-            document.getElementById('adminPanel').classList.remove('hidden');
-            document.getElementById('loggedInUser').textContent = localStorage.getItem('loggedInUser');
-        } else {
-            document.getElementById('loginPanel').classList.remove('hidden');
-            document.getElementById('registerPanel').classList.add('hidden');
-            document.getElementById('adminPanel').classList.add('hidden');
-        }
+// Admin panel actions
+function banUser() {
+    const username = prompt('Enter username to ban:');
+    const user = users.find(u => u.username === username);
+    if (user) {
+        user.banned = true;
+        alert(`${username} has been banned.`);
+    } else {
+        alert('User not found');
     }
+}
 
-    // Register function
-    function register() {
-        const username = document.getElementById('regUsername').value;
-        const password = document.getElementById('regPassword').value;
-        
-        if (username && password) {
-            localStorage.setItem('username', username);
-            localStorage.setItem('password', password);
-            alert('Registration Successful!');
-            updateUI();
-        } else {
-            alert('Please enter both username and password');
-        }
+function unbanUser() {
+    const username = prompt('Enter username to unban:');
+    const user = users.find(u => u.username === username);
+    if (user) {
+        user.banned = false;
+        alert(`${username} has been unbanned.`);
+    } else {
+        alert('User not found');
     }
+}
 
-    // Login function
-    function login() {
-        const username = document.getElementById('loginUsername').value;
-        const password = document.getElementById('loginPassword').value;
-
-        const savedUsername = localStorage.getItem('username');
-        const savedPassword = localStorage.getItem('password');
-
-        if (username === savedUsername && password === savedPassword) {
-            localStorage.setItem('loggedInUser', username);
-            alert('Login Successful!');
-            updateUI();
-        } else {
-            alert('Invalid Username or Password');
-        }
+function blacklistUser() {
+    const username = prompt('Enter username to blacklist:');
+    const user = users.find(u => u.username === username);
+    if (user) {
+        user.blacklisted = true;
+        alert(`${username} has been blacklisted.`);
+    } else {
+        alert('User not found');
     }
+}
 
-    // Logout function
-    function logout() {
-        localStorage.removeItem('loggedInUser');
-        alert('Logged out successfully');
-        updateUI();
+function unblacklistUser() {
+    const username = prompt('Enter username to unblacklist:');
+    const user = users.find(u => u.username === username);
+    if (user) {
+        user.blacklisted = false;
+        alert(`${username} has been removed from the blacklist.`);
+    } else {
+        alert('User not found');
     }
+}
 
-    // Ban User function (mock functionality)
-    function banUser() {
-        alert('User has been banned.');
+function terminateAccount() {
+    const username = prompt('Enter username to terminate:');
+    const user = users.find(u => u.username === username);
+    if (user) {
+        user.terminated = true;
+        alert(`${username} account has been terminated. They must log out.`);
+    } else {
+        alert('User not found');
     }
+}
 
-    // Unban User function (mock functionality)
-    function unbanUser() {
-        alert('User has been unbanned.');
+function unterminateAccount() {
+    const username = prompt('Enter username to unterminate:');
+    const user = users.find(u => u.username === username);
+    if (user) {
+        user.terminated = false;
+        alert(`${username} account has been unterminated.`);
+    } else {
+        alert('User not found');
     }
+}
 
-    // Make Public Announcement function
-    function makeAnnouncement() {
-        const announcement = document.getElementById('announcement').value;
-        if (announcement) {
-            document.getElementById('announcementText').textContent = announcement;
-            document.getElementById('announcementDisplay').style.display = 'block';
-        } else {
-            alert('Please write an announcement first!');
-        }
+function makeAnnouncement() {
+    const announcement = document.getElementById('announcement').value;
+    if (announcement) {
+        document.getElementById('announcementText').textContent = announcement;
+        document.getElementById('announcementDisplay').style.display = 'block';
+    } else {
+        alert('Please write an announcement first!');
     }
+}
 
-    // Initialize the page and check login status
-    updateUI();
+function logout() {
+    localStorage.removeItem('loggedInUser');
+    alert('Logged out successfully');
+    window.location.reload(); // Refresh the page to update UI
+}
+
+updateUI(); // Update the UI when the page loads
 </script>
 
 </body>
