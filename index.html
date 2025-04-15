@@ -3,197 +3,103 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moonlight</title>
+  <title>Moonlight Showcase</title>
   <style>
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: #121212;
+      background: #111;
       color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       height: 100vh;
-      font-size: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+    }
+    h1, h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      text-align: center;
     }
     .container {
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 15px;
-      padding: 2rem;
-      width: 350px;
+      max-width: 800px;
       text-align: center;
-      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      padding: 1rem;
     }
-    input, button, textarea {
-      width: 100%;
-      padding: 0.75rem;
-      margin: 0.5rem 0;
-      border: none;
+    .feature {
+      background: rgba(255,255,255,0.1);
       border-radius: 10px;
+      padding: 2rem;
+      margin: 1rem 0;
+      transition: transform 0.3s, opacity 0.3s;
     }
-    input, textarea {
-      background: #2a2a2a;
-      color: white;
+    .feature:hover {
+      transform: translateY(-10px);
+      opacity: 1;
     }
-    button {
+    .button {
+      padding: 1rem 2rem;
       background: #6a5acd;
       color: white;
+      border-radius: 10px;
       font-weight: bold;
       cursor: pointer;
       transition: 0.3s;
     }
-    button:hover {
+    .button:hover {
       background: #7f73e3;
     }
-    .forum-thread {
-      background: rgba(255, 255, 255, 0.15);
-      padding: 1rem;
-      border-radius: 10px;
-      margin-bottom: 1rem;
-      text-align: left;
+    .scroll-animate {
+      opacity: 0;
+      transform: translateY(50px);
+      animation: fadeInUp 1s forwards;
     }
-    .forum-thread h3 {
-      margin: 0;
-    }
-    .forum-thread p {
-      margin-top: 0.5rem;
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container" id="home">
-    <h2>Welcome to Moonlight</h2>
-    <button onclick="showLogin()">Login</button>
-    <button onclick="showSignup()">Sign Up</button>
-    <button onclick="showForum()">Forum</button>
+
+  <div class="container">
+    <h1>Welcome to Moonlight</h1>
+    <h2>The Ultimate Roblox Account Status Checker</h2>
+    <p>With Moonlight, you can easily check if a user is online, in-game, or using Studio. Explore more features below!</p>
+    <div class="button" onclick="scrollToFeatures()">Explore Features</div>
   </div>
 
-  <div class="container" id="login" style="display:none">
-    <h2>Login</h2>
-    <input type="text" id="loginUsername" placeholder="Username" />
-    <input type="password" id="loginPassword" placeholder="Password" />
-    <button onclick="loginUser()">Login</button>
-    <button onclick="goHome()">Back</button>
-  </div>
-
-  <div class="container" id="signup" style="display:none">
-    <h2>Sign Up</h2>
-    <input type="text" id="signupUsername" placeholder="Username" />
-    <input type="password" id="signupPassword" placeholder="Password" />
-    <button onclick="signupUser()">Sign Up</button>
-    <button onclick="goHome()">Back</button>
-  </div>
-
-  <div class="container" id="dashboard" style="display:none">
-    <h2 id="welcomeMsg"></h2>
-    <button onclick="logout()">Logout</button>
-  </div>
-
-  <div class="container" id="forum" style="display:none">
-    <h2>Forum</h2>
-    <div id="threadsContainer"></div>
-    <input type="text" id="threadTitle" placeholder="Thread Title" />
-    <textarea id="threadContent" placeholder="Thread Content"></textarea>
-    <button onclick="createThread()">Create Thread</button>
-    <button onclick="goHome()">Back</button>
+  <div class="container" id="features" style="display:none">
+    <div class="feature scroll-animate">
+      <h2>Check Roblox Account Status</h2>
+      <p>Instantly see if a Roblox user is online, playing a game, or in Studio mode.</p>
+    </div>
+    <div class="feature scroll-animate">
+      <h2>Join Games Directly</h2>
+      <p>Click on a user to join their game directly from the Moonlight interface.</p>
+    </div>
+    <div class="feature scroll-animate">
+      <h2>User Dashboard</h2>
+      <p>Access a personalized dashboard to manage your Moonlight account.</p>
+    </div>
+    <div class="button" onclick="goHome()">Back to Home</div>
   </div>
 
   <script>
-    function showLogin() {
-      document.getElementById('home').style.display = 'none';
-      document.getElementById('login').style.display = 'block';
-    }
-
-    function showSignup() {
-      document.getElementById('home').style.display = 'none';
-      document.getElementById('signup').style.display = 'block';
-    }
-
-    function goHome() {
-      document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
-      document.getElementById('home').style.display = 'block';
-    }
-
-    function signupUser() {
-      const user = document.getElementById('signupUsername').value;
-      const pass = document.getElementById('signupPassword').value;
-      if (user && pass) {
-        let users = JSON.parse(localStorage.getItem('users') || '{}');
-        if (users[user]) return alert('User already exists.');
-        users[user] = pass;
-        localStorage.setItem('users', JSON.stringify(users));
-        alert('Signup successful! You can log in now.');
-        showLogin();
-      } else {
-        alert('Please fill out both fields.');
-      }
-    }
-
-    function loginUser() {
-      const user = document.getElementById('loginUsername').value;
-      const pass = document.getElementById('loginPassword').value;
-      let users = JSON.parse(localStorage.getItem('users') || '{}');
-      if (users[user] && users[user] === pass) {
-        localStorage.setItem('loggedInUser', user);
-        showDashboard(user);
-      } else {
-        alert('Invalid login.');
-      }
-    }
-
-    function showDashboard(user) {
-      document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
-      document.getElementById('dashboard').style.display = 'block';
-      document.getElementById('welcomeMsg').innerText = `Hi, ${user}`;
-    }
-
-    function logout() {
-      localStorage.removeItem('loggedInUser');
-      goHome();
-    }
-
-    function showForum() {
-      document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
-      document.getElementById('forum').style.display = 'block';
-      loadThreads();
-    }
-
-    function createThread() {
-      const title = document.getElementById('threadTitle').value;
-      const content = document.getElementById('threadContent').value;
-      if (title && content) {
-        let threads = JSON.parse(localStorage.getItem('threads') || '[]');
-        threads.push({ title, content, user: localStorage.getItem('loggedInUser') || 'Guest' });
-        localStorage.setItem('threads', JSON.stringify(threads));
-        loadThreads();
-        alert('Thread created!');
-      } else {
-        alert('Please fill out both fields.');
-      }
-    }
-
-    function loadThreads() {
-      const threads = JSON.parse(localStorage.getItem('threads') || '[]');
-      const threadsContainer = document.getElementById('threadsContainer');
-      threadsContainer.innerHTML = '';
-      threads.forEach(thread => {
-        const threadDiv = document.createElement('div');
-        threadDiv.classList.add('forum-thread');
-        threadDiv.innerHTML = `
-          <h3>${thread.title}</h3>
-          <p>${thread.content}</p>
-          <small>Posted by ${thread.user}</small>
-        `;
-        threadsContainer.appendChild(threadDiv);
+    function scrollToFeatures() {
+      document.getElementById('features').style.display = 'block';
+      document.querySelectorAll('.scroll-animate').forEach((element, index) => {
+        setTimeout(() => element.style.animation = 'fadeInUp 1s forwards', index * 200);
       });
     }
 
-    window.onload = function () {
-      const user = localStorage.getItem('loggedInUser');
-      if (user) showDashboard(user);
+    function goHome() {
+      document.getElementById('features').style.display = 'none';
     }
   </script>
+
 </body>
 </html>
