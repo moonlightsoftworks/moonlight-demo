@@ -9,30 +9,31 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+      background: #121212;
       color: white;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      font-size: 16px;
     }
     .container {
-      background: rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.1);
       backdrop-filter: blur(10px);
       border-radius: 15px;
       padding: 2rem;
-      width: 300px;
+      width: 350px;
       text-align: center;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
     }
-    input, button {
+    input, button, textarea {
       width: 100%;
       padding: 0.75rem;
       margin: 0.5rem 0;
       border: none;
       border-radius: 10px;
     }
-    input {
+    input, textarea {
       background: #2a2a2a;
       color: white;
     }
@@ -46,18 +47,18 @@
     button:hover {
       background: #7f73e3;
     }
-    #adminPanel {
-      margin-top: 1rem;
-      padding: 1rem;
-      background: rgba(255,255,255,0.05);
-      border-radius: 10px;
-      display: none;
-    }
     .forum-thread {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.15);
       padding: 1rem;
       border-radius: 10px;
       margin-bottom: 1rem;
+      text-align: left;
+    }
+    .forum-thread h3 {
+      margin: 0;
+    }
+    .forum-thread p {
+      margin-top: 0.5rem;
     }
   </style>
 </head>
@@ -88,11 +89,6 @@
   <div class="container" id="dashboard" style="display:none">
     <h2 id="welcomeMsg"></h2>
     <button onclick="logout()">Logout</button>
-    <div id="adminPanel">
-      <h3>Admin Panel</h3>
-      <button onclick="banUser()">Ban User</button>
-      <button onclick="unbanUser()">Unban User</button>
-    </div>
   </div>
 
   <div class="container" id="forum" style="display:none">
@@ -151,11 +147,6 @@
       document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
       document.getElementById('dashboard').style.display = 'block';
       document.getElementById('welcomeMsg').innerText = `Hi, ${user}`;
-      if (user.toLowerCase() === 'milky') {
-        document.getElementById('adminPanel').style.display = 'block';
-      } else {
-        document.getElementById('adminPanel').style.display = 'none';
-      }
     }
 
     function logout() {
@@ -174,7 +165,7 @@
       const content = document.getElementById('threadContent').value;
       if (title && content) {
         let threads = JSON.parse(localStorage.getItem('threads') || '[]');
-        threads.push({ title, content, user: localStorage.getItem('loggedInUser') });
+        threads.push({ title, content, user: localStorage.getItem('loggedInUser') || 'Guest' });
         localStorage.setItem('threads', JSON.stringify(threads));
         loadThreads();
         alert('Thread created!');
@@ -197,31 +188,6 @@
         `;
         threadsContainer.appendChild(threadDiv);
       });
-    }
-
-    function banUser() {
-      const userToBan = prompt('Enter username to ban');
-      let bannedUsers = JSON.parse(localStorage.getItem('bannedUsers') || '[]');
-      if (!bannedUsers.includes(userToBan)) {
-        bannedUsers.push(userToBan);
-        localStorage.setItem('bannedUsers', JSON.stringify(bannedUsers));
-        alert(`${userToBan} has been banned.`);
-      } else {
-        alert(`${userToBan} is already banned.`);
-      }
-    }
-
-    function unbanUser() {
-      const userToUnban = prompt('Enter username to unban');
-      let bannedUsers = JSON.parse(localStorage.getItem('bannedUsers') || '[]');
-      const index = bannedUsers.indexOf(userToUnban);
-      if (index !== -1) {
-        bannedUsers.splice(index, 1);
-        localStorage.setItem('bannedUsers', JSON.stringify(bannedUsers));
-        alert(`${userToUnban} has been unbanned.`);
-      } else {
-        alert(`${userToUnban} is not banned.`);
-      }
     }
 
     window.onload = function () {
