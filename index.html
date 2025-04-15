@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Moonlight</title>
+<title>Moonlight - Service Unavailable</title>
 <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
 
 <style>
@@ -11,27 +11,78 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Courier New', monospace;
+    font-family: 'Arial', sans-serif;
 }
 
 body {
-    background: black;
+    background: #121212;
     color: #0ff;
-    overflow-y: auto;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    padding: 0 20px;
 }
 
-.terminal {
+h1, h2 {
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #0ff;
+    font-size: 3rem;
+    letter-spacing: 1px;
+    text-shadow: 0px 0px 5px #0ff, 0px 0px 10px #0ff, 0px 0px 15px #0ff;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 1.5rem;
+    text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.3);
+}
+
+.message-container {
     background: rgba(0, 0, 0, 0.9);
-    border: 2px solid #0ff;
-    padding: 15px;
-    width: 80%;
-    height: 250px;
-    margin: 20px auto;
+    padding: 30px 50px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 20px rgba(0, 255, 255, 0.5);
+    margin-bottom: 40px;
+    max-width: 700px;
+    width: 100%;
     text-align: left;
+    font-size: 1.2rem;
+}
+
+.message-container p {
+    color: #fff;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+button {
+    background-color: #0ff;
+    color: #121212;
+    padding: 12px 25px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0px 0px 15px rgba(0, 255, 255, 0.7);
+}
+
+button:hover {
+    background-color: #121212;
+    color: #0ff;
+}
+
+footer {
+    position: absolute;
+    bottom: 20px;
     font-size: 14px;
-    overflow-y: auto;
-    border-radius: 8px;
+    color: #0ff;
+    opacity: 0.7;
 }
 
 canvas {
@@ -41,63 +92,7 @@ canvas {
     width: 100%;
     height: 100%;
     z-index: -1;
-}
-
-.glitch {
-    font-size: 3rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    animation: glitch 1.5s infinite;
-}
-
-@keyframes glitch {
-    0% { text-shadow: 3px 3px red, -3px -3px blue; }
-    50% { text-shadow: -3px -3px red, 3px 3px blue; }
-    100% { text-shadow: 3px 3px red, -3px -3px blue; }
-}
-
-.section-box {
-    background: rgba(0, 0, 0, 0.8);
-    border: 2px solid #0ff;
-    padding: 20px;
-    width: 85%;
-    margin: 20px auto;
-    border-radius: 10px;
-    text-align: left;
-}
-
-.copyright {
-    margin-top: 50px;
-    font-size: 14px;
-    color: #0ff;
-    opacity: 0.7;
-}
-
-#notif {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: black;
-    color: #0ff;
-    border: 2px solid #0ff;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: bold;
-    display: none;
-    z-index: 9999;
-}
-
-#message {
-    color: #ff0000;
-    font-size: 2rem;
-    font-weight: bold;
-    margin-top: 20px;
-    background: rgba(255, 0, 0, 0.8);
-    padding: 20px;
-    border-radius: 10px;
-    width: 80%;
-    margin: 20px auto;
-    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
 }
 </style>
 </head>
@@ -108,102 +103,28 @@ canvas {
 Your browser does not support the audio element.
 </audio>
 
-<script>
-document.addEventListener("click", () => {
-const audio = document.getElementById("bg-audio");
-audio.muted = false;
-audio.volume = 1;
-audio.play().catch(err => console.log("Audio play error:", err));
-}, { once: true });
-</script>
-
 <canvas id="matrix"></canvas>
 
-<div class="container">
-<div class="section-box">
-<h1 class="glitch">Moonlight</h1>
-<p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
+<div class="message-container">
+    <h1>Moonlight</h1>
+    <h2>Service Unavailable</h2>
+    <p>We are truly sorry, but the Moonlight platform is currently experiencing issues. Our team is aware that the website is down due to an unexpected disruption, and we are actively working to restore service as quickly as possible. The disruption is due to a large-scale DDoS attack, which is impacting our servers and preventing access to Moonlight.</p>
+    <p>We understand how frustrating this may be, and we deeply apologize for the inconvenience. We are committed to bringing Moonlight back online and ensuring that such interruptions are minimized in the future.</p>
+    <p>In the meantime, please feel free to join our Discord server for updates and community discussions. Thank you for your patience and understanding!</p>
+    <button onclick="window.location.href='https://discord.gg/RRpKYRzmxt'">Join Our Discord</button>
 </div>
 
-<div class="terminal" id="console"></div>
-
-<!-- Message Section -->
-<div id="message">
-    <p>We are sorry, but unfortunately, Moonlight is currently unavailable due to a DDoS attack by exploiters. We stand with Palestine. Free Palestine.</p>
-</div>
-
-<div class="section-box">
-<h2 class="glitch">Features</h2>
-<ul>
-<li>✔ Shows if a Roblox user is online</li>
-<li>✔ Detects if user is in-game or using Studio</li>
-<li>✔ Clean and draggable GUI</li>
-<li>✔ Toggle visibility with the "V" key</li>
-</ul>
-</div>
-
-<div class="section-box">
-<h2 class="glitch">Update Log</h2>
-<p><strong>[v1.0]</strong> First release with Roblox username status detection and clean UI design.</p>
-</div>
-
-<div class="section-box">
-<h2 class="glitch">Developed By</h2>
-<p>Moonlight Team</p>
-<p>Milky - Solo Developer</p>
-</div>
-
-<div class="section-box" style="text-align: center;">
-<a href="https://discord.gg/RRpKYRzmxt" target="_blank" style="text-decoration: none;">
-<button style="
-padding: 12px 24px;
-font-size: 16px;
-background-color: black;
-color: #0ff;
-border: 2px solid #0ff;
-border-radius: 8px;
-cursor: pointer;
-transition: 0.3s;
-" onmouseover="this.style.backgroundColor='#0ff'; this.style.color='black'" onmouseout="this.style.backgroundColor='black'; this.style.color='#0ff'">
-Join our Discord
-</button>
-</a>
-</div>
-
-<div class="copyright">
-<p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
-</div>
-</div>
-
-<div id="notif">✔ Moonlight loaded successfully, discord.gg/RRpKYRzmxt</div>
+<footer>
+    <p>© 2025 Moonlight - All Rights Reserved</p>
+</footer>
 
 <script>
-function simulateConsole() {
-const consoleBox = document.getElementById("console");
-const messages = [
-"> Moonlight 1.0 initializing...",
-"> Checking for updates...",
-"> Connecting to servers...",
-"> Status: Offline (Due to DDoS)",
-"> Awaiting user input...",
-"> http://discord.gg/RRpKYRzmxt..."
-];
-consoleBox.innerHTML = "";
-
-let index = 0;
-function addMessage() {
-if (index < messages.length) {
-const p = document.createElement("p");
-p.textContent = messages[index];
-consoleBox.appendChild(p);
-consoleBox.scrollTop = consoleBox.scrollHeight;
-index++;
-setTimeout(addMessage, 1000);
-}
-}
-addMessage();
-}
-simulateConsole();
+document.addEventListener("click", () => {
+    const audio = document.getElementById("bg-audio");
+    audio.muted = false;
+    audio.volume = 1;
+    audio.play().catch(err => console.log("Audio play error:", err));
+}, { once: true });
 
 const canvas = document.getElementById('matrix');
 const ctx = canvas.getContext('2d');
@@ -216,33 +137,23 @@ const columns = canvas.width / fontSize;
 const drops = Array(Math.floor(columns)).fill(0);
 
 function drawMatrix() {
-ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-ctx.fillRect(0, 0, canvas.width, canvas.height);
-ctx.fillStyle = "#0ff";
-ctx.font = fontSize + "px monospace";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#0ff";
+    ctx.font = fontSize + "px monospace";
 
-for (let i = 0; i < drops.length; i++) {
-const text = letters[Math.floor(Math.random() * letters.length)];
-const x = i * fontSize;
-const y = drops[i] * fontSize;
-ctx.fillText(text, x, y);
+    for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+        ctx.fillText(text, x, y);
 
-if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
-drops[i]++;
-}
+        if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+    }
 }
 
 setInterval(drawMatrix, 50);
-
-// Show notification and open Moonlight
-setTimeout(() => {
-const notif = document.getElementById("notif");
-notif.style.display = "block";
-setTimeout(() => {
-notif.style.display = "none";
-window.open("https://moonlight.softworks.lol", "_blank");
-}, 7000);
-}, 1000);
 </script>
 </body>
 </html>
