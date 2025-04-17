@@ -1,130 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moonlight Executor</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Courier New', Courier, monospace;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonlight Video Platform</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            transition: background-color 0.3s ease;
+        }
 
-    body {
-      background: #0e0e0e;
-      color: #00ff99;
-      overflow: hidden;
-    }
+        header {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 10px;
+            background-color: #444;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
 
-    .loader {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
+        video {
+            width: 640px;
+            background-color: #000;
+        }
 
-    .loader h1 {
-      margin-bottom: 10px;
-    }
+        .video-container {
+            position: relative;
+            width: 640px;
+        }
 
-    .console {
-      width: 90%;
-      height: 80%;
-      background: #101010;
-      border: 2px solid #00ff99;
-      margin: 50px auto;
-      padding: 10px;
-      overflow-y: scroll;
-      white-space: pre-wrap;
-    }
+        .controls {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    .controls {
-      display: flex;
-      justify-content: center;
-      margin-top: 10px;
-    }
+        button, input[type="range"] {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+        }
 
-    button {
-      background: #00ff99;
-      color: black;
-      border: none;
-      padding: 10px 20px;
-      margin: 0 10px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+        button:hover, input[type="range"]:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
 
-    textarea {
-      width: 90%;
-      height: 150px;
-      background: #1a1a1a;
-      color: #00ff99;
-      border: 2px solid #00ff99;
-      display: block;
-      margin: 0 auto;
-      padding: 10px;
-    }
-  </style>
+        input[type="range"] {
+            width: 100px;
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: white;
+        }
+
+        button, input[type="range"], label {
+            color: white;
+        }
+
+        #recommendations {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e0e0e0;
+            width: 640px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-  <div class="loader" id="loader">
-    <h1>Injecting into Roblox...</h1>
-    <p>Moonlight Executor initializing</p>
-  </div>
+    <header>
+        <h1>Welcome to Moonlight</h1>
+        <label for="darkModeToggle">Dark Mode:</label>
+        <input type="checkbox" id="darkModeToggle">
+    </header>
+    
+    <div class="video-container">
+        <video id="videoPlayer" width="640" controls>
+            <source src="video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="controls">
+            <button id="playPauseBtn">Play</button>
+            <button id="skipIntroBtn">Skip Intro</button>
+            <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="1">
+        </div>
+    </div>
 
-  <div class="console" id="console">
-    [Moonlight] Executor loaded. Awaiting script...
-  </div>
+    <div id="recommendations">
+        <h3>Recommended Videos</h3>
+        <!-- Dynamic content will be added here -->
+    </div>
 
-  <textarea id="scriptInput" placeholder="Paste your Lua script here..."></textarea>
+    <form id="uploadForm">
+        <input type="file" id="videoUpload" accept="video/*">
+        <button type="submit">Upload Video</button>
+    </form>
 
-  <div class="controls">
-    <button onclick="executeScript()">Execute</button>
-    <button onclick="clearConsole()">Clear</button>
-  </div>
+    <script>
+        // Video Player Controls
+        const videoPlayer = document.getElementById('videoPlayer');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const skipIntroBtn = document.getElementById('skipIntroBtn');
+        const volumeControl = document.getElementById('volumeControl');
 
-  <script>
-    // Fake loader
-    setTimeout(() => {
-      document.getElementById("loader").style.display = "none";
-    }, 3000);
-
-    function logToConsole(message) {
-      const consoleEl = document.getElementById("console");
-      consoleEl.textContent += `\n${message}`;
-      consoleEl.scrollTop = consoleEl.scrollHeight;
-    }
-
-    function executeScript() {
-      const script = document.getElementById("scriptInput").value.trim();
-      if (!script) return logToConsole("[Moonlight] No script provided.");
-
-      logToConsole("[+] Connecting to Roblox client...");
-      setTimeout(() => {
-        logToConsole("[+] Hooking environment...");
-        setTimeout(() => {
-          logToConsole("[+] Executing...");
-          setTimeout(() => {
-            if (script.includes("swagmode")) {
-              logToConsole("[+] Swagmode Loaded. Enjoy!");
+        // Play/Pause button functionality
+        playPauseBtn.addEventListener('click', () => {
+            if (videoPlayer.paused) {
+                videoPlayer.play();
+                playPauseBtn.textContent = 'Pause';
             } else {
-              logToConsole("[+] Script executed successfully.");
+                videoPlayer.pause();
+                playPauseBtn.textContent = 'Play';
             }
-          }, 1000);
-        }, 1000);
-      }, 1000);
-    }
+        });
 
-    function clearConsole() {
-      document.getElementById("console").textContent = "[Moonlight] Executor loaded. Awaiting script...";
-    }
-  </script>
+        // Skip Intro functionality (Assume intro is the first 30 seconds)
+        skipIntroBtn.addEventListener('click', () => {
+            videoPlayer.currentTime = 30;
+        });
+
+        // Volume control functionality
+        volumeControl.addEventListener('input', () => {
+            videoPlayer.volume = volumeControl.value;
+        });
+
+        // Recommendation System (Stored in localStorage)
+        const videoRecommendations = [
+            { title: "Moonlight Tutorial", videoId: "video1" },
+            { title: "JavaScript Tips", videoId: "video2" },
+            { title: "Designing with CSS", videoId: "video3" }
+        ];
+
+        // Show recommended videos based on localStorage
+        function showRecommendations() {
+            const recommendedVideos = document.getElementById('recommendations');
+            videoRecommendations.forEach((video) => {
+                const videoElement = document.createElement('div');
+                videoElement.textContent = video.title;
+                recommendedVideos.appendChild(videoElement);
+            });
+        }
+
+        // Call this function when the page loads
+        showRecommendations();
+
+        // Dark Mode Toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+
+        // Check for saved theme in localStorage
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            darkModeToggle.checked = true;
+        }
+
+        // Toggle dark mode
+        darkModeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        });
+
+        // Video Upload Handling (Simulated using localStorage)
+        const uploadForm = document.getElementById('uploadForm');
+        const videoUpload = document.getElementById('videoUpload');
+
+        uploadForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const videoFile = videoUpload.files[0];
+            if (videoFile) {
+                // Simulate storing the video info
+                localStorage.setItem('uploadedVideo', videoFile.name);
+                alert('Video uploaded!');
+            } else {
+                alert('Please select a video to upload.');
+            }
+        });
+    </script>
 </body>
 </html>
