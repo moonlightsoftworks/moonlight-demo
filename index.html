@@ -1,165 +1,130 @@
-javascript:(function(){
-  if (document.getElementById("moonlightExecutor")) return;
-
-  const style = `
-    #moonlightExecutor {
-      position: fixed;
-      top: 120px;
-      left: 100px;
-      width: 550px;
-      background: #101010;
-      color: white;
-      font-family: 'Consolas', monospace;
-      border: 1px solid #00ffc3;
-      border-radius: 10px;
-      z-index: 99999;
-      box-shadow: 0 0 20px rgba(0,255,195,0.3);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moonlight Executor</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Courier New', Courier, monospace;
     }
 
-    #executorHeader {
-      padding: 10px;
-      background: #121212;
-      cursor: move;
-      font-weight: bold;
-      border-bottom: 1px solid #00ffc3;
-      font-size: 16px;
-      text-align: center;
-      color: #00ffc3;
-    }
-
-    #editorWrapper {
-      display: flex;
-    }
-
-    #lineNumbers {
-      background: #181818;
-      color: #555;
-      padding: 10px;
-      text-align: right;
-      user-select: none;
-      border-right: 1px solid #00ffc3;
-    }
-
-    #scriptInput {
-      flex-grow: 1;
-      height: 200px;
-      background: #181818;
-      color: #00ffc3;
-      border: none;
-      resize: none;
-      padding: 10px;
-      font-size: 14px;
-      outline: none;
+    body {
+      background: #0e0e0e;
+      color: #00ff99;
       overflow: hidden;
     }
 
-    #executorButtons {
+    .loader {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: #000;
       display: flex;
-      justify-content: space-around;
-      padding: 10px;
-      background: #121212;
-      border-top: 1px solid #00ffc3;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
     }
 
-    .executorBtn {
-      background: #00ffc3;
+    .loader h1 {
+      margin-bottom: 10px;
+    }
+
+    .console {
+      width: 90%;
+      height: 80%;
+      background: #101010;
+      border: 2px solid #00ff99;
+      margin: 50px auto;
+      padding: 10px;
+      overflow-y: scroll;
+      white-space: pre-wrap;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    button {
+      background: #00ff99;
       color: black;
       border: none;
-      padding: 6px 14px;
-      border-radius: 6px;
+      padding: 10px 20px;
+      margin: 0 10px;
       cursor: pointer;
       font-weight: bold;
     }
 
-    .executorBtn:hover {
-      background: #00cba1;
-    }
-
-    #outputConsole {
-      background: #0d0d0d;
-      color: #9affd9;
-      font-size: 12px;
-      height: 80px;
-      overflow-y: auto;
+    textarea {
+      width: 90%;
+      height: 150px;
+      background: #1a1a1a;
+      color: #00ff99;
+      border: 2px solid #00ff99;
+      display: block;
+      margin: 0 auto;
       padding: 10px;
-      border-top: 1px solid #00ffc3;
-      border-bottom-left-radius: 10px;
-      border-bottom-right-radius: 10px;
     }
-  `;
+  </style>
+</head>
+<body>
+  <div class="loader" id="loader">
+    <h1>Injecting into Roblox...</h1>
+    <p>Moonlight Executor initializing</p>
+  </div>
 
-  const html = `
-    <div id="moonlightExecutor">
-      <div id="executorHeader">🌙 Moonlight Web Executor</div>
-      <div id="editorWrapper">
-        <div id="lineNumbers">1</div>
-        <textarea id="scriptInput">// your lua script</textarea>
-      </div>
-      <div id="executorButtons">
-        <button class="executorBtn" onclick="moonlight_execute()">Execute</button>
-        <button class="executorBtn" onclick="moonlight_clear()">Clear</button>
-        <button class="executorBtn" onclick="moonlight_attach()">Attach</button>
-      </div>
-      <div id="outputConsole">// Console Ready</div>
-    </div>
-  `;
+  <div class="console" id="console">
+    [Moonlight] Executor loaded. Awaiting script...
+  </div>
 
-  const styleEl = document.createElement("style");
-  styleEl.textContent = style;
-  document.head.appendChild(styleEl);
+  <textarea id="scriptInput" placeholder="Paste your Lua script here..."></textarea>
 
-  const wrapper = document.createElement("div");
-  wrapper.innerHTML = html;
-  document.body.appendChild(wrapper);
+  <div class="controls">
+    <button onclick="executeScript()">Execute</button>
+    <button onclick="clearConsole()">Clear</button>
+  </div>
 
-  // Draggable
-  const executor = document.getElementById("moonlightExecutor");
-  const header = document.getElementById("executorHeader");
-  let isDragging = false, offsetX, offsetY;
+  <script>
+    // Fake loader
+    setTimeout(() => {
+      document.getElementById("loader").style.display = "none";
+    }, 3000);
 
-  header.onmousedown = function(e) {
-    isDragging = true;
-    offsetX = e.clientX - executor.offsetLeft;
-    offsetY = e.clientY - executor.offsetTop;
-  };
-  document.onmouseup = () => isDragging = false;
-  document.onmousemove = function(e) {
-    if (isDragging) {
-      executor.style.left = (e.clientX - offsetX) + "px";
-      executor.style.top = (e.clientY - offsetY) + "px";
+    function logToConsole(message) {
+      const consoleEl = document.getElementById("console");
+      consoleEl.textContent += `\n${message}`;
+      consoleEl.scrollTop = consoleEl.scrollHeight;
     }
-  };
 
-  // Script Functions
-  window.moonlight_execute = function() {
-    const input = document.getElementById("scriptInput").value.trim();
-    const output = document.getElementById("outputConsole");
-    if (input) {
-      output.innerText += `\n> Executing script... ✅\n> [LOG] Script successfully executed.`;
-    } else {
-      output.innerText += `\n> [ERROR] No script input provided.`;
+    function executeScript() {
+      const script = document.getElementById("scriptInput").value.trim();
+      if (!script) return logToConsole("[Moonlight] No script provided.");
+
+      logToConsole("[+] Connecting to Roblox client...");
+      setTimeout(() => {
+        logToConsole("[+] Hooking environment...");
+        setTimeout(() => {
+          logToConsole("[+] Executing...");
+          setTimeout(() => {
+            if (script.includes("swagmode")) {
+              logToConsole("[+] Swagmode Loaded. Enjoy!");
+            } else {
+              logToConsole("[+] Script executed successfully.");
+            }
+          }, 1000);
+        }, 1000);
+      }, 1000);
     }
-    output.scrollTop = output.scrollHeight;
-  }
 
-  window.moonlight_clear = function() {
-    document.getElementById("scriptInput").value = "";
-    updateLineNumbers();
-  }
-
-  window.moonlight_attach = function() {
-    const output = document.getElementById("outputConsole");
-    output.innerText += `\n> [INFO] Moonlight successfully attached to target.`;
-    output.scrollTop = output.scrollHeight;
-  }
-
-  // Line Numbers
-  const input = document.getElementById("scriptInput");
-  const lines = document.getElementById("lineNumbers");
-  function updateLineNumbers() {
-    const count = input.value.split('\n').length || 1;
-    lines.innerHTML = Array.from({length: count}, (_, i) => i + 1).join('<br>');
-  }
-  input.addEventListener('input', updateLineNumbers);
-  updateLineNumbers();
-})();
+    function clearConsole() {
+      document.getElementById("console").textContent = "[Moonlight] Executor loaded. Awaiting script...";
+    }
+  </script>
+</body>
+</html>
