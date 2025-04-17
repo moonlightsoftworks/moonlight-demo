@@ -1,230 +1,165 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Moonlight</title>
-<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11081/11081983.png" />
+javascript:(function(){
+  if (document.getElementById("moonlightExecutor")) return;
 
-<style>
-* {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
-font-family: 'Courier New', monospace;
-}
+  const style = `
+    #moonlightExecutor {
+      position: fixed;
+      top: 120px;
+      left: 100px;
+      width: 550px;
+      background: #101010;
+      color: white;
+      font-family: 'Consolas', monospace;
+      border: 1px solid #00ffc3;
+      border-radius: 10px;
+      z-index: 99999;
+      box-shadow: 0 0 20px rgba(0,255,195,0.3);
+    }
 
-body {
-background: black;
-color: #0ff;
-overflow-y: auto;
-text-align: center;
-}
+    #executorHeader {
+      padding: 10px;
+      background: #121212;
+      cursor: move;
+      font-weight: bold;
+      border-bottom: 1px solid #00ffc3;
+      font-size: 16px;
+      text-align: center;
+      color: #00ffc3;
+    }
 
-.terminal {
-background: rgba(0, 0, 0, 0.9);
-border: 2px solid #0ff;
-padding: 15px;
-width: 80%;
-height: 250px;
-margin: 20px auto;
-text-align: left;
-font-size: 14px;
-overflow-y: auto;
-border-radius: 8px;
-}
+    #editorWrapper {
+      display: flex;
+    }
 
-canvas {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-z-index: -1;
-}
+    #lineNumbers {
+      background: #181818;
+      color: #555;
+      padding: 10px;
+      text-align: right;
+      user-select: none;
+      border-right: 1px solid #00ffc3;
+    }
 
-.glitch {
-font-size: 3rem;
-font-weight: bold;
-text-transform: uppercase;
-animation: glitch 1.5s infinite;
-}
+    #scriptInput {
+      flex-grow: 1;
+      height: 200px;
+      background: #181818;
+      color: #00ffc3;
+      border: none;
+      resize: none;
+      padding: 10px;
+      font-size: 14px;
+      outline: none;
+      overflow: hidden;
+    }
 
-@keyframes glitch {
-0% { text-shadow: 3px 3px red, -3px -3px blue; }
-50% { text-shadow: -3px -3px red, 3px 3px blue; }
-100% { text-shadow: 3px 3px red, -3px -3px blue; }
-}
+    #executorButtons {
+      display: flex;
+      justify-content: space-around;
+      padding: 10px;
+      background: #121212;
+      border-top: 1px solid #00ffc3;
+    }
 
-.section-box {
-background: rgba(0, 0, 0, 0.8);
-border: 2px solid #0ff;
-padding: 20px;
-width: 85%;
-margin: 20px auto;
-border-radius: 10px;
-text-align: left;
-}
+    .executorBtn {
+      background: #00ffc3;
+      color: black;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
 
-.copyright {
-margin-top: 50px;
-font-size: 14px;
-color: #0ff;
-opacity: 0.7;
-}
+    .executorBtn:hover {
+      background: #00cba1;
+    }
 
-#notif {
-position: fixed;
-top: 20px;
-right: 20px;
-background: black;
-color: #0ff;
-border: 2px solid #0ff;
-padding: 10px 20px;
-border-radius: 8px;
-font-weight: bold;
-display: none;
-z-index: 9999;
-}
-</style>
-</head>
-<body>
+    #outputConsole {
+      background: #0d0d0d;
+      color: #9affd9;
+      font-size: 12px;
+      height: 80px;
+      overflow-y: auto;
+      padding: 10px;
+      border-top: 1px solid #00ffc3;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+  `;
 
-<audio id="bg-audio" autoplay loop>
-<source src="https://raw.githubusercontent.com/moonlightsoftworks/mp4/main/Armin%20van%20Buuren%20feat.%20Sharon%20den%20Adel%20-%20In%20And%20Out%20Of%20Love%20(Official%20Music%20Video).mp3" type="audio/mpeg">
-Your browser does not support the audio element.
-</audio>
+  const html = `
+    <div id="moonlightExecutor">
+      <div id="executorHeader">🌙 Moonlight Web Executor</div>
+      <div id="editorWrapper">
+        <div id="lineNumbers">1</div>
+        <textarea id="scriptInput">// your lua script</textarea>
+      </div>
+      <div id="executorButtons">
+        <button class="executorBtn" onclick="moonlight_execute()">Execute</button>
+        <button class="executorBtn" onclick="moonlight_clear()">Clear</button>
+        <button class="executorBtn" onclick="moonlight_attach()">Attach</button>
+      </div>
+      <div id="outputConsole">// Console Ready</div>
+    </div>
+  `;
 
-<script>
-document.addEventListener("click", () => {
-const audio = document.getElementById("bg-audio");
-audio.muted = false;
-audio.volume = 1;
-audio.play().catch(err => console.log("Audio play error:", err));
-}, { once: true });
-</script>
+  const styleEl = document.createElement("style");
+  styleEl.textContent = style;
+  document.head.appendChild(styleEl);
 
-<canvas id="matrix"></canvas>
+  const wrapper = document.createElement("div");
+  wrapper.innerHTML = html;
+  document.body.appendChild(wrapper);
 
-<div class="container">
-<div class="section-box">
-<h1 class="glitch">Moonlight</h1>
-<p>A simple GUI tool to check if a Roblox username is online, in a game, or using Studio.</p>
-</div>
+  // Draggable
+  const executor = document.getElementById("moonlightExecutor");
+  const header = document.getElementById("executorHeader");
+  let isDragging = false, offsetX, offsetY;
 
-<div class="terminal" id="console"></div>
+  header.onmousedown = function(e) {
+    isDragging = true;
+    offsetX = e.clientX - executor.offsetLeft;
+    offsetY = e.clientY - executor.offsetTop;
+  };
+  document.onmouseup = () => isDragging = false;
+  document.onmousemove = function(e) {
+    if (isDragging) {
+      executor.style.left = (e.clientX - offsetX) + "px";
+      executor.style.top = (e.clientY - offsetY) + "px";
+    }
+  };
 
-<div class="section-box">
-<h2 class="glitch">Features</h2>
-<ul>
-<li>✔ Shows if a Roblox user is online</li>
-<li>✔ Detects if user is in-game or using Studio</li>
-<li>✔ Clean and draggable GUI</li>
-<li>✔ Toggle visibility with the "V" key</li>
-</ul>
-</div>
+  // Script Functions
+  window.moonlight_execute = function() {
+    const input = document.getElementById("scriptInput").value.trim();
+    const output = document.getElementById("outputConsole");
+    if (input) {
+      output.innerText += `\n> Executing script... ✅\n> [LOG] Script successfully executed.`;
+    } else {
+      output.innerText += `\n> [ERROR] No script input provided.`;
+    }
+    output.scrollTop = output.scrollHeight;
+  }
 
-<div class="section-box">
-<h2 class="glitch">Update Log</h2>
-<p><strong>[v1.0]</strong> First release with Roblox username status detection and clean UI design.</p>
-</div>
+  window.moonlight_clear = function() {
+    document.getElementById("scriptInput").value = "";
+    updateLineNumbers();
+  }
 
-<div class="section-box">
-<h2 class="glitch">Developed By</h2>
-<p>Moonlight Team</p>
-<p>Milky - Solo Developer</p>
-</div>
+  window.moonlight_attach = function() {
+    const output = document.getElementById("outputConsole");
+    output.innerText += `\n> [INFO] Moonlight successfully attached to target.`;
+    output.scrollTop = output.scrollHeight;
+  }
 
-<div class="section-box" style="text-align: center;">
-<a href="https://discord.gg/RRpKYRzmxt" target="_blank" style="text-decoration: none;">
-<button style="
-padding: 12px 24px;
-font-size: 16px;
-background-color: black;
-color: #0ff;
-border: 2px solid #0ff;
-border-radius: 8px;
-cursor: pointer;
-transition: 0.3s;
-" onmouseover="this.style.backgroundColor='#0ff'; this.style.color='black'" onmouseout="this.style.backgroundColor='black'; this.style.color='#0ff'">
-Join our Discord
-</button>
-</a>
-</div>
-
-<div class="copyright">
-<p>© 2025 Moonlight 1.0 - All Rights Reserved</p>
-</div>
-</div>
-
-<div id="notif">✔ Moonlight loaded successfully, discord.gg/RRpKYRzmxt</div>
-
-<script>
-function simulateConsole() {
-const consoleBox = document.getElementById("console");
-const messages = [
-"> Moonlight 1.0 initializing...",
-"> Checking for updates...",
-"> Connecting to servers...",
-"> Status: Online",
-"> Awaiting user input...",
-"> http://discord.gg/RRpKYRzmxt..."
-];
-consoleBox.innerHTML = "";
-
-let index = 0;
-function addMessage() {
-if (index < messages.length) {
-const p = document.createElement("p");
-p.textContent = messages[index];
-consoleBox.appendChild(p);
-consoleBox.scrollTop = consoleBox.scrollHeight;
-index++;
-setTimeout(addMessage, 1000);
-}
-}
-addMessage();
-}
-simulateConsole();
-
-const canvas = document.getElementById('matrix');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-const letters = "01010101010101010101";
-const fontSize = 16;
-const columns = canvas.width / fontSize;
-const drops = Array(Math.floor(columns)).fill(0);
-
-function drawMatrix() {
-ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-ctx.fillRect(0, 0, canvas.width, canvas.height);
-ctx.fillStyle = "#0ff";
-ctx.font = fontSize + "px monospace";
-
-for (let i = 0; i < drops.length; i++) {
-const text = letters[Math.floor(Math.random() * letters.length)];
-const x = i * fontSize;
-const y = drops[i] * fontSize;
-ctx.fillText(text, x, y);
-
-if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
-drops[i]++;
-}
-}
-
-setInterval(drawMatrix, 50);
-
-// Show notification and open Moonlight
-setTimeout(() => {
-const notif = document.getElementById("notif");
-notif.style.display = "block";
-setTimeout(() => {
-notif.style.display = "none";
-window.open("https://moonlight.softworks.lol", "_blank");
-}, 7000);
-}, 1000);
-</script>
-</body>
-</html>
+  // Line Numbers
+  const input = document.getElementById("scriptInput");
+  const lines = document.getElementById("lineNumbers");
+  function updateLineNumbers() {
+    const count = input.value.split('\n').length || 1;
+    lines.innerHTML = Array.from({length: count}, (_, i) => i + 1).join('<br>');
+  }
+  input.addEventListener('input', updateLineNumbers);
+  updateLineNumbers();
+})();
