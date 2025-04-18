@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Moonlight Music</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moonlight Music - No Ads</title>
   <style>
     * {
       margin: 0;
@@ -87,6 +87,13 @@
       margin-top: 15px;
       opacity: 0.8;
     }
+
+    #adNotification {
+      font-size: 16px;
+      color: #ffeb3b;
+      margin-top: 20px;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -95,6 +102,7 @@
     <input type="text" id="searchInput" placeholder="Search a song..." />
     <button onclick="searchAndPlay()">Search & Play</button>
     <p id="nowPlaying">Nothing playing...</p>
+    <div id="adNotification">Hold on, skipping ads...</div>
     <div class="controls">
       <button onclick="playSong()">▶️ Play</button>
       <button onclick="pauseSong()">⏸️ Pause</button>
@@ -109,6 +117,7 @@
     let loop = false;
     let loopBtn = document.querySelector("button:last-of-type");
 
+    // Search and play a song
     function searchAndPlay() {
       const query = document.getElementById("searchInput").value;
       if (!query) return alert("Type a song name!");
@@ -127,11 +136,13 @@
         });
     }
 
+    // Load and play video
     function loadAndPlay(id) {
       const player = document.getElementById("hiddenPlayer");
       player.src = `https://www.youtube.com/embed/${id}?autoplay=1&enablejsapi=1&controls=0&rel=0&modestbranding=1`;
     }
 
+    // Play song
     function playSong() {
       const player = document.getElementById("hiddenPlayer");
       player.contentWindow.postMessage(
@@ -140,6 +151,7 @@
       );
     }
 
+    // Pause song
     function pauseSong() {
       const player = document.getElementById("hiddenPlayer");
       player.contentWindow.postMessage(
@@ -148,6 +160,7 @@
       );
     }
 
+    // Replay song from the start
     function replaySong() {
       const player = document.getElementById("hiddenPlayer");
       player.contentWindow.postMessage(
@@ -157,10 +170,40 @@
       playSong();
     }
 
+    // Toggle loop state
     function toggleLoop() {
       loop = !loop;
       loopBtn.textContent = `🔂 Loop: ${loop ? "On" : "Off"}`;
     }
+
+    // Auto-skip ads when detected
+    function skipAds() {
+      const player = document.getElementById("hiddenPlayer");
+      player.contentWindow.postMessage(
+        JSON.stringify({ event: "command", func: "skipAd", args: [] }),
+        "*"
+      );
+    }
+
+    // Listen for player state to detect ads
+    window.addEventListener("message", (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.event === "infoDelivery" && data.info) {
+          // If ad is detected (player state is 1 - playing)
+          if (data.info.playerState === 1 && data.info.ads && data.info.ads.length > 0) {
+            // Show notification and skip ad
+            document.getElementById("adNotification").style.display = "block";
+            skipAds();
+          } else {
+            // Hide notification if no ads are playing
+            document.getElementById("adNotification").style.display = "none";
+          }
+        }
+      } catch (e) {
+        console.error("Error in ad detection:", e);
+      }
+    });
   </script>
 </body>
 </html>
