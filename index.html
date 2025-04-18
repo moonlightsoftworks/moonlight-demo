@@ -30,7 +30,7 @@
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
       width: 100%;
       max-width: 450px;
-      transition: transform 0.5s ease;
+      animation: fadeIn 0.8s ease-out;
     }
 
     h1 {
@@ -38,7 +38,7 @@
       color: #1db954;
       font-size: 36px;
       margin-bottom: 30px;
-      transition: transform 0.3s ease;
+      animation: slideIn 0.8s ease-out;
     }
 
     .form-control {
@@ -113,7 +113,41 @@
       text-decoration: underline;
     }
 
-    /* Animation for the form container */
+    .dashboard {
+      background: rgba(0, 0, 0, 0.8);
+      width: 100%;
+      height: 100%;
+      padding: 50px;
+      border-radius: 15px;
+      max-width: 600px;
+      animation: fadeIn 0.8s ease-out;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .dashboard h1 {
+      font-size: 48px;
+      color: #1db954;
+      margin-bottom: 20px;
+    }
+
+    .dashboard button {
+      background: #1db954;
+      padding: 15px 30px;
+      border-radius: 10px;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      border: none;
+    }
+
+    .dashboard button:hover {
+      background: #1ed760;
+    }
+
     @keyframes fadeIn {
       from {
         opacity: 0;
@@ -125,13 +159,21 @@
       }
     }
 
-    .auth-container {
-      animation: fadeIn 0.8s ease-out;
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
   </style>
 </head>
 <body>
-  <div class="auth-container">
+  <!-- Login / Sign-Up Form -->
+  <div class="auth-container" id="authFormContainer">
     <h1>Moonlight</h1>
     <form id="authForm">
       <div class="form-control">
@@ -149,15 +191,28 @@
     </div>
   </div>
 
+  <!-- Dashboard -->
+  <div class="dashboard" id="dashboard" style="display: none;">
+    <h1>Welcome, <span id="welcomeUsername">User</span></h1>
+    <button id="logOutButton">Log Out</button>
+  </div>
+
   <script>
-    // Switch between Login and Sign-Up forms
     const switchToSignUp = document.getElementById('switchToSignUp');
-    switchToSignUp.addEventListener('click', function(event) {
+    const authFormContainer = document.getElementById('authFormContainer');
+    const dashboard = document.getElementById('dashboard');
+    const logOutButton = document.getElementById('logOutButton');
+    const usernameField = document.getElementById('username');
+    const passwordField = document.getElementById('password');
+    const welcomeUsername = document.getElementById('welcomeUsername');
+
+    switchToSignUp.addEventListener('click', function (event) {
       event.preventDefault();
       document.querySelector('h1').textContent = 'Moonlight | Sign Up';
       document.querySelector('button').textContent = 'Sign Up';
       document.querySelector('.link').innerHTML = 'Already have an account? <a href="#" id="switchToLogin">Log In</a>';
-      document.getElementById('switchToLogin').addEventListener('click', function(e) {
+      const switchToLogin = document.getElementById('switchToLogin');
+      switchToLogin.addEventListener('click', function (e) {
         e.preventDefault();
         document.querySelector('h1').textContent = 'Moonlight';
         document.querySelector('button').textContent = 'Log In';
@@ -165,18 +220,30 @@
       });
     });
 
-    // Handle the form submission
-    document.getElementById('authForm').addEventListener('submit', function(event) {
+    document.getElementById('authForm').addEventListener('submit', function (event) {
       event.preventDefault();
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      
+      const username = usernameField.value;
+      const password = passwordField.value;
+
       if (username && password) {
-        // For now, just log the credentials (you can replace this with real authentication later)
-        alert(`Logged in as: ${username}`);
+        // Save username to show on the dashboard
+        localStorage.setItem('username', username);
+
+        // Switch to dashboard view
+        authFormContainer.style.display = 'none';
+        dashboard.style.display = 'flex';
+        welcomeUsername.textContent = username;
       } else {
         alert('Please fill in all fields');
       }
+    });
+
+    logOutButton.addEventListener('click', function () {
+      localStorage.removeItem('username');
+      dashboard.style.display = 'none';
+      authFormContainer.style.display = 'flex';
+      usernameField.value = '';
+      passwordField.value = '';
     });
   </script>
 </body>
