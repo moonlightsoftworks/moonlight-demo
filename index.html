@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moonlight Music - Spotify Clone</title>
+  <title>Moonlight | Sign Up / Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
   <style>
     * {
       margin: 0;
@@ -12,197 +13,122 @@
     }
 
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #181818;
-      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      background: #2d2d2d;
+      color: white;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      overflow: hidden;
-      flex-direction: column;
     }
 
-    .player {
-      background: rgba(0, 0, 0, 0.8);
-      padding: 40px;
-      border-radius: 25px;
-      box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
-      width: 90%;
-      max-width: 600px;
-      text-align: center;
+    .auth-container {
+      background: #333;
+      border-radius: 15px;
+      padding: 40px 60px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      width: 100%;
+      max-width: 400px;
     }
 
     h1 {
-      margin-bottom: 20px;
-      font-weight: 600;
-      font-size: 40px;
+      text-align: center;
       color: #1db954;
+      font-size: 36px;
+      margin-bottom: 30px;
     }
 
-    input[type="text"] {
+    input[type="text"], input[type="password"] {
       width: 100%;
       padding: 15px;
-      border: none;
-      border-radius: 12px;
-      font-size: 18px;
-      margin-bottom: 20px;
-      background: #333;
-      color: #fff;
-    }
-
-    input[type="text"]:focus {
-      outline: none;
+      margin-bottom: 15px;
       background: #444;
-    }
-
-    button {
-      padding: 12px 20px;
-      margin: 10px;
-      border: none;
-      border-radius: 20px;
-      font-size: 18px;
-      background-color: #1db954;
-      color: white;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    button:hover {
-      background-color: #1ed760;
-    }
-
-    .controls {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    #hiddenPlayer {
-      display: none;
-    }
-
-    #nowPlaying {
-      font-size: 18px;
-      margin-top: 15px;
-      opacity: 0.8;
-    }
-
-    #adNotification {
+      border: 1px solid #555;
+      border-radius: 10px;
+      color: #fff;
       font-size: 16px;
-      color: #ffeb3b;
+      transition: 0.3s ease;
+    }
+
+    input[type="text"]:focus, input[type="password"]:focus {
+      background: #555;
+      border-color: #1db954;
+      outline: none;
+    }
+
+    .button {
+      width: 100%;
+      padding: 15px;
+      background: #1db954;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .button:hover {
+      background: #1ed760;
+    }
+
+    .link {
+      text-align: center;
       margin-top: 20px;
-      display: none;
+      font-size: 14px;
+      color: #bbb;
+    }
+
+    .link a {
+      color: #1db954;
+      text-decoration: none;
+    }
+
+    .link a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <div class="player">
-    <h1>🎵 Moonlight Music</h1>
-    <input type="text" id="searchInput" placeholder="Search a song..." />
-    <button onclick="searchAndPlay()">Search & Play</button>
-    <p id="nowPlaying">Nothing playing...</p>
-    <div id="adNotification">Hold on, skipping ads...</div>
-    <div class="controls">
-      <button onclick="playSong()">▶️ Play</button>
-      <button onclick="pauseSong()">⏸️ Pause</button>
-      <button onclick="replaySong()">🔁 Replay</button>
-      <button onclick="toggleLoop()">🔂 Loop: Off</button>
+  <div class="auth-container">
+    <h1>Moonlight</h1>
+    <form id="authForm">
+      <input type="text" id="username" placeholder="Username" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit" class="button">Log In</button>
+    </form>
+    <div class="link">
+      Don't have an account? <a href="#" id="switchToSignUp">Sign Up</a>
     </div>
-    <iframe id="hiddenPlayer" allow="autoplay" allowfullscreen></iframe>
   </div>
 
   <script>
-    let currentVideoId = "";
-    let loop = false;
-    let loopBtn = document.querySelector("button:last-of-type");
+    // Switch between Login and Sign-Up forms
+    const switchToSignUp = document.getElementById('switchToSignUp');
+    switchToSignUp.addEventListener('click', function(event) {
+      event.preventDefault();
+      document.querySelector('h1').textContent = 'Moonlight | Sign Up';
+      document.querySelector('button').textContent = 'Sign Up';
+      document.querySelector('.link').innerHTML = 'Already have an account? <a href="#" id="switchToLogin">Log In</a>';
+      document.getElementById('switchToLogin').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector('h1').textContent = 'Moonlight';
+        document.querySelector('button').textContent = 'Log In';
+        document.querySelector('.link').innerHTML = 'Don\'t have an account? <a href="#" id="switchToSignUp">Sign Up</a>';
+      });
+    });
 
-    // Search and play a song
-    function searchAndPlay() {
-      const query = document.getElementById("searchInput").value;
-      if (!query) return alert("Type a song name!");
-
-      fetch(`https://corsproxy.io/?https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`)
-        .then(res => res.text())
-        .then(html => {
-          const match = html.match(/"videoId":"(.*?)"/);
-          if (match && match[1]) {
-            currentVideoId = match[1];
-            loadAndPlay(currentVideoId);
-            document.getElementById("nowPlaying").textContent = `Now Playing: ${query}`;
-          } else {
-            alert("No song found.");
-          }
-        });
-    }
-
-    // Load and play video
-    function loadAndPlay(id) {
-      const player = document.getElementById("hiddenPlayer");
-      player.src = `https://www.youtube.com/embed/${id}?autoplay=1&enablejsapi=1&controls=0&rel=0&modestbranding=1`;
-    }
-
-    // Play song
-    function playSong() {
-      const player = document.getElementById("hiddenPlayer");
-      player.contentWindow.postMessage(
-        JSON.stringify({ event: "command", func: "playVideo", args: [] }),
-        "*"
-      );
-    }
-
-    // Pause song
-    function pauseSong() {
-      const player = document.getElementById("hiddenPlayer");
-      player.contentWindow.postMessage(
-        JSON.stringify({ event: "command", func: "pauseVideo", args: [] }),
-        "*"
-      );
-    }
-
-    // Replay song from the start
-    function replaySong() {
-      const player = document.getElementById("hiddenPlayer");
-      player.contentWindow.postMessage(
-        JSON.stringify({ event: "command", func: "seekTo", args: [0, true] }),
-        "*"
-      );
-      playSong();
-    }
-
-    // Toggle loop state
-    function toggleLoop() {
-      loop = !loop;
-      loopBtn.textContent = `🔂 Loop: ${loop ? "On" : "Off"}`;
-    }
-
-    // Auto-skip ads when detected
-    function skipAds() {
-      const player = document.getElementById("hiddenPlayer");
-      player.contentWindow.postMessage(
-        JSON.stringify({ event: "command", func: "skipAd", args: [] }),
-        "*"
-      );
-    }
-
-    // Listen for player state to detect ads
-    window.addEventListener("message", (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (data.event === "infoDelivery" && data.info) {
-          // If ad is detected (player state is 1 - playing)
-          if (data.info.playerState === 1 && data.info.ads && data.info.ads.length > 0) {
-            // Show notification and skip ad
-            document.getElementById("adNotification").style.display = "block";
-            skipAds();
-          } else {
-            // Hide notification if no ads are playing
-            document.getElementById("adNotification").style.display = "none";
-          }
-        }
-      } catch (e) {
-        console.error("Error in ad detection:", e);
+    // Handle the form submission
+    document.getElementById('authForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      
+      if (username && password) {
+        // For now, just log the credentials (you can replace this with real authentication later)
+        alert(`Logged in as: ${username}`);
+      } else {
+        alert('Please fill in all fields');
       }
     });
   </script>
