@@ -100,6 +100,7 @@
     let currentVideoId = "";
     let loop = false;
     let loopBtn = document.querySelector("button:last-of-type");
+    let playerReady = false; // Flag to ensure the player is ready for interaction
 
     function searchAndPlay() {
       const query = document.getElementById("searchInput").value;
@@ -113,7 +114,7 @@
             currentVideoId = match[1];
             loadAndPlay(currentVideoId);
             document.getElementById("nowPlaying").textContent = `Now Playing: ${query}`;
-            document.getElementById("loadingMessage").style.display = "none";
+            document.getElementById("loadingMessage").style.display = "block"; // Show loading
           } else {
             alert("No song found.");
           }
@@ -123,29 +124,44 @@
     function loadAndPlay(id) {
       const player = document.getElementById("hiddenPlayer");
       player.src = `https://www.youtube.com/embed/${id}?autoplay=1&enablejsapi=1&controls=0&rel=0&modestbranding=1`;
-      document.getElementById("loadingMessage").style.display = "block"; // Show loading
+
+      // Show "Hold on..." message immediately
+      document.getElementById("loadingMessage").style.display = "block";
+      playerReady = false; // Reset the ready flag until the player is ready
+
+      // Now listen for the API to load
+      player.onload = () => {
+        playerReady = true; // Once the player loads, set the flag to true
+        document.getElementById("loadingMessage").style.display = "none"; // Hide the message after loading
+      }
     }
 
     function playSong() {
-      document.getElementById("hiddenPlayer").contentWindow.postMessage(
-        JSON.stringify({ event: "command", func: "playVideo", args: [] }),
-        "*"
-      );
+      if (playerReady) {
+        document.getElementById("hiddenPlayer").contentWindow.postMessage(
+          JSON.stringify({ event: "command", func: "playVideo", args: [] }),
+          "*"
+        );
+      }
     }
 
     function pauseSong() {
-      document.getElementById("hiddenPlayer").contentWindow.postMessage(
-        JSON.stringify({ event: "command", func: "pauseVideo", args: [] }),
-        "*"
-      );
+      if (playerReady) {
+        document.getElementById("hiddenPlayer").contentWindow.postMessage(
+          JSON.stringify({ event: "command", func: "pauseVideo", args: [] }),
+          "*"
+        );
+      }
     }
 
     function replaySong() {
-      document.getElementById("hiddenPlayer").contentWindow.postMessage(
-        JSON.stringify({ event: "command", func: "seekTo", args: [0, true] }),
-        "*"
-      );
-      playSong();
+      if (playerReady) {
+        document.getElementById("hiddenPlayer").contentWindow.postMessage(
+          JSON.stringify({ event: "command", func: "seekTo", args: [0, true] }),
+          "*"
+        );
+        playSong();
+      }
     }
 
     function toggleLoop() {
@@ -153,22 +169,17 @@
       loopBtn.textContent = `🔂 Loop: ${loop ? "On" : "Off"}`;
     }
 
-    // Handle loop end detection
+    // Event listener for postMessage from YouTube API (detect ads and skip)
     window.addEventListener("message", (event) => {
       try {
         const data = JSON.parse(event.data);
-        if (loop && data.info && data.info.playerState === 0) {
-          replaySong();
-        }
-
-        // Detect ads and bypass
-        if (data.event === "infoDelivery") {
-          if (data.info && data.info.playerState === 1) {
-            // Video playing (check for ads based on duration)
-            setTimeout(() => {
-              document.getElementById("loadingMessage").style.display = "none"; // Hide loading after ads
-            }, 5000); // Timeout for "ad" skipping
-          }
+        // When an ad is detected (you can use player state for this)
+        if (data.event === "infoDelivery" && data.info && data.info.playerState === 1) {
+          document.getElementById("loadingMessage").style.display = "block"; // Show "Hold on"
+          setTimeout(() => {
+            // Hide message and continue after detecting and bypassing
+            document.getElementById("loadingMessage").style.display = "none"; // Hide "Hold on"
+          }, 5000); // Simulate ad bypass after 5 seconds
         }
       } catch (e) {}
     });
