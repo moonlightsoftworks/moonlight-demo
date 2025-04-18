@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moonlight Music - No Ads</title>
+  <title>Moonlight Music - Spotify Clone</title>
   <style>
     * {
       margin: 0;
@@ -13,30 +13,31 @@
 
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #6a0dad, #9b59b6);
+      background: #181818;
       color: #fff;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       overflow: hidden;
+      flex-direction: column;
     }
 
     .player {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.8);
       padding: 40px;
       border-radius: 25px;
       box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
       width: 90%;
-      max-width: 500px;
+      max-width: 600px;
       text-align: center;
     }
 
     h1 {
       margin-bottom: 20px;
       font-weight: 600;
-      font-size: 30px;
-      color: #fff;
+      font-size: 40px;
+      color: #1db954;
     }
 
     input[type="text"] {
@@ -46,13 +47,13 @@
       border-radius: 12px;
       font-size: 18px;
       margin-bottom: 20px;
-      background: #ffffff10;
+      background: #333;
       color: #fff;
     }
 
     input[type="text"]:focus {
       outline: none;
-      background: #ffffff30;
+      background: #444;
     }
 
     button {
@@ -61,14 +62,14 @@
       border: none;
       border-radius: 20px;
       font-size: 18px;
-      background-color: #ff4081;
+      background-color: #1db954;
       color: white;
       cursor: pointer;
       transition: background-color 0.3s;
     }
 
     button:hover {
-      background-color: #ff80ab;
+      background-color: #1ed760;
     }
 
     .controls {
