@@ -1,341 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moonlight Music</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      color: white;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.35);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px #000;
+      width: 90%;
+      max-width: 600px;
+    }
+
+    input {
+      padding: 10px;
+      width: 70%;
+      border-radius: 8px;
+      border: none;
+      margin: 10px 0;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      background: #ffffff20;
+      color: white;
+      border-radius: 8px;
+      margin: 5px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background: #ffffff40;
+    }
+
+    iframe {
+      margin-top: 15px;
+      width: 100%;
+      height: 315px;
+      border-radius: 12px;
+      border: none;
+    }
+  </style>
+</head>
 <body>
+  <div class="container">
+    <h1>Moonlight Music</h1>
+    <input type="text" id="searchInput" placeholder="Search any song..." />
+    <button onclick="searchSong()">Search</button>
 
-    <div class="sidebar">
-      <div class="logo">
-        <a href="#">
-          <img src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_CMYK_Green.png" alt="Logo" />
-        </a>
-      </div>
+    <p id="songTitle">No song playing</p>
+    <iframe id="player" src="" allow="autoplay" allowfullscreen></iframe>
 
-      <div class="navigation">
-        <ul>
-          <li>
-            <a href="#">
-              <span class="fa fa-home"></span>
-              <span>Home</span>
-            </a>
-          </li>
-
-          <li>
-            <a href="#">
-              <span class="fa fa-search"></span>
-              <span>Search</span>
-            </a>
-          </li>
-
-          <li>
-            <a href="#">
-              <span class="fa fas fa-book"></span>
-              <span>Your Library</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="navigation">
-        <ul>
-          <li>
-            <a href="#">
-              <span class="fa fas fa-plus-square"></span>
-              <span>Create Playlist</span>
-            </a>
-          </li>
-
-          <li>
-            <a href="#">
-              <span class="fa fas fa-heart"></span>
-              <span>Liked Songs</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="policies">
-        <ul>
-          <li>
-            <a href="#">Cookies</a>
-          </li>
-          <li>
-            <a href="#">Privacy</a>
-          </li>
-        </ul>
-      </div>
+    <div class="controls">
+      <button onclick="togglePlay()">▶️/⏸️</button>
+      <button onclick="replay()">🔁 Replay</button>
+      <button onclick="toggleLoop()">🔂 Loop</button>
     </div>
+  </div>
 
-    <div class="main-container">
-      <div class="topbar">
-        <div class="prev-next-buttons">
-          <button type="button" class="fa fas fa-chevron-left"></button>
-          <button type="button" class="fa fas fa-chevron-right"></button>
-        </div>
+  <script>
+    let currentVideoId = "";
+    let loopEnabled = false;
+    let playerIframe = document.getElementById('player');
 
-        <div class="navbar">
-          <ul>
-            <li>
-              <a href="#">Premium</a>
-            </li>
-            <li>
-              <a href="#">Support</a>
-            </li>
-            <li>
-              <a href="#">Download</a>
-            </li>
-            <li class="divider">|</li>
-            <li>
-              <a href="#">Sign Up</a>
-            </li>
-          </ul>
-          <button type="button">Log In</button>
-        </div>
-      </div>
+    function searchSong() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (!query) return alert("Enter a song name");
 
-      <div class="spotify-playlists">
-        <h2>Spotify Playlists</h2>
+      fetch(`https://corsproxy.io/?https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`)
+        .then(res => res.text())
+        .then(html => {
+          const videoIdMatch = html.match(/"videoId":"(.*?)"/);
+          if (videoIdMatch && videoIdMatch[1]) {
+            currentVideoId = videoIdMatch[1];
+            document.getElementById("songTitle").textContent = `Now Playing: ${query}`;
+            loadVideo(currentVideoId);
+          } else {
+            alert("No video found.");
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Error searching YouTube.");
+        });
+    }
 
-        <div class="list">
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Today's Top Hits</h4>
-            <p>Rema & Selena Gomez are on top of the...</p>
-          </div>
+    function loadVideo(id) {
+      playerIframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&enablejsapi=1&rel=0&showinfo=0`;
+    }
 
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>RapCaviar</h4>
-            <p>New Music from Lil Baby, Juice WRLD an...</p>
-          </div>
+    function togglePlay() {
+      playerIframe.contentWindow.postMessage(
+        JSON.stringify({ event: "command", func: "playVideo", args: [] }),
+        "*"
+      );
+      playerIframe.contentWindow.postMessage(
+        JSON.stringify({ event: "command", func: "pauseVideo", args: [] }),
+        "*"
+      );
+    }
 
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>All out 2010s</h4>
-            <p>The biggest spmgs pf tje 2010s. Cover:...</p>
-          </div>
+    function replay() {
+      playerIframe.src = `https://www.youtube.com/embed/${currentVideoId}?autoplay=1&start=0&enablejsapi=1`;
+    }
 
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Rock Classics</h4>
-            <p>Rock Legends & epic songs that continue t...</p>
-          </div>
+    function toggleLoop() {
+      loopEnabled = !loopEnabled;
+      alert("Loop " + (loopEnabled ? "enabled" : "disabled"));
+    }
 
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Chill Hits</h4>
-            <p>Kick back to the best new and recent chill...</p>
-          </div>
-
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Viva Latino</h4>
-            <p>Today's top Latin hits elevando nuestra...</p>
-          </div>
-
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Mega Hit Mix</h4>
-            <p>A mega mix of 75 favorites from the last...</p>
-          </div>
-
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>All out 80s</h4>
-            <p>The biggest songs of the 1090s.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="spotify-playlists">
-        <h2>Focus</h2>
-        <div class="list">
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Peaceful Piano</h4>
-            <p>Relax and indulge with beautiful piano pieces</p>
-          </div>
-
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Deep Focus</h4>
-            <p>Keep calm and focus with ambient and pos...</p>
-          </div>
-
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Instrumental Study</h4>
-            <p>Focus with soft study music in the...</p>
-          </div>
-
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>chill lofi study beats</h4>
-            <p>The perfect study beats, twenty four...</p>
-          </div>
-
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Coding Mode</h4>
-            <p>Dedicated to all the programmers out there.</p>
-          </div>
-          
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Focus Flow</h4>
-            <p>Uptempo instrumental hip hop beats.</p>
-          </div>
-
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Calm Before The Storm</h4>
-            <p>Calm before the storm music.</p>
-          </div>
-
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Beats to think to</h4>
-            <p>Focus with deep techno and tech house.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="spotify-playlists">
-        <h2>Mood</h2>
-        <div class="list">
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Mood Booster</h4>
-            <p>Get happy with today's dose of feel-good...</p>
-          </div>
-
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Feelin' Good</h4>
-            <p>Feel good with this positively timeless...</p>
-          </div>
-
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Dark & Stormy</h4>
-            <p>Beautifully dark, dramatic tracks.</p>
-          </div>
-
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Feel Good Piano</h4>
-            <p>Happy vibes for an upbeat morning.</p>
-          </div>
-
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Feelin' Myself</h4>
-            <p>The hip-hop playlist that's a whole mood...</p>
-          </div>
-
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Chill Tracks</h4>
-            <p>Softer kinda dance</p>
-          </div>
-
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>Feel-Good Indie Rock</h4>
-            <p>The best indie rock vibes - classic and...</p>
-          </div>
-
-          <div class="item">
-            <img src="https://i.scdn.co/image/ab67616d0000b2733b5e11ca1b063583df9492db" />
-            <div class="play">
-              <span class="fa fa-play"></span>
-            </div>
-            <h4>idk.</h4>
-            <p>idk.</p>
-          </div>
-        </div>
-
-        <hr>
-      </div>
-
-      <div class="preview">
-        <div class="text">
-          <h6>Preview of Spotify</h6>
-          <p>Sign up to get unlimited songs and podcasts with occasional ads. No credit card needed.</p>
-        </div>
-        <div class="button">
-          <button type="button">Sign up free</button>
-        </div>
-      </div>
-    </div>
-
-    <script
-      src="https://kit.fontawesome.com/23cecef777.js"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+    // optional: loop handler (reload when video ends)
+    window.addEventListener("message", (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (loopEnabled && data.info && data.info.playerState === 0) {
+          replay();
+        }
+      } catch {}
+    });
+  </script>
+</body>
+</html>
