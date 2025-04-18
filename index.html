@@ -6,13 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
 
     body {
-      margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #3a0ca3, #7209b7);
+      background: linear-gradient(135deg, #6a0dad, #9b59b6);
       color: #fff;
       display: flex;
       justify-content: center;
@@ -23,9 +24,9 @@
 
     .player {
       background: rgba(255, 255, 255, 0.1);
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+      padding: 40px;
+      border-radius: 25px;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
       width: 90%;
       max-width: 500px;
       text-align: center;
@@ -34,32 +35,47 @@
     h1 {
       margin-bottom: 20px;
       font-weight: 600;
-      font-size: 28px;
+      font-size: 30px;
+      color: #fff;
     }
 
     input[type="text"] {
       width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      margin-bottom: 15px;
-      font-size: 16px;
-    }
-
-    .controls button {
-      background: #ffffff20;
+      padding: 15px;
       border: none;
       border-radius: 12px;
-      padding: 10px 15px;
-      margin: 5px;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background 0.2s;
+      font-size: 18px;
+      margin-bottom: 20px;
+      background: #ffffff10;
+      color: #fff;
     }
 
-    .controls button:hover {
-      background: #ffffff40;
+    input[type="text"]:focus {
+      outline: none;
+      background: #ffffff30;
+    }
+
+    button {
+      padding: 12px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 20px;
+      font-size: 18px;
+      background-color: #ff4081;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #ff80ab;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
     }
 
     #hiddenPlayer {
@@ -67,16 +83,9 @@
     }
 
     #nowPlaying {
-      font-size: 16px;
-      margin-top: 10px;
-      opacity: 0.9;
-    }
-
-    #loadingMessage {
       font-size: 18px;
-      color: #fff;
-      margin-top: 20px;
-      display: none;
+      margin-top: 15px;
+      opacity: 0.8;
     }
   </style>
 </head>
@@ -86,7 +95,6 @@
     <input type="text" id="searchInput" placeholder="Search a song..." />
     <button onclick="searchAndPlay()">Search & Play</button>
     <p id="nowPlaying">Nothing playing...</p>
-    <div id="loadingMessage">Hold on, bypassing these dirty ads...</div>
     <div class="controls">
       <button onclick="playSong()">▶️ Play</button>
       <button onclick="pauseSong()">⏸️ Pause</button>
@@ -100,7 +108,6 @@
     let currentVideoId = "";
     let loop = false;
     let loopBtn = document.querySelector("button:last-of-type");
-    let playerReady = false; // Flag to ensure the player is ready for interaction
 
     function searchAndPlay() {
       const query = document.getElementById("searchInput").value;
@@ -114,7 +121,6 @@
             currentVideoId = match[1];
             loadAndPlay(currentVideoId);
             document.getElementById("nowPlaying").textContent = `Now Playing: ${query}`;
-            document.getElementById("loadingMessage").style.display = "block"; // Show loading
           } else {
             alert("No song found.");
           }
@@ -124,65 +130,37 @@
     function loadAndPlay(id) {
       const player = document.getElementById("hiddenPlayer");
       player.src = `https://www.youtube.com/embed/${id}?autoplay=1&enablejsapi=1&controls=0&rel=0&modestbranding=1`;
-
-      // Show "Hold on..." message immediately
-      document.getElementById("loadingMessage").style.display = "block";
-      playerReady = false; // Reset the ready flag until the player is ready
-
-      // Now listen for the API to load
-      player.onload = () => {
-        playerReady = true; // Once the player loads, set the flag to true
-        document.getElementById("loadingMessage").style.display = "none"; // Hide the message after loading
-      }
     }
 
     function playSong() {
-      if (playerReady) {
-        document.getElementById("hiddenPlayer").contentWindow.postMessage(
-          JSON.stringify({ event: "command", func: "playVideo", args: [] }),
-          "*"
-        );
-      }
+      const player = document.getElementById("hiddenPlayer");
+      player.contentWindow.postMessage(
+        JSON.stringify({ event: "command", func: "playVideo", args: [] }),
+        "*"
+      );
     }
 
     function pauseSong() {
-      if (playerReady) {
-        document.getElementById("hiddenPlayer").contentWindow.postMessage(
-          JSON.stringify({ event: "command", func: "pauseVideo", args: [] }),
-          "*"
-        );
-      }
+      const player = document.getElementById("hiddenPlayer");
+      player.contentWindow.postMessage(
+        JSON.stringify({ event: "command", func: "pauseVideo", args: [] }),
+        "*"
+      );
     }
 
     function replaySong() {
-      if (playerReady) {
-        document.getElementById("hiddenPlayer").contentWindow.postMessage(
-          JSON.stringify({ event: "command", func: "seekTo", args: [0, true] }),
-          "*"
-        );
-        playSong();
-      }
+      const player = document.getElementById("hiddenPlayer");
+      player.contentWindow.postMessage(
+        JSON.stringify({ event: "command", func: "seekTo", args: [0, true] }),
+        "*"
+      );
+      playSong();
     }
 
     function toggleLoop() {
       loop = !loop;
       loopBtn.textContent = `🔂 Loop: ${loop ? "On" : "Off"}`;
     }
-
-    // Event listener for postMessage from YouTube API (detect ads and skip)
-    window.addEventListener("message", (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        // When an ad is detected (you can use player state for this)
-        if (data.event === "infoDelivery" && data.info && data.info.playerState === 1) {
-          document.getElementById("loadingMessage").style.display = "block"; // Show "Hold on"
-          setTimeout(() => {
-            // Hide message and continue after detecting and bypassing
-            document.getElementById("loadingMessage").style.display = "none"; // Hide "Hold on"
-          }, 5000); // Simulate ad bypass after 5 seconds
-        }
-      } catch (e) {}
-    });
   </script>
 </body>
 </html>
